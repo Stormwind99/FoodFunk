@@ -23,7 +23,7 @@ public class EventManager
 	@SubscribeEvent
 	public void onEntityJoinWorld(EntityJoinWorldEvent event)
 	{
-		if(ConfigHandler.rotEnabled && !event.getWorld().isRemote)
+		if(ConfigContainer.rotEnabled && !event.getWorld().isRemote)
 		{
 			if (event.getEntity() instanceof EntityItem)
 			{
@@ -53,7 +53,7 @@ public class EventManager
 	{
 		//ItemStack item = event.getEntityPlayer().getHeldItemMainhand();
 		
-		if(ConfigHandler.rotEnabled && event instanceof RightClickBlock && !event.getWorld().isRemote)
+		if(ConfigContainer.rotEnabled && event instanceof RightClickBlock && !event.getWorld().isRemote)
 		{
 			TileEntity tile = event.getEntityPlayer().world.getTileEntity(event.getPos());
 			
@@ -72,12 +72,12 @@ public class EventManager
 			return;
 		}
 		
-		if(!ConfigHandler.rotEnabled)
+		if(!ConfigContainer.rotEnabled)
 		{
 			return;
 		}
 		
-		if(event.getTarget() != null && event.getTarget() instanceof IInventory && ConfigHandler.rotEnabled)
+		if(event.getTarget() != null && event.getTarget() instanceof IInventory && ConfigContainer.rotEnabled)
 		{
 			IInventory chest = (IInventory)event.getTarget();
 			
@@ -97,7 +97,7 @@ public class EventManager
 		{
 			InventoryPlayer invo = (InventoryPlayer)((EntityPlayer)event.getEntityLiving()).inventory;
 			
-			if(ConfigHandler.rotEnabled)
+			if(ConfigContainer.rotEnabled)
 			{
 				RotHandler.rotInvo(event.getEntityLiving().world, invo);
 			}
@@ -108,7 +108,7 @@ public class EventManager
 	@SideOnly(Side.CLIENT)
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		if(ConfigHandler.rotEnabled && (event.getItemStack() != null) && !event.getItemStack().isEmpty())
+		if(ConfigContainer.rotEnabled && (event.getItemStack() != null) && !event.getItemStack().isEmpty())
 		{
 			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(event.getItemStack(), event.getEntity().world.getTotalWorldTime());
 					
@@ -131,7 +131,7 @@ public class EventManager
 	@SubscribeEvent
 	public void onCrafted(ItemCraftedEvent event) // Prevents exploit of making foods with almost rotten food to prolong total life of food supplies
 	{
-		if((!ConfigHandler.rotEnabled) || event.player.world.isRemote || event.crafting == null || event.crafting.isEmpty() || event.crafting.getItem() == null)
+		if((!ConfigContainer.rotEnabled) || event.player.world.isRemote || event.crafting == null || event.crafting.isEmpty() || event.crafting.getItem() == null)
 		{
 			return;
 		}

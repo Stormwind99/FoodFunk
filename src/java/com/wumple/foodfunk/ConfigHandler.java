@@ -1,76 +1,14 @@
 package com.wumple.foodfunk;
 
-import java.util.HashMap;
-
 import javax.annotation.Nullable;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.config.Config;
-import net.minecraftforge.common.config.Config.Name;
-import net.minecraftforge.common.config.Config.RangeInt;
-import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Config(modid = Reference.MOD_ID)
 public class ConfigHandler
 {
-	@Name("Enable item rot")
-	@Config.Comment("Will configured items rot over time.")
-	public static boolean rotEnabled = true;
-
-	/*
-	// default rot time now handled by "minecraft:food" Rotting data
-	@Name("Rot time")
-	@Config.Comment("Default rot time (days).")
-	@RangeInt(min = 0)
-	public static int defaultRotTime = 7;	
-	*/
-	
-    @Name("Debug mode")
-    @Config.Comment("Enable for debugging help.")
-    public boolean debugMode = false;
-
-    @Name("Rotting")
-    @Config.Comment("Set rot days and id for items.")
-    public static Rotting rotting = new Rotting();
-    
-    public static class Rotting
-    {
-        @Name("Days to rot")
-        @Config.Comment("Set this to -1 to disable rotting on this item.")
-        @RangeInt(min = -1)
-        // default 7, also see DAYS_NO_ROT = -1
-        public HashMap<String, Integer> rotDays = new HashMap<String, Integer>();
-    	    	
-    	@Name("Rotten ID")
-    	@Config.Comment("Set blank to rot into nothing")
-    	// default ""
-    	public HashMap<String, String> rotID = new HashMap<String, String>();;
-    }
-    
-	@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
-	private static class EventHandler {
-		/**
-		 * Inject the new values and save to the config file when the config has been changed from the GUI.
-		 *
-		 * @param event The event
-		 */
-		@SubscribeEvent
-		public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
-			if (event.getModID().equals(Reference.MOD_ID)) {
-				ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
-			}
-		}
-	}
-    
-	// ----------------------------------------------------------------------	
-    // Internals
-    
     public static final int DAYS_NO_ROT = -1;
     public static final long TICKS_PER_DAY = 24000L;
 
@@ -80,8 +18,8 @@ public class ConfigHandler
     	if (rotItem != null) {
     		rotID = Item.REGISTRY.getNameForObject(rotItem).toString();
     	}
-    	rotting.rotDays.putIfAbsent(name, days);
-    	rotting.rotID.putIfAbsent(name, rotID);
+    	ConfigContainer.rotting.rotDays.putIfAbsent(name, days);
+    	ConfigContainer.rotting.rotID.putIfAbsent(name, rotID);
     }
     
     public static void addDefaultRotProperty(Item item, @Nullable Item rotItem, int days)
@@ -150,14 +88,14 @@ public class ConfigHandler
     {
 		RotProperty rotProp = null;
 		
-		if (rotting.rotDays.containsKey(key1))
+		if (ConfigContainer.rotting.rotDays.containsKey(key1))
 		{
-			rotProp = new RotProperty(key1, rotting.rotDays.get(key1));
+			rotProp = new RotProperty(key1, ConfigContainer.rotting.rotDays.get(key1));
 		}
 		
-		if (rotting.rotID.containsKey(key1))
+		if (ConfigContainer.rotting.rotID.containsKey(key1))
 		{
-			String rotID = rotting.rotID.get(key1);
+			String rotID = ConfigContainer.rotting.rotID.get(key1);
 			if (rotProp == null)
 			{
 				rotProp = new RotProperty(key1, rotID);
