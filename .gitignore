@@ -1,0 +1,85 @@
+#eclipse
+/eclipse
+
+## gradle
+/.gradle
+/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+## Private Stuffs
+/private.properties
+
+# ignore Minecraft and Forge files
+.classpath
+.gradle
+.project
+.settings/
+banned-ips.json
+banned-players.json
+bin/
+config/
+eula.txt
+gradle/
+gradlew
+gradlew.bat
+logs/
+ops.json
+options.txt
+saves/
+server.properties
+usercache.json
+usernamecache.json
+whitelist.json
+world/
+
+## ForgeGradle
+/run
+/libs
+/*_Client.launch
+/*_Server.launch
+
+## scratch space
+/old
+/tmp
+
+## Windows
+Thumbs.db
+
+### OSX (adds a lot of garbage)###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+

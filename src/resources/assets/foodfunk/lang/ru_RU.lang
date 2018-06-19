@@ -1,0 +1,12 @@
+language.name=Russian
+
+item.foodfunk.rotten_food.name=Испорченная еда
+
+tile.foodfunk.esky.name=Портативный холодильник 
+tile.foodfunk.freezer.name=Морозилка
+
+achievement.foodfunk.TenSecondRule=Правило 10 секунд
+
+achievement.foodfunk.TenSecondRule.desc=Съешьте испорченную еду
+
+misc.foodfunk.tooltip.rot=Испорчено: %s (Day %s/%s)

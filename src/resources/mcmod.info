@@ -1,0 +1,16 @@
+[
+{
+  "modid": "foodfunk",
+  "name": "Food Funk",
+  "description": "Food spoils over time, but can be preserved.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/Stormwind99/FoodFunk",
+  "updateUrl": "",
+  "authorList": ["Stormwind99"],
+  "credits": "Stormwind99, EnviroMine authors - Funwayguy, GenDeathrow, thislooksfun, TimbuckTato.",
+  "logoFile": "logo.png",
+  "screenshots": [],
+  "dependencies": [""]
+}
+]
