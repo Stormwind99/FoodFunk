@@ -6,11 +6,9 @@
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/Stormwind99/FoodFunk",
-  "updateUrl": "",
+  "updateJSON": "$updatejson",
   "authorList": ["Stormwind99"],
   "credits": "Stormwind99, EnviroMine authors - Funwayguy, GenDeathrow, thislooksfun, TimbuckTato.",
-  "logoFile": "logo.png",
-  "screenshots": [],
-  "dependencies": [""]
+  "logoFile": "logo.png"
 }
 ]
