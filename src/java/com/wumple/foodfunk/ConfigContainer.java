@@ -32,15 +32,15 @@ public class ConfigContainer
     
     public static class Rotting
     {
-        @Name("Days to rot")
+        // default 7, also see DAYS_NO_ROT = -1
+    	@Name("Days to rot")
         @Config.Comment("Set this to -1 to disable rotting on this item.")
         @RangeInt(min = -1)
-        // default 7, also see DAYS_NO_ROT = -1
         public HashMap<String, Integer> rotDays = new HashMap<String, Integer>();
-    	    	
+
+    	// default ""
     	@Name("Rotten ID")
     	@Config.Comment("Set blank to rot into nothing")
-    	// default ""
     	public HashMap<String, String> rotID = new HashMap<String, String>();
     }
     

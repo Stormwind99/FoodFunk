@@ -116,7 +116,6 @@ public class EventManager
 		
 		if(ConfigContainer.rotEnabled && (stack != null) && !stack.isEmpty() && (entity != null))
 		{
-			
 			long time = entity.world.getTotalWorldTime();
 			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(stack, time);
 					

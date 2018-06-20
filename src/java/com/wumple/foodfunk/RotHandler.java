@@ -15,13 +15,18 @@ import net.minecraft.world.World;
 
 public class RotHandler
 {
+	public static boolean doesRot(ConfigHandler.RotProperty rotProp)
+	{
+		return ((rotProp != null) && rotProp.doesRot());
+	}
+	
 	public static ItemStack doRot(World world, ItemStack item)
 	{
 		//FoodFunk.logger.debug("Rotting: " + item.getDisplayName());
 		
 		ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(item);
 				
-		if ( (rotProps == null) || (!rotProps.doesRot()) )
+		if ( !doesRot(rotProps) )
 		{
 			return clearRotData(item);
 		} else
@@ -32,7 +37,7 @@ public class RotHandler
 	
 	public static ItemStack updateRot(World world, ItemStack stack, ConfigHandler.RotProperty rotProps)
 	{
-		if (rotProps == null)
+		if (!doesRot(rotProps))
 		{
 			clearRotData(stack);
 			return stack;
@@ -58,7 +63,7 @@ public class RotHandler
 		else if(UBD + rotTime < world.getTotalWorldTime())
 		{
 			/*
-			if(rotProps == null)
+			if(!doesRot(rotProps))
 			{
 				return new ItemStack(ObjectHandler.rottenFood, stack.getCount());
 			}
@@ -155,7 +160,7 @@ public class RotHandler
 	{
 		ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(crafting);
 		
-		if(rotProps == null)
+		if(!doesRot(rotProps))
 		{
 			return; // Crafted item does not rot
 		}
