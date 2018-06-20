@@ -41,7 +41,7 @@ public class ConfigContainer
     	@Name("Rotten ID")
     	@Config.Comment("Set blank to rot into nothing")
     	// default ""
-    	public HashMap<String, String> rotID = new HashMap<String, String>();;
+    	public HashMap<String, String> rotID = new HashMap<String, String>();
     }
     
 	@Mod.EventBusSubscriber(modid = Reference.MOD_ID)

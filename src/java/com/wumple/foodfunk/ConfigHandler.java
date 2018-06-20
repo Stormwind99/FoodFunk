@@ -7,6 +7,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 
 public class ConfigHandler
 {
@@ -16,10 +18,22 @@ public class ConfigHandler
     public static void addDefaultRotProperty(String name, @Nullable Item rotItem, int days)
     {
     	String rotID = null;
-    	if (rotItem != null) {
+    	if (rotItem != null)
+    	{
     		ResourceLocation resLoc = Item.REGISTRY.getNameForObject(rotItem);
     		rotID = resLoc.toString();
     	}
+    	
+    	if (name == null)
+    	{
+    		name = "";
+    	}
+    	
+    	if (rotID == null)
+    	{
+    		rotID = "";
+    	}
+    	
     	ConfigContainer.rotting.rotDays.putIfAbsent(name, days);
     	ConfigContainer.rotting.rotID.putIfAbsent(name, rotID);
     }
@@ -52,6 +66,8 @@ public class ConfigHandler
     	addDefaultRotProperty(
     			new Item[] {Items.FERMENTED_SPIDER_EYE, Items.BEEF, Items.CHICKEN, Items.PORKCHOP, Items.FISH, Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_PORKCHOP, Items.COOKED_FISH},
     			Items.ROTTEN_FLESH, 7);
+    	
+    	ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
     }
     
     static class RotProperty
