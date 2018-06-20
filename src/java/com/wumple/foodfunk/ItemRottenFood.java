@@ -15,6 +15,7 @@ public class ItemRottenFood extends ItemFood
 		setMaxStackSize(64);
 		setCreativeTab(CreativeTabs.DECORATIONS);
 		// TODO setTextureName("foodfunk:rot");
+		
 	    String name = "foodfunk:rotten_food";
 	    setRegistryName(GameData.checkPrefix(name));
 	    setUnlocalizedName(name);

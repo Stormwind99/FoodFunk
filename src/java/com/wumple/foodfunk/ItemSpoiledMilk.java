@@ -20,6 +20,7 @@ public class ItemSpoiledMilk extends ItemBucketMilk
     	super();
     	setCreativeTab(CreativeTabs.DECORATIONS);
     	//setTextureName("bucket_milk");
+    	
 	    String name = "foodfunk:spoiled_milk";
 	    setRegistryName(GameData.checkPrefix(name));
 	    setUnlocalizedName(name);

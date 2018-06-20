@@ -14,11 +14,13 @@ public class BlockEsky extends BlockChestBase implements ITileEntityProvider
 	{
 		super(Material.IRON);
 		setHardness(3.0F);
-	    setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	    setCreativeTab(CreativeTabs.DECORATIONS);
+	    
 	    String name = "foodfunk:esky";
 	    setRegistryName(GameData.checkPrefix(name));
 	    setUnlocalizedName(name);
+	    
+	    //setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}
     
 	/**

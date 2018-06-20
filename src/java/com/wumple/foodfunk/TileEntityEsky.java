@@ -1,6 +1,5 @@
 package com.wumple.foodfunk;
 
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.SoundEvent;
 

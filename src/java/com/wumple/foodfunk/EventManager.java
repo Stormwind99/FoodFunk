@@ -14,15 +14,17 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class EventManager
 {
 	@SubscribeEvent
-	public void onEntityJoinWorld(EntityJoinWorldEvent event)
+	public static void onEntityJoinWorld(EntityJoinWorldEvent event)
 	{
 		if(ConfigContainer.rotEnabled && !event.getWorld().isRemote)
 		{
@@ -50,7 +52,7 @@ public class EventManager
 	}
 	
 	@SubscribeEvent
-	public void onPlayerInteract(PlayerInteractEvent event)
+	public static void onPlayerInteract(PlayerInteractEvent event)
 	{
 		//ItemStack item = event.getEntityPlayer().getHeldItemMainhand();
 		
@@ -66,7 +68,7 @@ public class EventManager
 	}
 		
 	@SubscribeEvent
-	public void onEntityInteract(EntityInteract event)
+	public static void onEntityInteract(EntityInteract event)
 	{
 		if(event.isCanceled() || event.getEntityPlayer().world.isRemote)
 		{
@@ -87,7 +89,7 @@ public class EventManager
 	}
 	
 	@SubscribeEvent
-	public void onLivingUpdate(LivingUpdateEvent event)
+	public static void onLivingUpdate(LivingUpdateEvent event)
 	{
 		if(event.getEntityLiving().world.isRemote)
 		{
@@ -107,7 +109,7 @@ public class EventManager
 	
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
-	public void onItemTooltip(ItemTooltipEvent event)
+	public static void onItemTooltip(ItemTooltipEvent event)
 	{
 		ItemStack stack = event.getItemStack();
 		Entity entity = event.getEntity();
@@ -135,7 +137,7 @@ public class EventManager
 	}
 	
 	@SubscribeEvent
-	public void onCrafted(ItemCraftedEvent event) // Prevents exploit of making foods with almost rotten food to prolong total life of food supplies
+	public static void onCrafted(ItemCraftedEvent event) // Prevents exploit of making foods with almost rotten food to prolong total life of food supplies
 	{
 		if((!ConfigContainer.rotEnabled) || event.player.world.isRemote || event.crafting == null || event.crafting.isEmpty() || event.crafting.getItem() == null)
 		{

@@ -6,7 +6,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
@@ -57,11 +57,13 @@ public class ObjectHandler
 	// ----------------------------------------------------------------------
 	// Events
 	
-    @EventBusSubscriber(modid = Reference.MOD_ID)
+    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class RegistrationHandler
     {
     	@SubscribeEvent
-    	public void registerBlocks(RegistryEvent.Register<Block> event) {
+    	public static void registerBlocks(RegistryEvent.Register<Block> event) {
+    		FoodFunk.logger.debug("registerBlocks");
+    				
     		final IForgeRegistry<Block> registry = event.getRegistry();
         
     		regHelper(registry, new BlockEsky());
@@ -69,7 +71,9 @@ public class ObjectHandler
     	}
 
     	@SubscribeEvent
-    	public void registerItems(RegistryEvent.Register<Item> event) {
+    	public static void registerItems(RegistryEvent.Register<Item> event) {
+    		FoodFunk.logger.debug("registerItems");
+    		
     		final IForgeRegistry<Item> registry = event.getRegistry();
 
     	    regHelper(registry, new ItemRottenFood());
@@ -82,17 +86,21 @@ public class ObjectHandler
     	}
     	
     	@SubscribeEvent
-    	public void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
+    	public static void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
+    		FoodFunk.logger.debug("registerSoundEvents");
+    		
     		final IForgeRegistry<SoundEvent> registry = event.getRegistry();
         
-    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "esky_open")));
-    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "esky_close")));
-    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "freezer_open")));
-    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "freezer_close")));
+    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "esky_open")), "foodfunk:esky_open");
+    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "esky_close")), "foodfunk:esky_close");
+    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "freezer_open")), "foodfunk:freezer_open");
+    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "freezer_close")), "foodfunk:freezer_close");
     	}
     	
     	@SuppressWarnings("deprecation")
-    	public void registerTileEntities() {
+    	public static void registerTileEntities() {
+    		FoodFunk.logger.debug("registerTileEntities");
+    		
     		GameRegistry.registerTileEntity(TileEntityEsky.class, "foodfunk:esky");
     		GameRegistry.registerTileEntity(TileEntityFreezer.class, "foodfunk:freezer");
     	}

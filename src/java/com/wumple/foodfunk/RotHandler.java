@@ -17,7 +17,7 @@ public class RotHandler
 {
 	public static ItemStack doRot(World world, ItemStack item)
 	{
-		//System.out.println("Rotting: " + item.getDisplayName());
+		//FoodFunk.logger.debug("Rotting: " + item.getDisplayName());
 		
 		ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(item);
 				

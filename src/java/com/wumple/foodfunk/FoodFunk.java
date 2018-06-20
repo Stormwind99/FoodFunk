@@ -2,7 +2,6 @@ package com.wumple.foodfunk;
 
 import org.apache.logging.log4j.Logger;
 
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -19,20 +18,23 @@ public class FoodFunk {
     public static FoodFunk instance;
 	public static Logger logger;
 	
-    @Mod.EventHandler
+    @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	logger = event.getModLog();
+    	
+    	logger.debug("preInit");
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
+    	logger.debug("init");
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+    	logger.debug("postInit");
+    	
     	// add any missing default config rot properties
     	ConfigHandler.init();
-    	
-        MinecraftForge.EVENT_BUS.register(new com.wumple.foodfunk.EventManager());
     }
 }
