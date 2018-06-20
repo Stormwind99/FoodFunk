@@ -1,6 +1,6 @@
 {
     "parent": "foodfunk:block/chest",
     "textures": {
-        "texture": "foodfunk:model/chest/esky"
+        "texture": "foodfunk:model/esky"
     }
 }

@@ -2,11 +2,49 @@
   "forge_marker": 1,
   "defaults": {
     "model": "foodfunk:freezer",
-    "transform": "forge:default-block"
+    "transform": "forge:default-block",
+    "textures": {
+       "particle": "minecraft:blocks/planks_oak",
+       "texture": "foodfunk:model/freezer"
+     }
   },
   "variants": {
     "variant": {
       "normal": {
+        "y": 0,
+        "model": "foodfunk:freezer",
+        "textures": {
+          "particle": "minecraft:blocks/planks_oak",
+          "texture": "foodfunk:model/freezer"
+        }
+      },
+      "facing=east": {
+        "y": 0,
+        "model": "foodfunk:freezer",
+        "textures": {
+          "particle": "minecraft:blocks/planks_oak",
+          "texture": "foodfunk:model/freezer"
+        }
+      },
+      "facing=south": {
+        "y": 90,
+        "model": "foodfunk:freezer",
+        "textures": {
+          "particle": "minecraft:blocks/planks_oak",
+          "texture": "foodfunk:model/freezer"
+        }
+      },
+      "facing=west": {
+        "y": 180,
+        "model": "foodfunk:freezer",
+        "textures": {
+          "particle": "minecraft:blocks/planks_oak",
+          "texture": "foodfunk:model/freezer"
+        }
+      },
+      "facing=north": {
+        "y": 270,
+        "model": "foodfunk:freezer",
         "textures": {
           "particle": "minecraft:blocks/planks_oak",
           "texture": "foodfunk:model/freezer"
