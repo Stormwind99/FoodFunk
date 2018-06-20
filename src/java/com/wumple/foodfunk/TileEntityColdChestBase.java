@@ -5,10 +5,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 
-public abstract class TileEntityColdChestBase extends TileEntityChestBase implements IInventory, ITickable {
-
+public abstract class TileEntityColdChestBase extends TileEntityChestBase implements IInventory, ITickable
+{
+	// ticks to wait until rot refresh of contents
+	static final int slowInterval = 30;
+	static final int fastInterval = 4; // when someone has chest open
+	
+	// ticks since last rot refresh of contents
 	int tick = 0;
-	int interval = 30;
 	long lastCheck = ConfigHandler.DAYS_NO_ROT;
 
 	public TileEntityColdChestBase() {
@@ -28,18 +32,32 @@ public abstract class TileEntityColdChestBase extends TileEntityChestBase implem
 		{
 			return;
 		}
+
+		long worldTime = getWorld().getTotalWorldTime();
 		
 		if(lastCheck <= ConfigHandler.DAYS_NO_ROT)
 		{
-			lastCheck = getWorld().getTotalWorldTime();
+			lastCheck = worldTime;
 		}
 		
-		if(tick >= interval)
+		/*
+		 * MAYBE small bug - when chest open and tooltip up, rot can decrease.  Closing/re-opening chest fixes it.
+		 * Tried below: refresh more often when this.numPlayersUsing > 0
+		 * 
+		 * Other ideas:
+		 * Could be chest tick rate vs login/logout time, or tooltip update time vs rot refresh
+		 * Might need to fix lastCheck with persisted fraction upon load
+		 * Maybe even just contained ItemStack's NBT data not getting refreshed when chest open
+		 */
+		
+		int interval = (this.numPlayersUsing > 0) ? fastInterval : slowInterval;
+		
+		if (tick >= interval)
 		{
 			tick = 0;
-			
-			long time = getWorld().getTotalWorldTime() - lastCheck;
-			lastCheck = getWorld().getTotalWorldTime();
+
+			long time = worldTime - lastCheck;
+			lastCheck = worldTime;
 			
 			for(int i = 0; i < this.getSizeInventory(); i++)
 			{
@@ -62,7 +80,7 @@ public abstract class TileEntityColdChestBase extends TileEntityChestBase implem
 				}
 			}
 			
-			this.markDirty();
+			markDirty();
 		} else
 		{
 			tick++;
@@ -77,10 +95,11 @@ public abstract class TileEntityColdChestBase extends TileEntityChestBase implem
 	    
 	    if(tags.hasKey("RotCheck"))
 	    {
-	    	this.lastCheck = tags.getLong("RotCheck");
-	    } else
+	    	lastCheck = tags.getLong("rotLastCheck");
+	    } 
+	    else
 	    {
-	    	this.lastCheck = ConfigHandler.DAYS_NO_ROT;
+	    	lastCheck = ConfigHandler.DAYS_NO_ROT;
 	    }
 	}
 
@@ -88,7 +107,7 @@ public abstract class TileEntityColdChestBase extends TileEntityChestBase implem
 	public NBTTagCompound writeToNBT(NBTTagCompound tags) {
 		super.writeToNBT(tags);
 	
-	    tags.setLong("RotCheck", this.lastCheck);
+	    tags.setLong("rotLastCheck", lastCheck);
 	    
 	    return tags;
 	}

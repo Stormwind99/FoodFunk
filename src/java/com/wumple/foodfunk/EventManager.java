@@ -54,8 +54,6 @@ public class EventManager
 	@SubscribeEvent
 	public static void onPlayerInteract(PlayerInteractEvent event)
 	{
-		//ItemStack item = event.getEntityPlayer().getHeldItemMainhand();
-		
 		if(ConfigContainer.rotEnabled && event instanceof RightClickBlock && !event.getWorld().isRemote)
 		{
 			TileEntity tile = event.getEntityPlayer().world.getTileEntity(event.getPos());
@@ -111,6 +109,10 @@ public class EventManager
 	@SideOnly(Side.CLIENT)
 	public static void onItemTooltip(ItemTooltipEvent event)
 	{
+		// MAYBE saw bug once - tooltip not updating properly when in cold chest (% kept decreasing), might need:
+		// http://www.minecraftforge.net/forum/topic/62217-1122-tile-entity-update/
+		// http://www.minecraftforge.net/forum/topic/42612-solved110-itemhandler-tooltip-when-in-non-player-inventory-on-mp-server/?do=findComment&comment=229718
+		
 		ItemStack stack = event.getItemStack();
 		Entity entity = event.getEntity();
 		
@@ -132,6 +134,7 @@ public class EventManager
 				//event.toolTip.add("Use-By: Day " + rotTimes.getUseBy());
 			}
 			
+			// TODO: add "cold" or "frozen" to tooltip if in esky or freezer
 		}
 	}
 	

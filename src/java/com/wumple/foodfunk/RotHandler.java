@@ -35,8 +35,43 @@ public class RotHandler
 		}
 	}
 	
+	private static void setRotValues(ItemStack stack, long date, long rotTime)
+	{
+		NBTTagCompound tags = ensureTagCompound(stack);
+		
+		tags.setLong("EM_ROT_DATE", date);
+		tags.setLong("EM_ROT_TIME", rotTime);
+	}
+	
+	private static ItemStack forceRot(ItemStack stack, String rotID)
+	{
+		// WAS int meta = rotProps.rotMeta < 0? item.getItemDamage() : rotProps.rotMeta;
+		// int meta = stack.getMetadata();
+		
+		Item item = Item.REGISTRY.getObject(new ResourceLocation(rotID));
+		
+		return item == null ? null : new ItemStack(item, stack.getCount()); // , meta);
+	}
+	
+	private static NBTTagCompound ensureTagCompound(ItemStack stack)
+	{
+		NBTTagCompound tags = stack.getTagCompound();
+		
+		if(tags == null)
+		{
+			tags = new NBTTagCompound();
+			stack.setTagCompound(tags);
+		}
+		
+		return stack.getTagCompound();
+	}	
+	
 	public static ItemStack updateRot(World world, ItemStack stack, ConfigHandler.RotProperty rotProps)
 	{
+		// TODO integrate with Serene Seasons temperature system
+		// If stack in a cold/frozen location, change rot appropriately (as if esky or freezer)
+		// Might allow building a walk-in freezer like in RimWorld
+		
 		if (!doesRot(rotProps))
 		{
 			clearRotData(stack);
@@ -45,42 +80,25 @@ public class RotHandler
 		
 		long rotTime = rotProps.getRotTime();
 
-		if(stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
+		NBTTagCompound tags = ensureTagCompound(stack);
 		
-		long UBD = stack.getTagCompound().getLong("EM_ROT_DATE");
+		long UBD = tags.getLong("EM_ROT_DATE");
+		long worldTime = world.getTotalWorldTime();
 		
 		if(UBD == 0)
 		{
-			UBD = (world.getTotalWorldTime()/ConfigHandler.TICKS_PER_DAY) * ConfigHandler.TICKS_PER_DAY;
+			UBD = (worldTime/ConfigHandler.TICKS_PER_DAY) * ConfigHandler.TICKS_PER_DAY;
 			UBD = UBD <= 0L? 1L : UBD;
-			stack.getTagCompound().setLong("EM_ROT_DATE", UBD);
-			stack.getTagCompound().setLong("EM_ROT_TIME", rotTime);
+			setRotValues(stack, UBD, rotTime);
 			return stack;
 		} 
-		else if(UBD + rotTime < world.getTotalWorldTime())
+		else if(UBD + rotTime < worldTime)
 		{
-			/*
-			if(!doesRot(rotProps))
-			{
-				return new ItemStack(ObjectHandler.rottenFood, stack.getCount());
-			}
-			else
-			*/
-			{
-				// WAS int meta = rotProps.rotMeta < 0? item.getItemDamage() : rotProps.rotMeta;
-				// int meta = stack.getMetadata();
-				
-				Item item = Item.REGISTRY.getObject(new ResourceLocation(rotProps.rotID));
-							
-				return item == null ? null : new ItemStack(item, stack.getCount()); // , meta);
-			}
+			return forceRot(stack, rotProps.rotID);
 		}
 		else
 		{
-			stack.getTagCompound().setLong("EM_ROT_TIME", rotTime);
+			setRotValues(stack, UBD, rotTime);
 			return stack;
 		}
 
@@ -117,7 +135,8 @@ public class RotHandler
 			{
 				((TileEntity)inventory).markDirty();
 			}
-		} catch(Exception e)
+		}
+		catch(Exception e)
 		{
 			FoodFunk.logger.log(Level.ERROR, "An error occured while attempting to rot inventory:", e);
 			return;
@@ -126,15 +145,23 @@ public class RotHandler
 	
 	public static ItemStack clearRotData(ItemStack item)
 	{
-		if(item.getTagCompound() != null)
+		NBTTagCompound tags = item.getTagCompound();
+		
+		if(tags != null)
 		{
-			if(item.getTagCompound().hasKey("EM_ROT_DATE"))
+			if(tags.hasKey("EM_ROT_DATE"))
 			{
-				item.getTagCompound().removeTag("EM_ROT_DATE");
+				tags.removeTag("EM_ROT_DATE");
 			}
-			if(item.getTagCompound().hasKey("EM_ROT_TIME"))
+			if(tags.hasKey("EM_ROT_TIME"))
 			{
-				item.getTagCompound().removeTag("EM_ROT_TIME");
+				tags.removeTag("EM_ROT_TIME");
+			}
+	
+			// remove empty NBT tag compound from rotten items so they can be merged - saw this bug onces
+			if (tags.hasNoTags())
+			{
+				item.setTagCompound(null);
 			}
 		}
 		
@@ -143,16 +170,11 @@ public class RotHandler
 	
 	public static void rescheduleRot(ItemStack stack, long time)
 	{
-		if(stack.getTagCompound() == null)
-		{
-			stack.setTagCompound(new NBTTagCompound());
-		}
-		NBTTagCompound tags = stack.getTagCompound();
+		NBTTagCompound tags = ensureTagCompound(stack);
 		
 		if(tags.hasKey("EM_ROT_DATE"))
 		{
-			tags.setLong("EM_ROT_DATE", tags.getLong("EM_ROT_DATE") + time);
-			tags.setLong("EM_ROT_TIME", tags.getLong("EM_ROT_TIME") + time);
+			setRotValues(stack, tags.getLong("EM_ROT_DATE") + time, tags.getLong("EM_ROT_TIME") + time);
 		}
 	}
 	
@@ -162,7 +184,7 @@ public class RotHandler
 		
 		if(!doesRot(rotProps))
 		{
-			return; // Crafted item does not rot
+			return; // Crafted item doesn't rot
 		}
 		
 		long rotTime = rotProps.getRotTime();
@@ -178,21 +200,17 @@ public class RotHandler
 				continue;
 			}
 			
-			if(stack.getTagCompound().hasKey("EM_ROT_DATE") && (lowestDate < 0 || stack.getTagCompound().getLong("EM_ROT_DATE") < lowestDate))
+			NBTTagCompound tags = stack.getTagCompound();
+			
+			if(tags.hasKey("EM_ROT_DATE") && (lowestDate < 0 || tags.getLong("EM_ROT_DATE") < lowestDate))
 			{
-				lowestDate = stack.getTagCompound().getLong("EM_ROT_DATE");
+				lowestDate = tags.getLong("EM_ROT_DATE");
 			}
 		}
 		
 		if(lowestDate >= 0)
 		{
-			if(crafting.getTagCompound() == null)
-			{
-				crafting.setTagCompound(new NBTTagCompound());
-			}
-			
-			crafting.getTagCompound().setLong("EM_ROT_DATE", lowestDate);
-			crafting.getTagCompound().setLong("EM_ROT_TIME", rotTime);
+			setRotValues(crafting, lowestDate, rotTime);
 		}
 	}
 	
@@ -217,7 +235,7 @@ public class RotHandler
 		
 		public int getDays()
 		{
-			return MathHelper.floor((curTime - date)/ConfigHandler.TICKS_PER_DAY);
+			return Math.max(0, MathHelper.floor((curTime - date)/ConfigHandler.TICKS_PER_DAY));
 		}
 		
 		public int getTime()
