@@ -3,6 +3,8 @@ package com.wumple.foodfunk;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -19,23 +21,38 @@ public class ObjectHandler
 	// Blocks
 	
 	@ObjectHolder("foodfunk:esky")
-	public static Block esky = null;
+	public static final Block esky = null;
 	
 	@ObjectHolder("foodfunk:freezer")
-	public static Block freezer = null;
+	public static final Block freezer = null;
 			
 	// ----------------------------------------------------------------------
 	// Items
 	
 	@ObjectHolder("foodfunk:rotten_food")
-	public static Item rotten_food = null;
+	public static final Item rotten_food = null;
 	
 	@ObjectHolder("foodfunk:spoiled_milk")
-	public static Item spoiled_milk = null;
+	public static final Item spoiled_milk = null;
+		
+	// ----------------------------------------------------------------------
+	// SoundEvents
+	
+	@ObjectHolder("foodfunk:esky_open")
+	public static final SoundEvent esky_open = null;
+
+	@ObjectHolder("foodfunk:esky_close")
+	public static final SoundEvent esky_close = null;
+
+	@ObjectHolder("foodfunk:freezer_open")
+	public static final SoundEvent freezer_open = null;
+
+	@ObjectHolder("foodfunk:freezer_close")
+	public static final SoundEvent freezer_close = null;	
 	
 	// TODO
 	// @ObjectHolder("foodfunk:rotted_item")
-	// public status Item rotted_item = null;
+	// public static final Item rotted_item = null;
 				
 	// ----------------------------------------------------------------------
 	// Events
@@ -47,21 +64,31 @@ public class ObjectHandler
     	public void registerBlocks(RegistryEvent.Register<Block> event) {
     		final IForgeRegistry<Block> registry = event.getRegistry();
         
-    		regHelper(registry, new BlockEsky(), "foodfunk:esky");
-    		regHelper(registry, new BlockFreezer(), "foodfunk:freezer");
+    		regHelper(registry, new BlockEsky());
+    		regHelper(registry, new BlockFreezer());
     	}
 
     	@SubscribeEvent
     	public void registerItems(RegistryEvent.Register<Item> event) {
     		final IForgeRegistry<Item> registry = event.getRegistry();
 
-    	    regHelper(registry, new ItemRottenFood(), "foodfunk:rotten_food");
-    	    regHelper(registry, new ItemSpoiledMilk(), "foodfunk:spoiled_milk");
+    	    regHelper(registry, new ItemRottenFood());
+    	    regHelper(registry, new ItemSpoiledMilk());
 
     		regHelper(registry, new ItemBlock(esky), "foodfunk:esky");
     		regHelper(registry, new ItemBlock(freezer), "foodfunk:freezer");
     		
     		registerTileEntities();
+    	}
+    	
+    	@SubscribeEvent
+    	public void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
+    		final IForgeRegistry<SoundEvent> registry = event.getRegistry();
+        
+    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "esky_open")));
+    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "esky_close")));
+    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "freezer_open")));
+    		regHelper(registry, new SoundEvent(new ResourceLocation("foodfunk", "freezer_close")));
     	}
     	
     	@SuppressWarnings("deprecation")
@@ -72,6 +99,12 @@ public class ObjectHandler
 	
 		// ----------------------------------------------------------------------
 		// Utility
+    	public static <T extends IForgeRegistryEntry<T>> T regHelper(IForgeRegistry<T> registry, T thing)
+	    {
+	        registry.register(thing);
+	        return thing;
+	    }
+    	
 	    public static <T extends IForgeRegistryEntry<T>> T regHelper(IForgeRegistry<T> registry, T thing, String name)
 	    {
 	        thing.setRegistryName(GameData.checkPrefix(name));
@@ -86,8 +119,8 @@ public class ObjectHandler
 	        	Item item = (Item)thing;
 	        	item.setUnlocalizedName(name);
 	        }
-	        registry.register(thing);
-	        return thing;
+	        
+	        return regHelper(registry, thing);
 	    }
     }
 }

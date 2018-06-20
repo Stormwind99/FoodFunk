@@ -2,7 +2,7 @@
   "_comment": [
       "Esky cooler that extends shelf life of food"
    ],
-  "type": "crafting_shaped",
+  "type": "minecraft:crafting_shaped",
   "group": "foodfunk",
   "pattern": [
     "xxx",

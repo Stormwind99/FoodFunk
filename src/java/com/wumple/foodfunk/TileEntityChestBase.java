@@ -16,6 +16,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.datafix.walkers.ItemStackDataLists;
@@ -26,6 +27,10 @@ import net.minecraft.util.text.TextComponentTranslation;
 
 public abstract class TileEntityChestBase extends TileEntity implements IInventory {
 
+	public TileEntityChestBase() {
+		super();
+	}
+	
 	// ----------------------------------------------------------------------
 	// from TileEntityChest extends TileEntityLockableLoot implements ITickable
 
@@ -161,7 +166,7 @@ public abstract class TileEntityChestBase extends TileEntity implements IInvento
             double d1 = (double)i + 0.5D;
             double d2 = (double)k + 0.5D;
 
-            this.world.playSound((EntityPlayer)null, d1, (double)j + 0.5D, d2, SoundEvents.BLOCK_CHEST_OPEN, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
+            this.world.playSound((EntityPlayer)null, d1, (double)j + 0.5D, d2, getOpenSoundEvent(), SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
         }
 
         if (this.numPlayersUsing == 0 && this.lidAngle > 0.0F || this.numPlayersUsing > 0 && this.lidAngle < 1.0F)
@@ -187,7 +192,7 @@ public abstract class TileEntityChestBase extends TileEntity implements IInvento
                 double d3 = (double)i + 0.5D;
                 double d0 = (double)k + 0.5D;
 
-                this.world.playSound((EntityPlayer)null, d3, (double)j + 0.5D, d0, SoundEvents.BLOCK_CHEST_CLOSE, SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
+                this.world.playSound((EntityPlayer)null, d3, (double)j + 0.5D, d0, getCloseSoundEvent(), SoundCategory.BLOCKS, 0.5F, this.world.rand.nextFloat() * 0.1F + 0.9F);
             }
 
             if (this.lidAngle < 0.0F)
@@ -195,6 +200,16 @@ public abstract class TileEntityChestBase extends TileEntity implements IInvento
                 this.lidAngle = 0.0F;
             }
         }
+    }
+    
+    public SoundEvent getOpenSoundEvent()
+    {
+    	return SoundEvents.BLOCK_CHEST_OPEN;
+    }
+    
+    public SoundEvent getCloseSoundEvent()
+    {
+    	return SoundEvents.BLOCK_CHEST_CLOSE;
     }
 
     /**

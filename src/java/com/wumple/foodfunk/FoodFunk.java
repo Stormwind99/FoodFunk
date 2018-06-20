@@ -26,12 +26,13 @@ public class FoodFunk {
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-    	// add any missing default config rot properties
-    	ConfigHandler.init();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+    	// add any missing default config rot properties
+    	ConfigHandler.init();
+    	
         MinecraftForge.EVENT_BUS.register(new com.wumple.foodfunk.EventManager());
     }
 }

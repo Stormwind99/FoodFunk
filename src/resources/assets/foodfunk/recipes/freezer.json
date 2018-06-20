@@ -2,7 +2,7 @@
   "_comment": [
       "Freezer that preserves food indefinitely"
    ],
-  "type": "crafting_shaped",
+  "type": "minecraft:crafting_shaped",
   "group": "foodfunk",
   "pattern": [
     "xyx",
@@ -12,9 +12,14 @@
      "x": {
         "item": "minecraft:iron_block"
      },
-     "y": {
-        "tag": "minecraft:ice",
-     },
+     "y": [
+        {
+           "item": "minecraft:ice"
+        },
+        {
+           "item": "minecraft:packed_ice"
+        }
+     ],
      "z": {
         "item": "foodfunk:esky"
      }

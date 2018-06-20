@@ -1,6 +1,8 @@
 package com.wumple.foodfunk;
 
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.util.SoundEvent;
 
 public class TileEntityFreezer extends TileEntityColdChestBase implements IInventory
 {	
@@ -31,4 +33,14 @@ public class TileEntityFreezer extends TileEntityColdChestBase implements IInven
 	public String getRealName() {
 	    return "container.foodfunk.freezer";
 	}	
+	
+    public SoundEvent getOpenSoundEvent()
+    {
+    	return ObjectHandler.freezer_open;
+    }
+    
+    public SoundEvent getCloseSoundEvent()
+    {
+    	return ObjectHandler.freezer_close;
+    }
 }

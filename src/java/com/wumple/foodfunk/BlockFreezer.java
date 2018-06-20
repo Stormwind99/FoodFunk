@@ -6,15 +6,19 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.GameData;
 
 public class BlockFreezer extends BlockChestBase implements ITileEntityProvider
 {   
 	public BlockFreezer()
 	{
 		super(Material.IRON);
-		this.setHardness(3.0F);
-	    this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
-	    this.setCreativeTab(CreativeTabs.DECORATIONS);
+		setHardness(3.0F);
+	    setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+	    setCreativeTab(CreativeTabs.DECORATIONS);
+	    String name = "foodfunk:freezer";
+	    setRegistryName(GameData.checkPrefix(name));
+	    setUnlocalizedName(name);
 	}
 
 	@Override

@@ -1,6 +1,8 @@
 package com.wumple.foodfunk;
 
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.util.SoundEvent;
 
 public class TileEntityEsky extends TileEntityColdChestBase implements IInventory
 {
@@ -31,4 +33,14 @@ public class TileEntityEsky extends TileEntityColdChestBase implements IInventor
 	public String getRealName() {
 	    return "container.foodfunk.esky";
 	}
+	
+    public SoundEvent getOpenSoundEvent()
+    {
+    	return ObjectHandler.esky_open;
+    }
+    
+    public SoundEvent getCloseSoundEvent()
+    {
+    	return ObjectHandler.esky_close;
+    }
 }

@@ -1,29 +1,33 @@
 {
-  	"eskyopen": {
+  	"esky_open": {
     "category": "block",
+    "subtitle": "foodfunk.subtitle.esky_open",
     "sounds": [
-      "esky_open"
+      "foodfunk:esky_open"
     ]
   },
   
-  	"eskyclose": {
+  	"esky_close": {
     "category": "block",
+    "subtitle": "foodfunk.subtitle.esky_close",
     "sounds": [
-      "esky_close"
+      "foodfunk:esky_close"
     ]
   },
   
-  	"freezeropen": {
+  	"freezer_open": {
     "category": "block",
+    "subtitle": "foodfunk.subtitle.freezer_open",
     "sounds": [
-      "freezer_open"
+      "foodfunk:freezer_open"
     ]
   },
   
-  	"freezerclose": {
+  	"freezer_close": {
     "category": "block",
+    "subtitle": "foodfunk.subtitle.freezer_close",
     "sounds": [
-      "freezer_close"
+      "foodfunk:freezer_close"
     ]
   }
 }

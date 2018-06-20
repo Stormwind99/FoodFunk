@@ -6,6 +6,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 
 public class ConfigHandler
 {
@@ -16,7 +17,8 @@ public class ConfigHandler
     {
     	String rotID = null;
     	if (rotItem != null) {
-    		rotID = Item.REGISTRY.getNameForObject(rotItem).toString();
+    		ResourceLocation resLoc = Item.REGISTRY.getNameForObject(rotItem);
+    		rotID = resLoc.toString();
     	}
     	ConfigContainer.rotting.rotDays.putIfAbsent(name, days);
     	ConfigContainer.rotting.rotID.putIfAbsent(name, rotID);
@@ -24,7 +26,8 @@ public class ConfigHandler
     
     public static void addDefaultRotProperty(Item item, @Nullable Item rotItem, int days)
     {
-    	String name = Item.REGISTRY.getNameForObject(item).toString();
+    	ResourceLocation resLoc = Item.REGISTRY.getNameForObject(item);
+    	String name = resLoc.toString();
     	addDefaultRotProperty(name, rotItem, days);
     }
   
@@ -41,7 +44,8 @@ public class ConfigHandler
     	// handle all food with a "default" entry
     	addDefaultRotProperty("minecraft:food", ObjectHandler.rotten_food, 7);
     	addDefaultRotProperty(Items.ROTTEN_FLESH, null, DAYS_NO_ROT);
-    	addDefaultRotProperty(ObjectHandler.rotten_food, null, DAYS_NO_ROT);
+    	//addDefaultRotProperty(ObjectHandler.rotten_food, null, DAYS_NO_ROT);
+    	addDefaultRotProperty("foodfunk:rotten_food", null, DAYS_NO_ROT);
     	// TODO addDefaultRotProperty(ObjectHandler.rotted_item, null, DAYS_NO_ROT);
     	addDefaultRotProperty(Items.MILK_BUCKET, ObjectHandler.spoiled_milk, 7);
     	addDefaultRotProperty(Items.SPIDER_EYE, Items.FERMENTED_SPIDER_EYE, 7);

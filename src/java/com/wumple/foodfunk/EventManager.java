@@ -1,5 +1,6 @@
 package com.wumple.foodfunk;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -108,9 +109,14 @@ public class EventManager
 	@SideOnly(Side.CLIENT)
 	public void onItemTooltip(ItemTooltipEvent event)
 	{
-		if(ConfigContainer.rotEnabled && (event.getItemStack() != null) && !event.getItemStack().isEmpty())
+		ItemStack stack = event.getItemStack();
+		Entity entity = event.getEntity();
+		
+		if(ConfigContainer.rotEnabled && (stack != null) && !stack.isEmpty() && (entity != null))
 		{
-			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(event.getItemStack(), event.getEntity().world.getTotalWorldTime());
+			
+			long time = entity.world.getTotalWorldTime();
+			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(stack, time);
 					
 			if(rotTimes != null)
 			{							
