@@ -1,5 +1,7 @@
 package com.wumple.foodfunk;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,10 +22,13 @@ public class BlockEsky extends BlockChestBase implements ITileEntityProvider
 	    setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}
     
-	/**
-	 * Returns a new instance of a block's tile entity class. Called on placing the block.
-	 */
-	public TileEntity createNewTileEntity(World worldIn, int meta) {
+    /**
+     * Returns a new instance of a block's tile entity class. Called on placing the block.
+     */
+    @Override
+    @Nullable
+    public TileEntity createNewTileEntity(World worldIn, int meta)
+    {
 	    return new TileEntityEsky();
 	}
 }

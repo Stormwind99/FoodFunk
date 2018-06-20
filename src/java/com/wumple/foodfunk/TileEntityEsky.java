@@ -1,12 +1,11 @@
 package com.wumple.foodfunk;
 
 import net.minecraft.inventory.IInventory;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundEvent;
 
-public class TileEntityEsky extends TileEntityColdChestBase implements IInventory
+public class TileEntityEsky extends TileEntityColdChestBase implements IInventory, ITickable
 {
-	// TODO render ModelChest with texture "textures/models/blocks/esky_model.png"
-	
 	public TileEntityEsky()
 	{
 	}

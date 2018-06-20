@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -25,7 +26,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public abstract class TileEntityChestBase extends TileEntity implements IInventory {
+public abstract class TileEntityChestBase extends TileEntity implements IInventory, ITickable {
 
 	public TileEntityChestBase() {
 		super();
@@ -131,10 +132,9 @@ public abstract class TileEntityChestBase extends TileEntity implements IInvento
     }
     */
 
-    /**
-     * Like the old updateEntity(), except more generic.
-     */
-    public void update()
+    // from http://www.minecraftforge.net/forum/topic/62067-solved-itickable-and-tes-not-ticking/
+    @Override
+	public void update()
     {
         int i = this.pos.getX();
         int j = this.pos.getY();

@@ -3,8 +3,9 @@ package com.wumple.foodfunk;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ITickable;
 
-public abstract class TileEntityColdChestBase extends TileEntityChestBase implements IInventory {
+public abstract class TileEntityColdChestBase extends TileEntityChestBase implements IInventory, ITickable {
 
 	int tick = 0;
 	int interval = 30;

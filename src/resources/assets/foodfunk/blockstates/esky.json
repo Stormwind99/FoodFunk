@@ -9,47 +9,20 @@
      }
   },
   "variants": {
-    "variant": {
       "normal": {
-        "y": 0,
-        "model": "foodfunk:esky",
-        "textures": {
-          "particle": "minecraft:blocks/planks_oak",
-          "texture": "foodfunk:model/esky"
-        }
+        "y": 0
       },
       "facing=east": {
-        "y": 0,
-        "model": "foodfunk:esky",
-        "textures": {
-          "particle": "minecraft:blocks/planks_oak",
-          "texture": "foodfunk:model/esky"
-        }
+        "y": 0
       },
       "facing=south": {
-        "y": 90,
-        "model": "foodfunk:esky",
-        "textures": {
-          "particle": "minecraft:blocks/planks_oak",
-          "texture": "foodfunk:model/esky"
-        }
+        "y": 90
       },
       "facing=west": {
-        "y": 180,
-        "model": "foodfunk:esky",
-        "textures": {
-          "particle": "minecraft:blocks/planks_oak",
-          "texture": "foodfunk:model/esky"
-        }
+        "y": 180
       },
       "facing=north": {
-        "y": 270,
-        "model": "foodfunk:esky",
-        "textures": {
-          "particle": "minecraft:blocks/planks_oak",
-          "texture": "foodfunk:model/esky"
-        }
+        "y": 270
       }
-    }
   }
 }

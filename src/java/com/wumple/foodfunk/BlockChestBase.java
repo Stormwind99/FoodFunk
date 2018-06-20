@@ -1,5 +1,7 @@
 package com.wumple.foodfunk;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
@@ -36,6 +38,13 @@ public abstract class BlockChestBase extends BlockContainer implements ITileEnti
 	public BlockChestBase(Material materialIn, MapColor color) {
 		super(materialIn, color);
 	}
+	
+	// from http://www.minecraftforge.net/forum/topic/62067-solved-itickable-and-tes-not-ticking/
+	@Override
+	public boolean hasTileEntity(IBlockState state)
+    {
+        return true;
+    }
 	
 	// from http://www.minecraftforge.net/forum/topic/42458-solved1102-blockstates-crashing/?do=findComment&comment=228689
 	@Override
@@ -203,9 +212,9 @@ public abstract class BlockChestBase extends BlockContainer implements ITileEnti
 	    super.breakBlock(worldIn, pos, state);
 	}
 
-	/**
-	 * Returns a new instance of a block's tile entity class. Called on placing the block.
-	 */
-	abstract public TileEntity createNewTileEntity(World worldIn, int meta);
-
+    /**
+     * Returns a new instance of a block's tile entity class. Called on placing the block.
+     */
+    @Nullable
+    abstract public TileEntity createNewTileEntity(World worldIn, int meta);
 }
