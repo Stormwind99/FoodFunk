@@ -51,7 +51,7 @@ public abstract class TileEntityColdChestBase extends TileEntityChestBase implem
 				
 				ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
 				
-				if ((!ConfigContainer.rotEnabled) || (rotProps == null) || (!rotProps.doesRot()))
+				if ((!ConfigContainer.rotEnabled) || (!RotHandler.doesRot(rotProps)))
 				{
 					RotHandler.clearRotData(stack);
 				} 

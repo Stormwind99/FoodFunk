@@ -4,9 +4,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.GameData;
 
 public class BlockEsky extends BlockChestBase implements ITileEntityProvider
 {
@@ -14,11 +12,9 @@ public class BlockEsky extends BlockChestBase implements ITileEntityProvider
 	{
 		super(Material.IRON);
 		setHardness(3.0F);
-	    setCreativeTab(CreativeTabs.DECORATIONS);
+	    setCreativeTab(CreativeTabs.MISC);
 	    
-	    String name = "foodfunk:esky";
-	    setRegistryName(GameData.checkPrefix(name));
-	    setUnlocalizedName(name);
+	    ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:esky");
 	    
 	    //setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}

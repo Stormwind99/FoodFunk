@@ -4,9 +4,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.GameData;
 
 public class BlockFreezer extends BlockChestBase implements ITileEntityProvider
 {   
@@ -14,15 +12,16 @@ public class BlockFreezer extends BlockChestBase implements ITileEntityProvider
 	{
 		super(Material.IRON);
 		setHardness(3.0F);
-		setCreativeTab(CreativeTabs.DECORATIONS);
+		setCreativeTab(CreativeTabs.MISC);
 		
-		String name = "foodfunk:freezer";
-	    setRegistryName(GameData.checkPrefix(name));
-	    setUnlocalizedName(name);
+		ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:freezer");
 
 	    //setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}
 
+	/**
+	 * Returns a new instance of a block's tile entity class. Called on placing the block.
+	 */
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta)
 	{

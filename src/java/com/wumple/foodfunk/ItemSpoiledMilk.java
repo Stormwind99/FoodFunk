@@ -10,7 +10,6 @@ import net.minecraft.item.ItemBucketMilk;
 import net.minecraft.item.ItemStack;
 import net.minecraft.stats.StatList;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.GameData;
 
 public class ItemSpoiledMilk extends ItemBucketMilk
 {
@@ -18,12 +17,9 @@ public class ItemSpoiledMilk extends ItemBucketMilk
     public ItemSpoiledMilk()
     {
     	super();
-    	setCreativeTab(CreativeTabs.DECORATIONS);
-    	//setTextureName("bucket_milk");
+    	setCreativeTab(CreativeTabs.MISC);
     	
-	    String name = "foodfunk:spoiled_milk";
-	    setRegistryName(GameData.checkPrefix(name));
-	    setUnlocalizedName(name);
+    	ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:spoiled_milk");
     }
     
     /**

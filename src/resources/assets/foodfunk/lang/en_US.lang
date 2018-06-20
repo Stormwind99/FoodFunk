@@ -1,6 +1,7 @@
 language.name=English
 
 item.foodfunk.rotten_food.name=Rotten Food
+item.foodfunk.spoiled_milk.name=Spoiled Milk
 
 tile.foodfunk.esky.name=Esky
 tile.foodfunk.freezer.name=Freezer

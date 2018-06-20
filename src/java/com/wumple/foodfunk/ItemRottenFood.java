@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.GameData;
 
 public class ItemRottenFood extends ItemFood
 {
@@ -13,12 +12,9 @@ public class ItemRottenFood extends ItemFood
 	{
 		super(amount, 0.1F, isWolfFood);
 		setMaxStackSize(64);
-		setCreativeTab(CreativeTabs.DECORATIONS);
-		// TODO setTextureName("foodfunk:rot");
-		
-	    String name = "foodfunk:rotten_food";
-	    setRegistryName(GameData.checkPrefix(name));
-	    setUnlocalizedName(name);
+		setCreativeTab(CreativeTabs.MISC);
+
+	    ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:rotten_food");
 	}
 
 	public ItemRottenFood(int amount)

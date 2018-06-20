@@ -12,18 +12,8 @@ public class TileEntityFreezer extends TileEntityColdChestBase implements IInven
 	}
 	
 	/**
-	 * Automatically adjust the use-by date on food items stored within the chest so they rot at half speed
+	 * Automatically adjust the use-by date on food items stored within the chest so don't rot
 	 */
-	@Override
-	public void update()
-	{
-		super.update();
-		
-        // Freezer Code
-        
-        // TODO: playSoundEffect foodfunk:freezeropen or foodfunk:freezeropen
-	}
-	
 	protected long getRotTime(long time)
 	{
 		return time;

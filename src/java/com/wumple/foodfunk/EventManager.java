@@ -129,7 +129,7 @@ public class EventManager
 								rotTimes.getTime()
 							).getUnformattedText());
 				//event.toolTip.add("Rotten: 0% (Day " + days + "/" + time + ")");
-				//event.toolTip.add("Use-By: Day " + MathHelper.floor((rotTimes.date + rotTimes.time)/ConfigHandler.TICKS_PER_DAY));
+				//event.toolTip.add("Use-By: Day " + rotTimes.getUseBy());
 			}
 			
 		}

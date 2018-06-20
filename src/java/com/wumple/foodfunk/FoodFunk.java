@@ -21,19 +21,14 @@ public class FoodFunk {
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
     	logger = event.getModLog();
-    	
-    	logger.debug("preInit");
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
-    	logger.debug("init");
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-    	logger.debug("postInit");
-    	
     	// add any missing default config rot properties
     	ConfigHandler.init();
     }

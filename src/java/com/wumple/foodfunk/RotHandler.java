@@ -224,6 +224,11 @@ public class RotHandler
 		{
 			return MathHelper.floor(time/ConfigHandler.TICKS_PER_DAY);
 		}
+		
+		public int getUseBy()
+		{
+			return MathHelper.floor((date + time)/ConfigHandler.TICKS_PER_DAY);
+		}
 	}
 	
 	@Nullable
