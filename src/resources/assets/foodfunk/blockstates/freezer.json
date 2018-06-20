@@ -1,0 +1,17 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "model": "foodfunk:freezer",
+    "transform": "forge:default-block"
+  },
+  "variants": {
+    "variant": {
+      "normal": {
+        "textures": {
+          "particle": "minecraft:blocks/planks_oak",
+          "texture": "foodfunk:model/freezer"
+        }
+      }
+    }
+  }
+}

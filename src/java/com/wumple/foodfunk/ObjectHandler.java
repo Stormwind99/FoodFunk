@@ -111,6 +111,8 @@ public class ObjectHandler
     	public static void registerRenders(ModelRegistryEvent event) {
     		registerRender(rotten_food);
     		registerRender(spoiled_milk);
+    		registerRender(esky_item);
+    		registerRender(freezer_item);
     	}
     		
 		// ----------------------------------------------------------------------
@@ -172,6 +174,7 @@ public class ObjectHandler
     	private static void registerItemBlock(IForgeRegistry<Item> registry, Block block)
     	{
     		regHelper(registry, new ItemBlock(block), block.getRegistryName());
+    		//regHelper(registry, Item.getItemFromBlock(block), block.getRegistryName());
     	}
 
     }

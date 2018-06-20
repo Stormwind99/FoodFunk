@@ -71,11 +71,11 @@ public class RotHandler
 			*/
 			{
 				// WAS int meta = rotProps.rotMeta < 0? item.getItemDamage() : rotProps.rotMeta;
-				int meta = stack.getMetadata();
+				// int meta = stack.getMetadata();
 				
 				Item item = Item.REGISTRY.getObject(new ResourceLocation(rotProps.rotID));
 							
-				return item == null ? null : new ItemStack(item, stack.getCount(), meta);
+				return item == null ? null : new ItemStack(item, stack.getCount()); // , meta);
 			}
 		}
 		else

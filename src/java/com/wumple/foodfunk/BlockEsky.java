@@ -4,6 +4,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class BlockEsky extends BlockChestBase implements ITileEntityProvider
@@ -16,7 +17,7 @@ public class BlockEsky extends BlockChestBase implements ITileEntityProvider
 	    
 	    ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:esky");
 	    
-	    //setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+	    setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}
     
 	/**

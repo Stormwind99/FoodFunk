@@ -5,7 +5,9 @@ import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +36,41 @@ public abstract class BlockChestBase extends BlockContainer implements ITileEnti
 	public BlockChestBase(Material materialIn, MapColor color) {
 		super(materialIn, color);
 	}
+	
+	// from http://www.minecraftforge.net/forum/topic/42458-solved1102-blockstates-crashing/?do=findComment&comment=228689
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, new IProperty[] {FACING});
+	}
 
+	// from https://stackoverflow.com/questions/34677155/minecraft-doesnt-find-blockstates-state
+	/* This method returns the IBlockState from the metadata
+	 * so we can have the proper rotation and textures of the block. 
+	 * This method is usually only called on map/chunk load.
+	 */
+	public IBlockState getStateFromMeta( int meta )
+	{
+	    EnumFacing enumfacing = EnumFacing.getFront(meta);
+
+	    if (enumfacing.getAxis() == EnumFacing.Axis.Y)
+	    {
+	        enumfacing = EnumFacing.NORTH;
+	    }
+
+	    return this.getDefaultState().withProperty(FACING, enumfacing);
+	}
+
+	// from https://stackoverflow.com/questions/34677155/minecraft-doesnt-find-blockstates-state
+	/* Here the EnumFacing is translated into a metadata value(0-15)
+	 * so it can be stored. You can store up to 16 different states alone
+	 * in metadata, but no more. If you need more consider using a tile
+	 * entity alongside the metadata for more flexiblity
+	 */
+	public int getMetaFromState( IBlockState state )
+	{
+	    return (( EnumFacing )state.getValue( FACING )).getIndex();
+	}
+	
 	/**
 	 * Called upon block activation (right click on the block.)
 	 */
