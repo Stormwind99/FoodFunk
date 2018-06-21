@@ -27,15 +27,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public abstract class BlockChestBase extends BlockContainer implements ITileEntityProvider {
+public abstract class BlockBaseChest extends BlockContainer implements ITileEntityProvider {
 
 	public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
-	public BlockChestBase(Material materialIn) {
+	public BlockBaseChest(Material materialIn) {
 		super(materialIn);
 	}
 
-	public BlockChestBase(Material materialIn, MapColor color) {
+	public BlockBaseChest(Material materialIn, MapColor color) {
 		super(materialIn, color);
 	}
 	
@@ -92,7 +92,7 @@ public abstract class BlockChestBase extends BlockContainer implements ITileEnti
 				}
 				else
 				{
-					IInventory iinventory = (TileEntityColdChestBase)worldIn.getTileEntity(pos);
+					IInventory iinventory = (TileEntityColdChest)worldIn.getTileEntity(pos);
 					
 					if (iinventory != null)
 					{

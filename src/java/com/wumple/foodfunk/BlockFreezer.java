@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class BlockFreezer extends BlockChestBase implements ITileEntityProvider
+public class BlockFreezer extends BlockBaseChest implements ITileEntityProvider
 {   
 	public BlockFreezer()
 	{

@@ -4,7 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundEvent;
 
-public class TileEntityEsky extends TileEntityColdChestBase implements IInventory, ITickable
+public class TileEntityEsky extends TileEntityColdChest implements IInventory, ITickable
 {
 	public TileEntityEsky()
 	{

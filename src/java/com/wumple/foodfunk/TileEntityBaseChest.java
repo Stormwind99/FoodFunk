@@ -26,9 +26,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 
-public abstract class TileEntityChestBase extends TileEntity implements IInventory, ITickable {
+public abstract class TileEntityBaseChest extends TileEntity implements IInventory, ITickable {
 
-	public TileEntityChestBase() {
+	public TileEntityBaseChest() {
 		super();
 	}
 	

@@ -11,7 +11,7 @@
   "variants": {
       "normal": {
         "y": 0
-      },
+        },
       "facing=east": {
         "y": 0
       },

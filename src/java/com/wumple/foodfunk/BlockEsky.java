@@ -9,7 +9,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class BlockEsky extends BlockChestBase implements ITileEntityProvider
+public class BlockEsky extends BlockBaseChest implements ITileEntityProvider
 {
     public BlockEsky()
 	{

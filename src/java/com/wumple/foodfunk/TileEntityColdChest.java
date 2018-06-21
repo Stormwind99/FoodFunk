@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
 
-public abstract class TileEntityColdChestBase extends TileEntityChestBase implements IInventory, ITickable
+public abstract class TileEntityColdChest extends TileEntityBaseChest implements IInventory, ITickable
 {
 	// ticks to wait until rot refresh of contents
 	static final int slowInterval = 30;
@@ -15,7 +15,7 @@ public abstract class TileEntityColdChestBase extends TileEntityChestBase implem
 	int tick = 0;
 	long lastCheck = ConfigHandler.DAYS_NO_ROT;
 
-	public TileEntityColdChestBase() {
+	public TileEntityColdChest() {
 		super();
 	}
 
