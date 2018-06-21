@@ -2,7 +2,7 @@
 {
   "modid": "foodfunk",
   "name": "Food Funk",
-  "description": "Food spoils over time, but can be preserved.",
+  "description": "What is that funky smell in my backpack? Food spoils over time. Any item can be configured to rot.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "https://github.com/Stormwind99/FoodFunk",
