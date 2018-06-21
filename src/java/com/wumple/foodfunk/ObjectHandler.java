@@ -33,17 +33,17 @@ public class ObjectHandler
 	// ----------------------------------------------------------------------
 	// Items
 
-	@ObjectHolder("foodfunk:rotten_food")
-	public static final Item rotten_food = null;
+	//@ObjectHolder("foodfunk:rotten_food")
+	public static Item rotten_food = null;
 
-	@ObjectHolder("foodfunk:spoiled_milk")
-	public static final Item spoiled_milk = null;
+	//@ObjectHolder("foodfunk:spoiled_milk")
+	public static Item spoiled_milk = null;
 
-	@ObjectHolder("foodfunk:esky")
-	public static final Item esky_item = null;
+	//@ObjectHolder("foodfunk:esky")
+	public static Item esky_item = null;
 
-	@ObjectHolder("foodfunk:freezer")
-	public static final Item freezer_item = null;
+	//@ObjectHolder("foodfunk:freezer")
+	public static Item freezer_item = null;
 
 
 	// ----------------------------------------------------------------------
@@ -83,11 +83,11 @@ public class ObjectHandler
 		public static void registerItems(RegistryEvent.Register<Item> event) {
 			final IForgeRegistry<Item> registry = event.getRegistry();
 
-			regHelper(registry, new ItemRottenFood());
-			regHelper(registry, new ItemSpoiledMilk());
+			rotten_food = regHelper(registry, new ItemRottenFood());
+			spoiled_milk = regHelper(registry, new ItemSpoiledMilk());
 
-			registerItemBlock(registry, esky);
-			registerItemBlock(registry, freezer);
+			esky_item = registerItemBlock(registry, esky);
+			freezer_item = registerItemBlock(registry, freezer);
 
 			registerTileEntities();
 		}
