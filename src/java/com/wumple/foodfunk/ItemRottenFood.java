@@ -14,34 +14,34 @@ public class ItemRottenFood extends ItemFood
 		setMaxStackSize(64);
 		setCreativeTab(CreativeTabs.MISC);
 
-	    ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:rotten_food");
+		ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:rotten_food");
 	}
 
 	public ItemRottenFood(int amount)
 	{
 		this(amount, false);
 	}
-	
+
 	public ItemRottenFood()
 	{
 		this(1, false);
 	}
-	
+
 	@Override
-    protected void onFoodEaten(ItemStack stack, World world, EntityPlayer player)
-    {
-        super.onFoodEaten(stack, world, player);
-    
-        // TODO achievements    
-        // player.addStat(EnviroAchievements.tenSecondRule, 1);
-    }
-		
+	protected void onFoodEaten(ItemStack stack, World world, EntityPlayer player)
+	{
+		super.onFoodEaten(stack, world, player);
+
+		// TODO achievements    
+		// player.addStat(EnviroAchievements.tenSecondRule, 1);
+	}
+
 	/*
     // TODO support rotten food as bonemeal or disgusting food
     public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
-        
+
         if (ItemDye.applyBonemeal(itemstack, worldIn, pos))
         {
             if (!worldIn.isRemote)
@@ -51,13 +51,13 @@ public class ItemRottenFood extends ItemFood
 
             return true;
         }
-        
+
         return false;
     }
-    
+
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
     {
     	return stack;
     }
-    */
+	 */
 }

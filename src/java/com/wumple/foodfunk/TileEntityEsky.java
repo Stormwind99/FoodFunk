@@ -17,18 +17,18 @@ public class TileEntityEsky extends TileEntityColdChest implements IInventory, I
 	{
 		return time/2;
 	}
-	
+
 	public String getRealName() {
-	    return "container.foodfunk.esky";
+		return "container.foodfunk.esky";
 	}
-	
-    public SoundEvent getOpenSoundEvent()
-    {
-    	return ObjectHandler.esky_open;
-    }
-    
-    public SoundEvent getCloseSoundEvent()
-    {
-    	return ObjectHandler.esky_close;
-    }
+
+	public SoundEvent getOpenSoundEvent()
+	{
+		return ObjectHandler.esky_open;
+	}
+
+	public SoundEvent getCloseSoundEvent()
+	{
+		return ObjectHandler.esky_close;
+	}
 }

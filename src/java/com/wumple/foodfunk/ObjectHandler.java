@@ -114,7 +114,7 @@ public class ObjectHandler
 			registerRender(spoiled_milk);
 			registerRender(esky_item);
 			registerRender(freezer_item);
-			
+
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEsky.class, new TileEntityEskyRenderer());
 			ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFreezer.class, new TileEntityFreezerRenderer());
 		}

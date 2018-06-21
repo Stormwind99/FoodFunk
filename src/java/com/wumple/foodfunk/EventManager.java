@@ -32,7 +32,7 @@ public class EventManager
 			{
 				EntityItem item = (EntityItem)event.getEntity();
 				ItemStack rotStack = RotHandler.doRot(event.getWorld(), item.getItem());
-				
+
 				if(item.getItem() != rotStack)
 				{
 					item.setItem(rotStack);
@@ -50,21 +50,21 @@ public class EventManager
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void onPlayerInteract(PlayerInteractEvent event)
 	{
 		if(ConfigContainer.rotEnabled && event instanceof RightClickBlock && !event.getWorld().isRemote)
 		{
 			TileEntity tile = event.getEntityPlayer().world.getTileEntity(event.getPos());
-			
+
 			if(tile != null & tile instanceof IInventory)
 			{
 				RotHandler.rotInvo(event.getEntityPlayer().world, (IInventory)tile);
 			}
 		}
 	}
-		
+
 	@SubscribeEvent
 	public static void onEntityInteract(EntityInteract event)
 	{
@@ -72,20 +72,20 @@ public class EventManager
 		{
 			return;
 		}
-		
+
 		if(!ConfigContainer.rotEnabled)
 		{
 			return;
 		}
-		
+
 		if(event.getTarget() != null && event.getTarget() instanceof IInventory && ConfigContainer.rotEnabled)
 		{
 			IInventory chest = (IInventory)event.getTarget();
-			
+
 			RotHandler.rotInvo(event.getEntityPlayer().world, chest);
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void onLivingUpdate(LivingUpdateEvent event)
 	{
@@ -93,18 +93,18 @@ public class EventManager
 		{
 			return;
 		}
-		
+
 		if(event.getEntityLiving() instanceof EntityPlayer)
 		{
 			InventoryPlayer invo = (InventoryPlayer)((EntityPlayer)event.getEntityLiving()).inventory;
-			
+
 			if(ConfigContainer.rotEnabled)
 			{
 				RotHandler.rotInvo(event.getEntityLiving().world, invo);
 			}
 		}
 	}
-	
+
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public static void onItemTooltip(ItemTooltipEvent event)
@@ -114,15 +114,15 @@ public class EventManager
 		// http://www.minecraftforge.net/forum/topic/42612-solved110-itemhandler-tooltip-when-in-non-player-inventory-on-mp-server/?do=findComment&comment=229718
 		// http://www.minecraftforge.net/forum/topic/42934-1102-capabilities-for-itemstacks/
 		// http://jabelarminecraft.blogspot.com/p/minecraft-17x.html
-		
+
 		ItemStack stack = event.getItemStack();
 		Entity entity = event.getEntity();
-		
+
 		if(ConfigContainer.rotEnabled && (stack != null) && !stack.isEmpty() && (entity != null))
 		{
 			long time = entity.world.getTotalWorldTime();
 			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(stack, time);
-					
+
 			if(rotTimes != null)
 			{							
 				event.getToolTip().add(
@@ -131,15 +131,15 @@ public class EventManager
 								rotTimes.getPercent() + "%", 
 								rotTimes.getDays(),
 								rotTimes.getTime()
-							).getUnformattedText());
+								).getUnformattedText());
 				//event.toolTip.add("Rotten: 0% (Day " + days + "/" + time + ")");
 				//event.toolTip.add("Use-By: Day " + rotTimes.getUseBy());
 			}
-			
+
 			// TODO: add "cold" or "frozen" to tooltip if in esky or freezer
 		}
 	}
-	
+
 	@SubscribeEvent
 	public static void onCrafted(ItemCraftedEvent event) // Prevents exploit of making foods with almost rotten food to prolong total life of food supplies
 	{
@@ -147,7 +147,7 @@ public class EventManager
 		{
 			return;
 		}
-		
+
 		RotHandler.handleCraftedRot(event.player.world, event.craftMatrix, event.crafting);
 	}
 }

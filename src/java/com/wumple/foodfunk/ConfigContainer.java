@@ -24,26 +24,26 @@ public class ConfigContainer
 	@Config.Comment("Default rot time (days).")
 	@RangeInt(min = 0)
 	public static int defaultRotTime = 7;	
-	*/
+	 */
 
 	@Name("Rotting")
-    @Config.Comment("Set rot days and id for items.")
-    public static Rotting rotting = new Rotting();
-    
-    public static class Rotting
-    {
-        // default 7, also see DAYS_NO_ROT = -1
-    	@Name("Days to rot")
-        @Config.Comment("Set this to -1 to disable rotting on this item.")
-        @RangeInt(min = -1)
-        public HashMap<String, Integer> rotDays = new HashMap<String, Integer>();
+	@Config.Comment("Set rot days and id for items.")
+	public static Rotting rotting = new Rotting();
 
-    	// default ""
-    	@Name("Rotten ID")
-    	@Config.Comment("Set blank to rot into nothing")
-    	public HashMap<String, String> rotID = new HashMap<String, String>();
-    }
-    
+	public static class Rotting
+	{
+		// default 7, also see DAYS_NO_ROT = -1
+		@Name("Days to rot")
+		@Config.Comment("Set this to -1 to disable rotting on this item.")
+		@RangeInt(min = -1)
+		public HashMap<String, Integer> rotDays = new HashMap<String, Integer>();
+
+		// default ""
+		@Name("Rotten ID")
+		@Config.Comment("Set blank to rot into nothing")
+		public HashMap<String, String> rotID = new HashMap<String, String>();
+	}
+
 	@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 	private static class EventHandler {
 		/**

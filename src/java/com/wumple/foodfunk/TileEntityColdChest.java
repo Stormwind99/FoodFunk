@@ -10,7 +10,7 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 	// ticks to wait until rot refresh of contents
 	static final int slowInterval = 30;
 	static final int fastInterval = 4; // when someone has chest open
-	
+
 	// ticks since last rot refresh of contents
 	int tick = 0;
 	long lastCheck = ConfigHandler.DAYS_NO_ROT;
@@ -25,21 +25,21 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 	@Override
 	public void update() {
 		super.update();
-	    
-	    // Cold chest code
-		
+
+		// Cold chest code
+
 		if ((getWorld() == null) || getWorld().isRemote)
 		{
 			return;
 		}
 
 		long worldTime = getWorld().getTotalWorldTime();
-		
+
 		if(lastCheck <= ConfigHandler.DAYS_NO_ROT)
 		{
 			lastCheck = worldTime;
 		}
-		
+
 		/*
 		 * MAYBE small bug - when chest open and tooltip up, rot can decrease.  Closing/re-opening chest fixes it.
 		 * Tried below: refresh more often when this.numPlayersUsing > 0
@@ -49,27 +49,27 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 		 * Might need to fix lastCheck with persisted fraction upon load
 		 * Maybe even just contained ItemStack's NBT data not getting refreshed when chest open
 		 */
-		
+
 		int interval = (this.numPlayersUsing > 0) ? fastInterval : slowInterval;
-		
+
 		if (tick >= interval)
 		{
 			tick = 0;
 
 			long time = worldTime - lastCheck;
 			lastCheck = worldTime;
-			
+
 			for(int i = 0; i < this.getSizeInventory(); i++)
 			{
 				ItemStack stack = this.getStackInSlot(i);
-				
+
 				if((stack == null) || stack.isEmpty())
 				{
 					continue;
 				}
-				
+
 				ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
-				
+
 				if ((!ConfigContainer.rotEnabled) || (!RotHandler.doesRot(rotProps)))
 				{
 					RotHandler.clearRotData(stack);
@@ -79,37 +79,37 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 					RotHandler.rescheduleRot(stack, getRotTime(time));
 				}
 			}
-			
+
 			markDirty();
 		} else
 		{
 			tick++;
 		}
 	}
-	
+
 	abstract protected long getRotTime(long time);
 
 	@Override
 	public void readFromNBT(NBTTagCompound tags) {
-	    super.readFromNBT(tags);
-	    
-	    if(tags.hasKey("RotCheck"))
-	    {
-	    	lastCheck = tags.getLong("rotLastCheck");
-	    } 
-	    else
-	    {
-	    	lastCheck = ConfigHandler.DAYS_NO_ROT;
-	    }
+		super.readFromNBT(tags);
+
+		if(tags.hasKey("RotCheck"))
+		{
+			lastCheck = tags.getLong("rotLastCheck");
+		} 
+		else
+		{
+			lastCheck = ConfigHandler.DAYS_NO_ROT;
+		}
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound tags) {
 		super.writeToNBT(tags);
-	
-	    tags.setLong("rotLastCheck", lastCheck);
-	    
-	    return tags;
+
+		tags.setLong("rotLastCheck", lastCheck);
+
+		return tags;
 	}
 
 }

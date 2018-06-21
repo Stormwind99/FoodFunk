@@ -9,7 +9,7 @@ public class TileEntityFreezer extends TileEntityColdChest implements IInventory
 	public TileEntityFreezer()
 	{
 	}
-	
+
 	/**
 	 * Automatically adjust the use-by date on food items stored within the chest so don't rot
 	 */
@@ -17,18 +17,18 @@ public class TileEntityFreezer extends TileEntityColdChest implements IInventory
 	{
 		return time;
 	}
-	
+
 	public String getRealName() {
-	    return "container.foodfunk.freezer";
+		return "container.foodfunk.freezer";
 	}	
-	
-    public SoundEvent getOpenSoundEvent()
-    {
-    	return ObjectHandler.freezer_open;
-    }
-    
-    public SoundEvent getCloseSoundEvent()
-    {
-    	return ObjectHandler.freezer_close;
-    }
+
+	public SoundEvent getOpenSoundEvent()
+	{
+		return ObjectHandler.freezer_open;
+	}
+
+	public SoundEvent getCloseSoundEvent()
+	{
+		return ObjectHandler.freezer_close;
+	}
 }
