@@ -264,4 +264,15 @@ public class RotHandler
 
 		return rotTimes;
 	}
+	
+	public static boolean isInTheCold(ItemStack stack)
+	{
+		// TODO walk up container tree, if any is cold chest then true.  If none, get world pos of topmost container.
+		//     TODO Check isOnItemFrame
+		// TODO if temperature mod, get temp from it
+		//     TODO ToughAsNails:TemperatureHelper.getTargetAtPosUnclamped() ?  https://github.com/Glitchfiend/ToughAsNails
+		// TODO if no temperature mod, check biome for temp?
+		
+		return false;
+	}
 }
