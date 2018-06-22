@@ -46,9 +46,12 @@ public class ConfigHandler
 
 	public static void addDefaultRotProperty(Item item, @Nullable Item rotItem, int days)
 	{
-		ResourceLocation resLoc = Item.REGISTRY.getNameForObject(item);
-		String name = resLoc.toString();
-		addDefaultRotProperty(name, rotItem, days);
+		if (item != null)
+		{
+			ResourceLocation resLoc = Item.REGISTRY.getNameForObject(item);
+			String name = resLoc.toString();
+			addDefaultRotProperty(name, rotItem, days);
+		}
 	}
 
 	public static void addDefaultRotProperty(Item[] items, Item rotItem, int _days)
