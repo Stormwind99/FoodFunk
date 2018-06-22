@@ -38,7 +38,10 @@ public class ConfigHandler
 		if (rotItem != null)
 		{
 			ResourceLocation resLoc = Item.REGISTRY.getNameForObject(rotItem);
-			rotID = resLoc.toString();
+			if (resLoc != null)
+			{
+				rotID = resLoc.toString();
+			}
 		}
 
 		addDefaultRotProperty(name, rotID, days);
@@ -50,8 +53,11 @@ public class ConfigHandler
 		if (item != null)
 		{
 			ResourceLocation resLoc = Item.REGISTRY.getNameForObject(item);
-			String name = resLoc.toString();
-			addDefaultRotProperty(name, rotItem, days);
+			if (resLoc != null)
+			{
+				String name = resLoc.toString();
+				addDefaultRotProperty(name, rotItem, days);
+			}
 		}
 	}
 
