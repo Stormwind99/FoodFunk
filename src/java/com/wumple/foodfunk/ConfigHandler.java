@@ -46,6 +46,7 @@ public class ConfigHandler
 
 	public static void addDefaultRotProperty(Item item, @Nullable Item rotItem, int days)
 	{
+		// check for null Item in case another mod removes a vanilla item
 		if (item != null)
 		{
 			ResourceLocation resLoc = Item.REGISTRY.getNameForObject(item);
