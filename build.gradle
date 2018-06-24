@@ -33,7 +33,7 @@ import groovy.json.JsonOutput
 ext.configFile = file('build.properties')
 
 ext.config = parseConfig(configFile)
-ext.priv = parseConfig(file('private.properties'))
+ext.priv = parseConfigIf(file('private.properties'))
 
 
 minecraft {
@@ -121,6 +121,13 @@ def parseConfig(File config) {
         prop.load(it)
         return (new ConfigSlurper().parse(prop))
     }
+}
+
+def parseConfigIf(File config) {
+	if (config.isFile()) {
+		return parseConfig(config)
+   }
+   return new ConfigObject()
 }
 
 /// CurseGradle
