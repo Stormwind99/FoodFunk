@@ -15,7 +15,7 @@ public class ConfigHandler
 	public static final int DAYS_NO_ROT = -1;
 	public static final long TICKS_PER_DAY = 24000L;
 
-	public static void addDefaultRotProperty(String name, String rotID, int days)
+	public static boolean addDefaultRotProperty(String name, String rotID, int days)
 	{
 		if (name == null)
 		{
@@ -29,9 +29,11 @@ public class ConfigHandler
 
 		ConfigContainer.rotting.rotDays.putIfAbsent(name, days);
 		ConfigContainer.rotting.rotID.putIfAbsent(name, rotID);
+		
+		return true;
 	}
 
-	public static void addDefaultRotProperty(String name, @Nullable Item rotItem, int days)
+	public static boolean addDefaultRotProperty(String name, @Nullable Item rotItem, int days)
 	{
 		String rotID = null;
 
@@ -44,10 +46,10 @@ public class ConfigHandler
 			}
 		}
 
-		addDefaultRotProperty(name, rotID, days);
+		return addDefaultRotProperty(name, rotID, days);
 	}
 
-	public static void addDefaultRotProperty(Item item, @Nullable Item rotItem, int days)
+	public static boolean addDefaultRotProperty(Item item, @Nullable Item rotItem, int days)
 	{
 		// check for null Item in case another mod removes a vanilla item
 		if (item != null)
@@ -56,9 +58,28 @@ public class ConfigHandler
 			if (resLoc != null)
 			{
 				String name = resLoc.toString();
-				addDefaultRotProperty(name, rotItem, days);
+				return addDefaultRotProperty(name, rotItem, days);
 			}
 		}
+		
+		return false;
+	}
+	
+	public static boolean addDefaultRotProperty(Item item, String backup, @Nullable Item rotItem, int days)
+	{
+		String name = backup;
+		
+		// check for null Item in case another mod removes a vanilla item
+		if (item != null)
+		{
+			ResourceLocation resLoc = Item.REGISTRY.getNameForObject(item);
+			if (resLoc != null)
+			{
+				name = resLoc.toString();
+			}
+		}
+		
+		return addDefaultRotProperty(name, rotItem, days);
 	}
 
 	public static void addDefaultRotProperty(Item[] items, Item rotItem, int _days)
@@ -73,15 +94,20 @@ public class ConfigHandler
 	{
 		// handle all food with a "default" entry
 		addDefaultRotProperty("minecraft:food", ObjectHandler.rotten_food, 7);
-		addDefaultRotProperty(Items.ROTTEN_FLESH, null, DAYS_NO_ROT);
-		//addDefaultRotProperty(ObjectHandler.rotten_food, null, DAYS_NO_ROT);
-		addDefaultRotProperty("foodfunk:rotten_food", "", DAYS_NO_ROT);
+		addDefaultRotProperty(Items.ROTTEN_FLESH, "minecraft:rotten_flesh", null, DAYS_NO_ROT);
+		addDefaultRotProperty(ObjectHandler.rotten_food, "foodfunk:rotten_food", null, DAYS_NO_ROT);
 		// TODO addDefaultRotProperty(ObjectHandler.rotted_item, null, DAYS_NO_ROT);
-		addDefaultRotProperty(Items.MILK_BUCKET, ObjectHandler.spoiled_milk, 7);
-		addDefaultRotProperty(Items.SPIDER_EYE, Items.FERMENTED_SPIDER_EYE, 7);
-		addDefaultRotProperty(
-				new Item[] {Items.FERMENTED_SPIDER_EYE, Items.BEEF, Items.CHICKEN, Items.PORKCHOP, Items.FISH, Items.COOKED_BEEF, Items.COOKED_CHICKEN, Items.COOKED_PORKCHOP, Items.COOKED_FISH},
-				Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.MILK_BUCKET, "minecraft:milk_bucket", ObjectHandler.spoiled_milk, 7);
+		addDefaultRotProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 7);
+		addDefaultRotProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:", Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.BEEF, "minecraft:beef", Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.CHICKEN, "minecraft:chicken", Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.PORKCHOP, "minecraft:porkchop", Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.FISH, "minecraft:fish", Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.COOKED_BEEF, "minecraft:cooked_beef", Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.COOKED_CHICKEN, "minecraft:cooked_chicken", Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.COOKED_PORKCHOP, "minecraft:cooked_porkchop", Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.COOKED_FISH, "minecraft:cooked_fish", Items.ROTTEN_FLESH, 7);
 
 		ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
 	}
