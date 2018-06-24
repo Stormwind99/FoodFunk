@@ -15,6 +15,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -108,6 +110,7 @@ public class ObjectHandler
 			registerTileEntity(TileEntityFreezer.class, "foodfunk:freezer");
 		}
 
+		@SideOnly(Side.CLIENT)
 		@SubscribeEvent
 		public static void registerRenders(ModelRegistryEvent event) {
 			registerRender(rotten_food);
@@ -174,6 +177,7 @@ public class ObjectHandler
 			return event;
 		}
 
+		@SideOnly(Side.CLIENT)
 		protected static void registerRender(Item item)
 		{
 			ModelResourceLocation loc = new ModelResourceLocation( item.getRegistryName(), "inventory");
