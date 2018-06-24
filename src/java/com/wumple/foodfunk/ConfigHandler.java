@@ -99,7 +99,7 @@ public class ConfigHandler
 		// TODO addDefaultRotProperty(ObjectHandler.rotted_item, null, DAYS_NO_ROT);
 		addDefaultRotProperty(Items.MILK_BUCKET, "minecraft:milk_bucket", ObjectHandler.spoiled_milk, 7);
 		addDefaultRotProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 7);
-		addDefaultRotProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:", Items.ROTTEN_FLESH, 7);
+		addDefaultRotProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:fermented_spider_eye", Items.ROTTEN_FLESH, 7);
 		addDefaultRotProperty(Items.BEEF, "minecraft:beef", Items.ROTTEN_FLESH, 7);
 		addDefaultRotProperty(Items.CHICKEN, "minecraft:chicken", Items.ROTTEN_FLESH, 7);
 		addDefaultRotProperty(Items.PORKCHOP, "minecraft:porkchop", Items.ROTTEN_FLESH, 7);
