@@ -137,9 +137,16 @@ curseforge {
     project {
         id = config.curseforge_id
         changelog = { ->
-            def updateJsonFile = new File("${projectDir}/${config.changelog}")
+            def filename = "${projectDir}/${config.changelog}"
+            def updateJsonFile = new File(filename)
+            if (!updateJsonFile.isFile()) {
+					throw new GradleException("${filename} missing")               
+            }
             def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
             // this should error if changelog is missing change for this version - add one!
+            if (!updateJson.containsKey("${minecraft.version}") || !updateJson."${minecraft.version}".containsKey("${version}")) {
+					throw new GradleException("${filename} missing changelog for ${minecraft.version} ${version}")               
+            }
             def changeinfo = new String(updateJson."${minecraft.version}"."${version}")
             return changeinfo
         }
