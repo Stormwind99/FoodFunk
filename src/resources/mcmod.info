@@ -10,5 +10,8 @@
   "authorList": ["Stormwind99"],
   "credits": "Stormwind99, EnviroMine authors - Funwayguy, GenDeathrow, thislooksfun, TimbuckTato.",
   "logoFile": "logo.png"
+  "dependencies": [
+    "mod_MinecraftForge"
+  ]
 }
 ]
