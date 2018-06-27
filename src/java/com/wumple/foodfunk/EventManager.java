@@ -1,5 +1,7 @@
 package com.wumple.foodfunk;
 
+import com.wumple.foodfunk.configuration.ConfigContainer;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;

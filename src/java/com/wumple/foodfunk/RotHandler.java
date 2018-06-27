@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.Level;
 
+import com.wumple.foodfunk.configuration.ConfigHandler;
+
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -29,7 +31,8 @@ public class RotHandler
 		if ( !doesRot(rotProps) )
 		{
 			return clearRotData(item);
-		} else
+		}
+		else
 		{
 			return updateRot(world, item, rotProps);
 		}

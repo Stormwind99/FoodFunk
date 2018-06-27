@@ -1,4 +1,6 @@
-package com.wumple.foodfunk;
+package com.wumple.foodfunk.rotten;
+
+import com.wumple.foodfunk.ObjectHandler;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;

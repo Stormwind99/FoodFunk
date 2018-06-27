@@ -2,6 +2,8 @@ package com.wumple.foodfunk;
 
 import org.apache.logging.log4j.Logger;
 
+import com.wumple.foodfunk.configuration.ConfigHandler;
+
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

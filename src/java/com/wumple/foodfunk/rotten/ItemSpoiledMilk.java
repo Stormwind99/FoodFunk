@@ -1,4 +1,6 @@
-package com.wumple.foodfunk;
+package com.wumple.foodfunk.rotten;
+
+import com.wumple.foodfunk.ObjectHandler;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.creativetab.CreativeTabs;

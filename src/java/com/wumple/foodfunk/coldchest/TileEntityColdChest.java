@@ -1,4 +1,8 @@
-package com.wumple.foodfunk;
+package com.wumple.foodfunk.coldchest;
+
+import com.wumple.foodfunk.RotHandler;
+import com.wumple.foodfunk.configuration.ConfigContainer;
+import com.wumple.foodfunk.configuration.ConfigHandler;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

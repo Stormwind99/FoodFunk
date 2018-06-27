@@ -1,6 +1,9 @@
-package com.wumple.foodfunk;
+package com.wumple.foodfunk.configuration;
 
 import javax.annotation.Nullable;
+
+import com.wumple.foodfunk.ObjectHandler;
+import com.wumple.foodfunk.Reference;
 
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -112,7 +115,7 @@ public class ConfigHandler
 		ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
 	}
 
-	static class RotProperty
+	public static class RotProperty
 	{
 		public String id;
 		public String rotID = null;
@@ -134,12 +137,12 @@ public class ConfigHandler
 			rotID = _rotID;
 		}
 
-		long getRotTime()
+		public long getRotTime()
 		{
 			return days * ConfigHandler.TICKS_PER_DAY;
 		}
 
-		boolean doesRot()
+		public boolean doesRot()
 		{
 			return (days > DAYS_NO_ROT);
 		}
@@ -173,22 +176,22 @@ public class ConfigHandler
 
 
 	@Nullable 
-	public static RotProperty getRotPropertyBase(ItemStack itemStack)
+	public static RotProperty getRotPropertyBase(Item item)
 	{
-		String key1 = "" + Item.REGISTRY.getNameForObject(itemStack.getItem());
+		String key1 = "" + Item.REGISTRY.getNameForObject(item);
 		// WAS : look up a backup key with item meta data?
-		// String key2 = "" + Item.REGISTRY.getNameForObject(itemStack.getItem()) + "," + itemStack.getItemDamage();
+		// String key2 = "" + Item.REGISTRY.getNameForObject(item) + "," + itemStack.getItemDamage();
 
 		return getRotPropertyBase(key1);
 	}
 
 	@Nullable 
-	public static RotProperty getRotProperty(ItemStack itemStack)
+	public static RotProperty getRotProperty(Item item)
 	{
-		RotProperty prop = getRotPropertyBase(itemStack);
+		RotProperty prop = getRotPropertyBase(item);
 
 		// hack-ish: handle default "minecraft:food" since a official tag for food doesn't exist (at least yet)
-		if ((prop == null) && (itemStack.getItem() instanceof ItemFood))
+		if ((prop == null) && (item instanceof ItemFood))
 		{
 			prop = getRotPropertyBase("minecraft:food");
 		}
@@ -196,5 +199,11 @@ public class ConfigHandler
 		// TODO: tag support
 
 		return prop;
+	}
+	
+	@Nullable 
+	public static RotProperty getRotProperty(ItemStack itemStack)
+	{
+		return getRotProperty(itemStack.getItem());
 	}
 }

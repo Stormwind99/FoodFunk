@@ -1,4 +1,4 @@
-package com.wumple.foodfunk;
+package com.wumple.foodfunk.coldchest;
 
 import javax.annotation.Nullable;
 

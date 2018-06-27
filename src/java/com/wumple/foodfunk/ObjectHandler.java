@@ -1,5 +1,14 @@
 package com.wumple.foodfunk;
 
+import com.wumple.foodfunk.coldchest.BlockEsky;
+import com.wumple.foodfunk.coldchest.BlockFreezer;
+import com.wumple.foodfunk.coldchest.TileEntityEsky;
+import com.wumple.foodfunk.coldchest.TileEntityEskyRenderer;
+import com.wumple.foodfunk.coldchest.TileEntityFreezer;
+import com.wumple.foodfunk.coldchest.TileEntityFreezerRenderer;
+import com.wumple.foodfunk.rotten.ItemRottenFood;
+import com.wumple.foodfunk.rotten.ItemSpoiledMilk;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;

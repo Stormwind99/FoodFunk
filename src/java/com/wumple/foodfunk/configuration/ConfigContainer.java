@@ -1,6 +1,8 @@
-package com.wumple.foodfunk;
+package com.wumple.foodfunk.configuration;
 
 import java.util.HashMap;
+
+import com.wumple.foodfunk.Reference;
 
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Name;

@@ -1,6 +1,8 @@
-package com.wumple.foodfunk;
+package com.wumple.foodfunk.coldchest;
 
 import javax.annotation.Nullable;
+
+import com.wumple.foodfunk.ObjectHandler;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -8,15 +10,15 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockEsky extends BlockBaseChest implements ITileEntityProvider
-{
-	public BlockEsky()
+public class BlockFreezer extends BlockBaseChest implements ITileEntityProvider
+{   
+	public BlockFreezer()
 	{
 		super(Material.IRON);
 		setHardness(3.0F);
 		setCreativeTab(CreativeTabs.MISC);
 
-		ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:esky");
+		ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:freezer");
 	}
 
 	/**
@@ -26,6 +28,6 @@ public class BlockEsky extends BlockBaseChest implements ITileEntityProvider
 	@Nullable
 	public TileEntity createNewTileEntity(World worldIn, int meta)
 	{
-		return new TileEntityEsky();
+		return new TileEntityFreezer();
 	}
 }
