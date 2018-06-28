@@ -1,5 +1,7 @@
 package com.wumple.foodfunk;
 
+import com.wumple.foodfunk.capabilities.rot.IRot;
+import com.wumple.foodfunk.capabilities.rot.RotHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 
 import net.minecraft.entity.Entity;
@@ -123,7 +125,10 @@ public class EventManager
 		if(ConfigContainer.rotEnabled && (stack != null) && !stack.isEmpty() && (entity != null))
 		{
 			long time = entity.world.getTotalWorldTime();
-			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(stack, time);
+			
+			IRot rot = RotHelper.getRot(stack);
+						
+			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(rot, time);
 
 			if(rotTimes != null)
 			{							
@@ -136,7 +141,7 @@ public class EventManager
 								).getUnformattedText());
 				//event.toolTip.add("Rotten: 0% (Day " + days + "/" + time + ")");
 				//event.toolTip.add("Use-By: Day " + rotTimes.getUseBy());
-			}
+			}			
 
 			// TODO: add "cold" or "frozen" to tooltip if in esky or freezer
 		}

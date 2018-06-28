@@ -2,13 +2,17 @@ package com.wumple.foodfunk;
 
 import org.apache.logging.log4j.Logger;
 
+import com.wumple.foodfunk.capabilities.rot.Rot;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
+import choonster.capability.foodfunk.Messages;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 /*
  * FoodFunk mod - food rots over time (and also supports generic item rotting)
@@ -19,10 +23,14 @@ public class FoodFunk {
 	@Mod.Instance(Reference.MOD_ID)
 	public static FoodFunk instance;
 	public static Logger logger;
-
+	public static SimpleNetworkWrapper network;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
+		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
+		Rot.register();
+		Messages.register();
 	}
 
 	@EventHandler

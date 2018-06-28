@@ -4,6 +4,8 @@ import javax.annotation.Nullable;
 
 import org.apache.logging.log4j.Level;
 
+import com.wumple.foodfunk.capabilities.rot.IRot;
+import com.wumple.foodfunk.capabilities.rot.RotHelper;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
 import net.minecraft.inventory.IInventory;
@@ -38,6 +40,7 @@ public class RotHandler
 		}
 	}
 
+	/*
 	private static void setRotValues(ItemStack stack, long date, long rotTime)
 	{
 		NBTTagCompound tags = ensureTagCompound(stack);
@@ -45,6 +48,7 @@ public class RotHandler
 		tags.setLong("EM_ROT_DATE", date);
 		tags.setLong("EM_ROT_TIME", rotTime);
 	}
+	*/
 
 	private static ItemStack forceRot(ItemStack stack, String rotID)
 	{
@@ -56,6 +60,7 @@ public class RotHandler
 		return item == null ? null : new ItemStack(item, stack.getCount()); // , meta);
 	}
 
+	/*
 	private static NBTTagCompound ensureTagCompound(ItemStack stack)
 	{
 		NBTTagCompound tags = stack.getTagCompound();
@@ -67,7 +72,8 @@ public class RotHandler
 		}
 
 		return stack.getTagCompound();
-	}	
+	}
+	*/	
 
 	public static ItemStack updateRot(World world, ItemStack stack, ConfigHandler.RotProperty rotProps)
 	{
@@ -83,16 +89,16 @@ public class RotHandler
 
 		long rotTime = rotProps.getRotTime();
 
-		NBTTagCompound tags = ensureTagCompound(stack);
-
-		long UBD = tags.getLong("EM_ROT_DATE");
+		IRot cap = RotHelper.getRot(stack);
+	
+		long UBD = cap.getDate();
 		long worldTime = world.getTotalWorldTime();
 
 		if(UBD == 0)
 		{
 			UBD = (worldTime/ConfigHandler.TICKS_PER_DAY) * ConfigHandler.TICKS_PER_DAY;
 			UBD = UBD <= 0L? 1L : UBD;
-			setRotValues(stack, UBD, rotTime);
+			cap.setRot(UBD, rotTime);
 			return stack;
 		} 
 		else if(UBD + rotTime < worldTime)
@@ -101,7 +107,7 @@ public class RotHandler
 		}
 		else
 		{
-			setRotValues(stack, UBD, rotTime);
+			cap.setRot(UBD, rotTime);
 			return stack;
 		}
 
@@ -146,9 +152,9 @@ public class RotHandler
 		}
 	}
 
-	public static ItemStack clearRotData(ItemStack item)
+	public static ItemStack removeDeprecatedRotData(ItemStack stack)
 	{
-		NBTTagCompound tags = item.getTagCompound();
+		NBTTagCompound tags = stack.getTagCompound();
 
 		if(tags != null)
 		{
@@ -164,20 +170,29 @@ public class RotHandler
 			// remove empty NBT tag compound from rotten items so they can be merged - saw this bug onces
 			if (tags.hasNoTags())
 			{
-				item.setTagCompound(null);
+				stack.setTagCompound(null);
 			}
 		}
-
-		return item;
+		
+		return stack;
+	}
+	
+	public static ItemStack clearRotData(ItemStack stack)
+	{
+		// IRot rot = RotHelper.getRot(stack);
+		// TODO: no way to clean Rot capability easily - have to have provider start ignoring it
+		
+		// Remove old
+		return removeDeprecatedRotData(stack);
 	}
 
 	public static void rescheduleRot(ItemStack stack, long time)
 	{
-		NBTTagCompound tags = ensureTagCompound(stack);
-
-		if(tags.hasKey("EM_ROT_DATE"))
+		IRot cap = RotHelper.getRot(stack);
+		
+		if (cap != null)
 		{
-			setRotValues(stack, tags.getLong("EM_ROT_DATE") + time, tags.getLong("EM_ROT_TIME") + time);
+			cap.reschedule(time);
 		}
 	}
 
@@ -185,7 +200,9 @@ public class RotHandler
 	{
 		ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(crafting);
 
-		if(!doesRot(rotProps))
+		IRot ccap = RotHelper.getRot(crafting);
+		
+		if(!doesRot(rotProps) || (ccap == null))
 		{
 			return; // Crafted item doesn't rot
 		}
@@ -203,17 +220,17 @@ public class RotHandler
 				continue;
 			}
 
-			NBTTagCompound tags = stack.getTagCompound();
+			IRot cap = RotHelper.getRot(stack);
 
-			if(tags.hasKey("EM_ROT_DATE") && (lowestDate < 0 || tags.getLong("EM_ROT_DATE") < lowestDate))
+			if( (cap != null) && (lowestDate < 0 || cap.getDate() < lowestDate))
 			{
-				lowestDate = tags.getLong("EM_ROT_DATE");
+				lowestDate = cap.getDate();
 			}
 		}
 
 		if(lowestDate >= 0)
 		{
-			setRotValues(crafting, lowestDate, rotTime);
+			ccap.setRot(lowestDate, rotTime);
 		}
 	}
 
@@ -252,6 +269,7 @@ public class RotHandler
 		}
 	}
 
+	/*
 	@Nullable
 	public static RotTimes getRotTimes(ItemStack stack, double curTime)
 	{
@@ -261,6 +279,23 @@ public class RotHandler
 		{
 			double rotDate = stack.getTagCompound().getLong("EM_ROT_DATE");
 			double rotTime = stack.getTagCompound().getLong("EM_ROT_TIME");
+
+			rotTimes = new RotTimes(rotDate, rotTime, curTime);
+		}
+
+		return rotTimes;
+	}
+	*/
+	
+	@Nullable
+	public static RotTimes getRotTimes(IRot cap, double curTime)
+	{
+		RotTimes rotTimes = null;
+
+		if (cap != null)
+		{
+			double rotDate = cap.getDate();
+			double rotTime = cap.getTime();
 
 			rotTimes = new RotTimes(rotDate, rotTime, curTime);
 		}
