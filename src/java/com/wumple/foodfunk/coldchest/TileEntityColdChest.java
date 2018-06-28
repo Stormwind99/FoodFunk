@@ -1,13 +1,19 @@
 package com.wumple.foodfunk.coldchest;
 
+import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.RotHandler;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
+import choonster.capability.foodfunk.MessageBulkUpdateContainerRots;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 
 public abstract class TileEntityColdChest extends TileEntityBaseChest implements IInventory, ITickable
 {
@@ -56,39 +62,68 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 
 		int interval = (this.numPlayersUsing > 0) ? fastInterval : slowInterval;
 
-		if (tick >= interval)
-		{
-			tick = 0;
-
-			long time = worldTime - lastCheck;
-			lastCheck = worldTime;
-
-			for(int i = 0; i < this.getSizeInventory(); i++)
-			{
-				ItemStack stack = this.getStackInSlot(i);
-
-				if((stack == null) || stack.isEmpty())
-				{
-					continue;
-				}
-
-				ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
-
-				if ((!ConfigContainer.rotEnabled) || (!RotHandler.doesRot(rotProps)))
-				{
-					RotHandler.clearRotData(stack);
-				} 
-				else
-				{
-					RotHandler.rescheduleRot(stack, getRotTime(time));
-				}
-			}
-
-			markDirty();
-		} else
+		if (tick < interval)
 		{
 			tick++;
+			return;
 		}
+		
+		tick = 0;
+
+		long time = worldTime - lastCheck;
+		lastCheck = worldTime;
+		
+		final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
+
+		int numDirty = 0;
+		
+		for(int i = 0; i < this.getSizeInventory(); i++)
+		{
+			ItemStack stack = this.getStackInSlot(i);
+
+			if((stack == null) || stack.isEmpty())
+			{
+				continue;
+			}
+
+			ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
+
+			if ((!ConfigContainer.rotEnabled) || (!RotHandler.doesRot(rotProps)))
+			{
+				stack = RotHandler.clearRotData(stack);
+			} 
+			else
+			{
+				stack = RotHandler.rescheduleRot(stack, getRotTime(time));
+			}
+			
+			syncableItemsList.set(i, stack);
+			numDirty++;
+		}
+		
+		if (numDirty > 0)
+		{
+			markDirty();
+
+			// update each client/player that has this container open
+			NonNullList<EntityPlayer> users = getPlayersUsing();
+			if (!users.isEmpty())
+			{
+				for (EntityPlayer player : users)
+				{
+					if (player instanceof EntityPlayerMP)
+					{
+						Container containerToSend = player.openContainer;
+						final MessageBulkUpdateContainerRots message = new MessageBulkUpdateContainerRots(containerToSend.windowId, syncableItemsList);
+						// Don't send the message if there's nothing to update	
+						if (message.hasData())
+						{
+							FoodFunk.network.sendTo(message, (EntityPlayerMP)player);
+						}
+					}
+				}
+			}
+		}	
 	}
 
 	abstract protected long getRotTime(long time);

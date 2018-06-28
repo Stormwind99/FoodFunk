@@ -190,7 +190,7 @@ public class RotHandler
 		return removeDeprecatedRotData(stack);
 	}
 
-	public static void rescheduleRot(ItemStack stack, long time)
+	public static ItemStack rescheduleRot(ItemStack stack, long time)
 	{
 		IRot cap = RotHelper.getRot(stack);
 		
@@ -198,6 +198,8 @@ public class RotHandler
 		{
 			cap.reschedule(time);
 		}
+		
+		return stack;
 	}
 
 	public static void handleCraftedRot(World world, IInventory craftMatrix, ItemStack crafting)

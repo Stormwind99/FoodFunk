@@ -45,6 +45,17 @@ public abstract class CapabilityContainerListener<HANDLER> implements IContainer
 	@Override
 	public final void sendAllContents(final Container containerToSend, final NonNullList<ItemStack> itemsList) {
 		// Filter out any items from the list that shouldn't be synced
+		final NonNullList<ItemStack> syncableItemsList = getContentsToSend(itemsList);
+
+		final MessageBulkUpdateContainerCapability<HANDLER, ?> message = createBulkUpdateMessage(containerToSend.windowId, syncableItemsList);
+		if (message.hasData()) { // Don't send the message if there's nothing to update
+			FoodFunk.network.sendTo(message, player);
+		}
+	}
+	
+	public static NonNullList<ItemStack> getContentsToSend(final NonNullList<ItemStack> itemsList)
+	{
+		// Filter out any items from the list that shouldn't be synced
 		final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(itemsList.size(), ItemStack.EMPTY);
 		for (int index = 0; index < syncableItemsList.size(); index++) {
 			final ItemStack stack = syncableItemsList.get(index);
@@ -54,12 +65,10 @@ public abstract class CapabilityContainerListener<HANDLER> implements IContainer
 				syncableItemsList.set(index, ItemStack.EMPTY);
 			}
 		}
-
-		final MessageBulkUpdateContainerCapability<HANDLER, ?> message = createBulkUpdateMessage(containerToSend.windowId, syncableItemsList);
-		if (message.hasData()) { // Don't send the message if there's nothing to update
-			FoodFunk.network.sendTo(message, player);
-		}
+		
+		return syncableItemsList;
 	}
+	
 
 	@Override
 	public final void sendSlotContents(final Container containerToSend, final int slotInd, final ItemStack stack) {
@@ -90,7 +99,7 @@ public abstract class CapabilityContainerListener<HANDLER> implements IContainer
 	 * @param stack The item
 	 * @return Should the capability data be synced?
 	 */
-	protected boolean shouldSyncItem(final ItemStack stack) {
+	protected static boolean shouldSyncItem(final ItemStack stack) {
 		return true;
 	}
 

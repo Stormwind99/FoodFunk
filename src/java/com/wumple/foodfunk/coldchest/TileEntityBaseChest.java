@@ -114,6 +114,30 @@ public abstract class TileEntityBaseChest extends TileEntity implements IInvento
 	{
 		return 64;
 	}
+	
+	public NonNullList<EntityPlayer> getPlayersUsing()
+	{
+		int i = this.pos.getX();
+		int j = this.pos.getY();
+		int k = this.pos.getZ();
+		
+		NonNullList<EntityPlayer> users = NonNullList.create();
+		
+		for (EntityPlayer entityplayer : this.world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB((double)((float)i - 5.0F), (double)((float)j - 5.0F), (double)((float)k - 5.0F), (double)((float)(i + 1) + 5.0F), (double)((float)(j + 1) + 5.0F), (double)((float)(k + 1) + 5.0F))))
+		{
+			if (entityplayer.openContainer instanceof ContainerChest)
+			{
+				IInventory iinventory = ((ContainerChest)entityplayer.openContainer).getLowerChestInventory();
+
+				if (iinventory == this) // || iinventory instanceof InventoryLargeChest && ((InventoryLargeChest)iinventory).isPartOfLargeChest(this))
+				{
+					users.add(entityplayer);
+				}
+			}
+		}
+		
+		return users;
+	}
 
 	// from http://www.minecraftforge.net/forum/topic/62067-solved-itickable-and-tes-not-ticking/
 	@Override
@@ -126,20 +150,7 @@ public abstract class TileEntityBaseChest extends TileEntity implements IInvento
 
 		if (!this.world.isRemote && (this.numPlayersUsing != 0) && ((this.ticksSinceSync + i + j + k) % 200 == 0))
 		{
-			this.numPlayersUsing = 0;
-
-			for (EntityPlayer entityplayer : this.world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB((double)((float)i - 5.0F), (double)((float)j - 5.0F), (double)((float)k - 5.0F), (double)((float)(i + 1) + 5.0F), (double)((float)(j + 1) + 5.0F), (double)((float)(k + 1) + 5.0F))))
-			{
-				if (entityplayer.openContainer instanceof ContainerChest)
-				{
-					IInventory iinventory = ((ContainerChest)entityplayer.openContainer).getLowerChestInventory();
-
-					if (iinventory == this) // || iinventory instanceof InventoryLargeChest && ((InventoryLargeChest)iinventory).isPartOfLargeChest(this))
-					{
-						++this.numPlayersUsing;
-					}
-				}
-			}
+			this.numPlayersUsing = getPlayersUsing().size();
 		}
 
 		this.prevLidAngle = this.lidAngle;

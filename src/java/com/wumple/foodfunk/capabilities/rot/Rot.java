@@ -1,5 +1,7 @@
 package com.wumple.foodfunk.capabilities.rot;
 
+import choonster.capability.CapabilityContainerListenerManager;
+import choonster.capability.foodfunk.ContainerListenerRot;
 import choonster.capability.foodfunk.RotInfo;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
@@ -8,6 +10,8 @@ public class Rot implements IRot
 	public static void register()
 	{
 		CapabilityManager.INSTANCE.register(IRot.class, new RotStorage(), () -> new Rot() );
+		
+		CapabilityContainerListenerManager.registerListenerFactory(ContainerListenerRot::new);
 	}
 	
 	protected RotInfo info = new RotInfo();

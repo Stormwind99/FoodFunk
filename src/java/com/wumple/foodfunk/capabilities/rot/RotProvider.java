@@ -10,6 +10,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 
+// TODO filter out IRot if item doesn't rot anymore?
+
 public class RotProvider extends SimpleCapabilityProvider<IRot> 
 { 
 	// The {@link Capability} instance
