@@ -9,7 +9,7 @@
   "updateJSON": "$updatejson",
   "authorList": ["Stormwind99"],
   "credits": "Stormwind99, EnviroMine authors - Funwayguy, GenDeathrow, thislooksfun, TimbuckTato.",
-  "logoFile": "logo.png"
+  "logoFile": "logo.png",
   "dependencies": [
     "mod_MinecraftForge"
   ]
