@@ -57,7 +57,7 @@ public class RotHandler
 
 		Item item = Item.REGISTRY.getObject(new ResourceLocation(rotID));
 
-		return item == null ? null : new ItemStack(item, stack.getCount()); // , meta);
+		return item == null ? ItemStack.EMPTY : new ItemStack(item, stack.getCount()); // , meta);
 	}
 
 	/*
@@ -134,6 +134,10 @@ public class RotHandler
 
 					if(rotItem == null || rotItem.isEmpty() || (rotItem.getItem() != slotItem.getItem()))
 					{
+						if (rotItem == null)
+						{
+							rotItem = ItemStack.EMPTY;
+						}
 						inventory.setInventorySlotContents(i, rotItem);
 						flag = true;
 					}

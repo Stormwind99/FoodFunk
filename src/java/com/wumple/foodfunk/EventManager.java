@@ -62,7 +62,7 @@ public class EventManager
 		{
 			TileEntity tile = event.getEntityPlayer().world.getTileEntity(event.getPos());
 
-			if(tile != null & tile instanceof IInventory)
+			if ((tile != null) && (tile instanceof IInventory))
 			{
 				RotHandler.rotInvo(event.getEntityPlayer().world, (IInventory)tile);
 			}
