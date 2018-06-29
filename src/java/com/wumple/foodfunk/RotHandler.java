@@ -147,6 +147,8 @@ public class RotHandler
 		{
 			return;
 		}
+		
+		//FoodFunk.logger.info("RotHandler.rotInvo 1 " + inventory.getName());
 
 		boolean flag = false;
 

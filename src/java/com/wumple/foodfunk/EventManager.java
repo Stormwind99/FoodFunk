@@ -1,5 +1,6 @@
 package com.wumple.foodfunk;
 
+import com.wumple.foodfunk.capabilities.preserving.Preserving;
 import com.wumple.foodfunk.capabilities.rot.IRot;
 import com.wumple.foodfunk.capabilities.rot.RotHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
@@ -97,14 +98,17 @@ public class EventManager
 		{
 			return;
 		}
-
-		if(event.getEntityLiving() instanceof EntityPlayer)
+		
+		if (event.getEntityLiving().ticksExisted % Preserving.slowInterval  == 0)
 		{
-			InventoryPlayer invo = (InventoryPlayer)((EntityPlayer)event.getEntityLiving()).inventory;
-
-			if(ConfigContainer.rotEnabled)
+			if(event.getEntityLiving() instanceof EntityPlayer)
 			{
-				RotHandler.rotInvo(event.getEntityLiving().world, invo);
+				InventoryPlayer invo = (InventoryPlayer)((EntityPlayer)event.getEntityLiving()).inventory;
+	
+				if(ConfigContainer.rotEnabled)
+				{
+					RotHandler.rotInvo(event.getEntityLiving().world, invo);
+				}
 			}
 		}
 	}

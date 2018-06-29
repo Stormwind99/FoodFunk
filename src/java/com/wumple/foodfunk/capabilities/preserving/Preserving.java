@@ -25,8 +25,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class Preserving implements IPreserving
 {
 	// ticks to wait until rot refresh of contents
-	static final int slowInterval = 90;
-	static final int fastInterval = 4; // when someone has chest open
+	static public final int slowInterval = 90;
+	static public final int fastInterval = 4; // when someone has chest open
 
 	// transient
 	// ticks since last rot refresh of contents
