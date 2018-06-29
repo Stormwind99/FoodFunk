@@ -37,13 +37,13 @@ public class ConfigContainer
 	{
 		// default 7, also see DAYS_NO_ROT = -1
 		@Name("Days to rot")
-		@Config.Comment("Set this to -1 to disable rotting on this item.")
+		@Config.Comment("-1 disables rotting on this item.")
 		@RangeInt(min = -1)
 		public HashMap<String, Integer> rotDays = new HashMap<String, Integer>();
 
 		// default ""
 		@Name("Rotten ID")
-		@Config.Comment("Set blank to rot into nothing")
+		@Config.Comment("Rots into this item.  Set blank to rot into nothing")
 		public HashMap<String, String> rotID = new HashMap<String, String>();
 	}
 	
@@ -54,7 +54,7 @@ public class ConfigContainer
 	public static class Preserving
 	{
 		@Name("Preserving ratio")
-		@Config.Comment("Contents will rot normally at 0.0, half speed at 0.5, and never at 1.0")
+		@Config.Comment("Contents will rot normally at 0, half speed at 50, and never at 100")
 		@RangeDouble(min = 0, max = 100)
 		public HashMap<String, Integer> ratios = new HashMap<String, Integer>();
 	}
