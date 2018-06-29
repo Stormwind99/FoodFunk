@@ -17,6 +17,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+// TODO Incomplete!
+
 /**
  * Base class for messages that update capability data
  *
@@ -43,8 +45,10 @@ public abstract class MessageCapabilityUpdate<HANDLER, DATA> implements IMessage
 	 */
 	public void fromBytes(ByteBuf buf)
 	{
+		// requires Access Transformer from foodfunk_at.cfg
+		/*
 		NBTBase nbt = null;
-		
+				
 		try
 		{
 			nbt = CompressedStreamTools.read(new ByteBufInputStream(buf), new NBTSizeTracker(2097152L));		
@@ -57,6 +61,7 @@ public abstract class MessageCapabilityUpdate<HANDLER, DATA> implements IMessage
 		{
 			provider.getCapability().readNBT(provider.getInstance(), provider.getFacing(), nbt);
 		}
+		*/
 	}
 
 	@Override
@@ -67,7 +72,9 @@ public abstract class MessageCapabilityUpdate<HANDLER, DATA> implements IMessage
 	 */
 	public void toBytes(ByteBuf buf)
 	{
-		NBTBase nbt = provider.getCapability().writeNBT(provider.getInstance(), provider.getFacing());
+		// requires Access Transformer from foodfunk_at.cfg
+		/*
+		NBTBase nbt = provider.getCapability().writeNBT(provider.getInstance(), provider.getFacing());	
 		
 		try
 		{
@@ -76,6 +83,7 @@ public abstract class MessageCapabilityUpdate<HANDLER, DATA> implements IMessage
 		catch (IOException e)
 		{
 		}
+		*/
 	}
 
 	public abstract static class Handler<HANDLER, DATA, MESSAGE extends MessageCapabilityUpdate<HANDLER, DATA>>
