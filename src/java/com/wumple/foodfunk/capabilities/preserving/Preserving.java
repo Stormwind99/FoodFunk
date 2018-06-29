@@ -146,7 +146,7 @@ public class Preserving implements IPreserving
 			} 
 			else
 			{
-				stack = RotHandler.rescheduleRot(stack, getRotTime(time));
+				stack = RotHandler.rescheduleRot(stack, getRotTime(time), worldTime);
 			}
 			
 			syncableItemsList.set(i, stack);

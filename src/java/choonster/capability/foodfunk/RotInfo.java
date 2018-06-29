@@ -9,7 +9,13 @@ import net.minecraft.nbt.NBTTagCompound;
  */
 public final class RotInfo
 {
-    public long date;
+	/*
+	 *  The timestamp at which the stack is considered at 0% rot - creation time at first, but advanced by preserving containers
+	 */
+	public long date;
+	/*
+	 * The amount of time the item takes to rot.   The time at which becomes rotten is date + time
+	 */
     public long time;
     
     public RotInfo()
@@ -26,6 +32,12 @@ public final class RotInfo
     {
         this.date = tank.getDate();
         this.time = tank.getTime();
+    }
+    
+    public RotInfo(RotInfo other)
+    {
+    	this.date = other.date;
+    	this.time = other.time;
     }
     
     public RotInfo(NBTTagCompound tags)

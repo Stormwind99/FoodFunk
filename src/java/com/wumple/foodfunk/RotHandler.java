@@ -134,7 +134,8 @@ public class RotHandler
 		{
 			UBD = (worldTime/ConfigHandler.TICKS_PER_DAY) * ConfigHandler.TICKS_PER_DAY;
 			UBD = UBD <= 0L? 1L : UBD;
-			cap.setRot(UBD, rotTime);
+			cap.setRot(UBD, rotTime); 
+			//FoodFunk.logger.info("RotHandler.updateRot 1 " + stack.getItem().getRegistryName() + " date " + cap.getDate() + " time " + cap.getTime() + " cur " + worldTime);
 			return stack;
 		} 
 		else if(UBD + rotTime < worldTime)
@@ -144,6 +145,7 @@ public class RotHandler
 		else
 		{
 			cap.setRot(UBD, rotTime);
+			//FoodFunk.logger.info("RotHandler.updateRot 2 " + stack.getItem().getRegistryName() + " date "  + cap.getDate() + " time " + cap.getTime() + " cur " + worldTime);
 			return stack;
 		}
 
@@ -226,13 +228,14 @@ public class RotHandler
 		return removeDeprecatedRotData(stack);
 	}
 
-	public static ItemStack rescheduleRot(ItemStack stack, long time)
+	public static ItemStack rescheduleRot(ItemStack stack, long time, long worldTime)
 	{
 		IRot cap = RotHelper.getRot(stack);
 		
 		if (cap != null)
 		{
 			cap.reschedule(time);
+			//FoodFunk.logger.info("RotHandler.rescheduleRot 1 " + stack.getItem().getRegistryName() + " date " + cap.getDate() + " time " + cap.getTime() + " cur " + worldTime);
 		}
 		
 		return stack;
@@ -278,11 +281,20 @@ public class RotHandler
 
 	public static class RotTimes
 	{
-		public double date;
-		public double time;
-		public double curTime;
+		/*
+		 *  The timestamp at which the stack is considered at 0% rot - creation time at first, but advanced by preserving containers
+		 */
+		public long date;
+		/*
+		 * The amount of time the item takes to rot.   The time at which becomes rotten is date + time
+		 */
+		public long time;
+		/*
+		 * The current time, being kept for consistent comparisons and convenient calculations
+		 */
+		public long curTime;
 
-		RotTimes(double _date, double _time, double _curTime)
+		RotTimes(long _date, long _time, long _curTime)
 		{
 			date = _date;
 			time = _time;
@@ -292,35 +304,35 @@ public class RotHandler
 		public int getPercent()
 		{
 			// make sure percent >= 0
-			return Math.max(0, MathHelper.floor((curTime - date)/time * 100D));
+			return Math.max(0, MathHelper.floor((double)(curTime - date)/time * 100D));
 		}
 
 		public int getDaysLeft()
 		{
-			return Math.max(0, MathHelper.floor((curTime - date)/ConfigHandler.TICKS_PER_DAY));
+			return Math.max(0, MathHelper.floor((double)(curTime - date)/ConfigHandler.TICKS_PER_DAY));
 		}
 
 		public int getDaysTotal()
 		{
-			return MathHelper.floor(time/ConfigHandler.TICKS_PER_DAY);
+			return MathHelper.floor((double)time/ConfigHandler.TICKS_PER_DAY);
 		}
 
 		public int getUseBy()
 		{
-			return MathHelper.floor((date + time)/ConfigHandler.TICKS_PER_DAY);
+			return MathHelper.floor((double)(date + time)/ConfigHandler.TICKS_PER_DAY);
 		}
 	}
 
 	/*
 	@Nullable
-	public static RotTimes getRotTimes(ItemStack stack, double curTime)
+	public static RotTimes getRotTimes(ItemStack stack, long curTime)
 	{
 		RotTimes rotTimes = null;
 
 		if (stack.hasTagCompound() && stack.getTagCompound().getLong("EM_ROT_DATE") > 0)
 		{
-			double rotDate = stack.getTagCompound().getLong("EM_ROT_DATE");
-			double rotTime = stack.getTagCompound().getLong("EM_ROT_TIME");
+			long rotDate = stack.getTagCompound().getLong("EM_ROT_DATE");
+			long rotTime = stack.getTagCompound().getLong("EM_ROT_TIME");
 
 			rotTimes = new RotTimes(rotDate, rotTime, curTime);
 		}
@@ -330,14 +342,14 @@ public class RotHandler
 	*/
 	
 	@Nullable
-	public static RotTimes getRotTimes(IRot cap, double curTime)
+	public static RotTimes getRotTimes(IRot cap, long curTime)
 	{
 		RotTimes rotTimes = null;
 
 		if (cap != null)
 		{
-			double rotDate = cap.getDate();
-			double rotTime = cap.getTime();
+			long rotDate = cap.getDate();
+			long rotTime = cap.getTime();
 
 			rotTimes = new RotTimes(rotDate, rotTime, curTime);
 		}

@@ -15,6 +15,16 @@ public class Rot implements IRot
 	}
 	
 	protected RotInfo info = new RotInfo();
+	
+	public Rot()
+	{
+		
+	}
+	
+	public Rot(Rot other)
+	{
+		info = other.info;
+	}
 
 	@Override
 	public long getDate()
@@ -51,7 +61,7 @@ public class Rot implements IRot
 	public void reschedule(long timeIn)
 	{
 		info.date += timeIn;
-		info.time += timeIn;
+		//info.time += timeIn;
 	}
 	
 	public RotInfo setInfo(RotInfo infoIn)
