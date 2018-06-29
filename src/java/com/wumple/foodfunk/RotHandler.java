@@ -76,16 +76,6 @@ public class RotHandler
 		}
 	}
 
-	/*
-	private static void setRotValues(ItemStack stack, long date, long rotTime)
-	{
-		NBTTagCompound tags = ensureTagCompound(stack);
-
-		tags.setLong("EM_ROT_DATE", date);
-		tags.setLong("EM_ROT_TIME", rotTime);
-	}
-	*/
-
 	private static ItemStack forceRot(ItemStack stack, String rotID)
 	{
 		// WAS int meta = rotProps.rotMeta < 0? item.getItemDamage() : rotProps.rotMeta;
@@ -322,24 +312,6 @@ public class RotHandler
 			return MathHelper.floor((double)(date + time)/ConfigHandler.TICKS_PER_DAY);
 		}
 	}
-
-	/*
-	@Nullable
-	public static RotTimes getRotTimes(ItemStack stack, long curTime)
-	{
-		RotTimes rotTimes = null;
-
-		if (stack.hasTagCompound() && stack.getTagCompound().getLong("EM_ROT_DATE") > 0)
-		{
-			long rotDate = stack.getTagCompound().getLong("EM_ROT_DATE");
-			long rotTime = stack.getTagCompound().getLong("EM_ROT_TIME");
-
-			rotTimes = new RotTimes(rotDate, rotTime, curTime);
-		}
-
-		return rotTimes;
-	}
-	*/
 	
 	@Nullable
 	public static RotTimes getRotTimes(IRot cap, long curTime)

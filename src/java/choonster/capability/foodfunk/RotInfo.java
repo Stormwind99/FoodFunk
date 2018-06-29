@@ -47,16 +47,16 @@ public final class RotInfo
     
     public NBTTagCompound writeToNBT(NBTTagCompound tags)
     {
-		tags.setLong("EM_ROT_DATE", this.date);
-		tags.setLong("EM_ROT_TIME", this.time);
+		tags.setLong("rotStartTimestamp", this.date);
+		tags.setLong("rotLengthTime", this.time);
 		
 		return tags;
     }
     
     public NBTTagCompound readFromNBT(NBTTagCompound tags)
     {
-		this.date = tags.getLong("EM_ROT_DATE");
-		this.time = tags.getLong("EM_ROT_TIME");
+		this.date = tags.getLong("rotStartTimestamp");
+		this.time = tags.getLong("rotLengthTime");
 		
 		return tags;
     }

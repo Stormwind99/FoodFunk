@@ -13,8 +13,8 @@ public class RotStorage implements IStorage<IRot>
 	{ 
 		NBTTagCompound tags = new NBTTagCompound();
 		
-		tags.setLong("EM_ROT_DATE", instance.getDate());
-		tags.setLong("EM_ROT_TIME", instance.getTime());
+		tags.setLong("rotStartTimestamp", instance.getDate());
+		tags.setLong("rotLengthTime", instance.getTime());
 		
 		return tags; 
 	} 
@@ -24,8 +24,8 @@ public class RotStorage implements IStorage<IRot>
 	{ 
 		NBTTagCompound tags = (NBTTagCompound)nbt;
 		
-		instance.setDate( tags.getLong("EM_ROT_DATE") );
-		instance.setTime( tags.getLong("EM_ROT_TIME") );
+		instance.setDate( tags.getLong("rotStartTimestamp") );
+		instance.setTime( tags.getLong("rotLengthTime") );
 	} 
 }
 
