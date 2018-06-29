@@ -14,3 +14,4 @@ achievement.foodfunk.TenSecondRule=10 Second Rule
 achievement.foodfunk.TenSecondRule.desc=Eat rotten food
 
 misc.foodfunk.tooltip.rot=Rotten: %s (Day %s/%s)
+misc.foodfunk.tooltip.rot.advanced=date %s time %s cur %s

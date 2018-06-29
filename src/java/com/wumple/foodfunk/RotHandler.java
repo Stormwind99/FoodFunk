@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Level;
 
 import com.wumple.foodfunk.capabilities.rot.IRot;
 import com.wumple.foodfunk.capabilities.rot.RotHelper;
+import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
 import net.minecraft.inventory.IInventory;
@@ -19,6 +20,41 @@ import net.minecraft.world.World;
 
 public class RotHandler
 {
+	public static boolean doesPreserve(TileEntity it)
+	{
+		ResourceLocation loc = (it == null) ? null : TileEntity.getKey(it.getClass());
+		String key = (loc == null) ? null : loc.toString();
+		
+		//FoodFunk.logger.info("RotHandler.doesPreserve key " + key);
+		
+		if ( (key != null) && ConfigContainer.preserving.ratios.containsKey(key) )
+		{
+			int ratio = ConfigContainer.preserving.ratios.get(key);
+			if (ratio != 0)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public static int getPreservingRatio(TileEntity it)
+	{
+		ResourceLocation loc = (it == null) ? null : TileEntity.getKey(it.getClass());
+		String key = (loc == null) ? null : loc.toString();
+		
+		int ratio = 0;
+		if ( (key != null) && ConfigContainer.preserving.ratios.containsKey(key) )
+		{
+			ratio = ConfigContainer.preserving.ratios.get(key);
+			
+		}
+		
+		return ratio;
+	}
+
+	
 	public static boolean doesRot(ConfigHandler.RotProperty rotProp)
 	{
 		return ((rotProp != null) && rotProp.doesRot());

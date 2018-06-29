@@ -141,6 +141,16 @@ public class EventManager
 								).getUnformattedText());
 				//event.toolTip.add("Rotten: 0% (Day " + days + "/" + time + ")");
 				//event.toolTip.add("Use-By: Day " + rotTimes.getUseBy());
+				if ( event.getFlags().isAdvanced() )
+				{
+					event.getToolTip().add(
+							new TextComponentTranslation(
+									"misc.foodfunk.tooltip.rot.advanced", 
+									rotTimes.date,
+									rotTimes.time,
+									rotTimes.curTime
+									).getUnformattedText() );
+				}
 			}			
 
 			// TODO: add "cold" or "frozen" to tooltip if in esky or freezer

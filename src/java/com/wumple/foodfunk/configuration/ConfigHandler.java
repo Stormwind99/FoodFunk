@@ -17,6 +17,18 @@ public class ConfigHandler
 {
 	public static final int DAYS_NO_ROT = -1;
 	public static final long TICKS_PER_DAY = 24000L;
+	
+	public static boolean addDefaultPreservingProperty(String name, int ratio)
+	{
+		if (name == null)
+		{
+			name = "";
+		}
+
+		ConfigContainer.preserving.ratios.putIfAbsent(name, ratio);
+		
+		return true;
+	}
 
 	public static boolean addDefaultRotProperty(String name, String rotID, int days)
 	{
@@ -112,6 +124,14 @@ public class ConfigHandler
 		addDefaultRotProperty(Items.COOKED_PORKCHOP, "minecraft:cooked_porkchop", Items.ROTTEN_FLESH, 7);
 		addDefaultRotProperty(Items.COOKED_FISH, "minecraft:cooked_fish", Items.ROTTEN_FLESH, 7);
 
+		addDefaultPreservingProperty("foodfunk:esky", 50);
+		addDefaultPreservingProperty("foodfunk:freezer", 100);
+		addDefaultPreservingProperty("cookingforblockheads:fridge", 50);
+		// Doubt this next one will work until cookingforblockheads does the CM 1.13 flattening
+		addDefaultPreservingProperty("cookingforblockheads:ice_unit", 100);
+		addDefaultPreservingProperty("cfm:esky", 50);
+		addDefaultPreservingProperty("cfm:freezer", 100);
+		
 		ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
 	}
 

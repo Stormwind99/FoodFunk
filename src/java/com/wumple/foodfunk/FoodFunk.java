@@ -2,6 +2,7 @@ package com.wumple.foodfunk;
 
 import org.apache.logging.log4j.Logger;
 
+import com.wumple.foodfunk.capabilities.preserving.Preserving;
 import com.wumple.foodfunk.capabilities.rot.Rot;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
@@ -30,6 +31,7 @@ public class FoodFunk {
 		logger = event.getModLog();
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
 		Rot.register();
+		Preserving.register();
 		Messages.register();
 	}
 

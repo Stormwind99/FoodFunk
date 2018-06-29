@@ -2,6 +2,7 @@ package com.wumple.foodfunk.coldchest;
 
 import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.RotHandler;
+import com.wumple.foodfunk.capabilities.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
@@ -17,6 +18,7 @@ import net.minecraft.util.NonNullList;
 
 public abstract class TileEntityColdChest extends TileEntityBaseChest implements IInventory, ITickable
 {
+	/*
 	// ticks to wait until rot refresh of contents
 	static final int slowInterval = 30;
 	static final int fastInterval = 4; // when someone has chest open
@@ -24,6 +26,7 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 	// ticks since last rot refresh of contents
 	int tick = 0;
 	long lastCheck = ConfigHandler.DAYS_NO_ROT;
+	*/
 
 	public TileEntityColdChest() {
 		super();
@@ -32,6 +35,16 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 	/**
 	 * Automatically adjust the use-by date on food items stored within the chest so they rot at half speed
 	 */
+	/*
+	 * MAYBE small bug - when chest open and tooltip up, rot can decrease.  Closing/re-opening chest fixes it.
+	 * Tried below: refresh more often when this.numPlayersUsing > 0
+	 * 
+	 * Other ideas:
+	 * Could be chest tick rate vs login/logout time, or tooltip update time vs rot refresh
+	 * Might need to fix lastCheck with persisted fraction upon load
+	 * Maybe even just contained ItemStack's NBT data not getting refreshed when chest open
+	 */
+	/*
 	@Override
 	public void update() {
 		super.update();
@@ -49,16 +62,6 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 		{
 			lastCheck = worldTime;
 		}
-
-		/*
-		 * MAYBE small bug - when chest open and tooltip up, rot can decrease.  Closing/re-opening chest fixes it.
-		 * Tried below: refresh more often when this.numPlayersUsing > 0
-		 * 
-		 * Other ideas:
-		 * Could be chest tick rate vs login/logout time, or tooltip update time vs rot refresh
-		 * Might need to fix lastCheck with persisted fraction upon load
-		 * Maybe even just contained ItemStack's NBT data not getting refreshed when chest open
-		 */
 
 		int interval = (this.numPlayersUsing > 0) ? fastInterval : slowInterval;
 
@@ -106,7 +109,7 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 			markDirty();
 
 			// update each client/player that has this container open
-			NonNullList<EntityPlayer> users = getPlayersUsing();
+			NonNullList<EntityPlayer> users = Preserving.getPlayersWithContainerOpen(this);
 			if (!users.isEmpty())
 			{
 				for (EntityPlayer player : users)
@@ -150,5 +153,5 @@ public abstract class TileEntityColdChest extends TileEntityBaseChest implements
 
 		return tags;
 	}
-
+	*/
 }

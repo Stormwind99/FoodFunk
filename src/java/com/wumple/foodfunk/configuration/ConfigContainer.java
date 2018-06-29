@@ -6,6 +6,7 @@ import com.wumple.foodfunk.Reference;
 
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RangeDouble;
 import net.minecraftforge.common.config.Config.RangeInt;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -44,6 +45,18 @@ public class ConfigContainer
 		@Name("Rotten ID")
 		@Config.Comment("Set blank to rot into nothing")
 		public HashMap<String, String> rotID = new HashMap<String, String>();
+	}
+	
+	@Name("Preserving")
+	@Config.Comment("Set preserving rations for containers.")
+	public static Preserving preserving = new Preserving();
+
+	public static class Preserving
+	{
+		@Name("Preserving ratio")
+		@Config.Comment("Contents will rot normally at 0.0, half speed at 0.5, and never at 1.0")
+		@RangeDouble(min = 0, max = 100)
+		public HashMap<String, Integer> ratios = new HashMap<String, Integer>();
 	}
 
 	@Mod.EventBusSubscriber(modid = Reference.MOD_ID)

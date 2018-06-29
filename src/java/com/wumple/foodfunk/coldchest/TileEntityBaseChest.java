@@ -2,10 +2,11 @@ package com.wumple.foodfunk.coldchest;
 
 import javax.annotation.Nullable;
 
+import com.wumple.foodfunk.capabilities.preserving.Preserving;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
@@ -19,7 +20,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.datafix.DataFixer;
 import net.minecraft.util.datafix.FixTypes;
 import net.minecraft.util.datafix.walkers.ItemStackDataLists;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -115,30 +115,6 @@ public abstract class TileEntityBaseChest extends TileEntity implements IInvento
 		return 64;
 	}
 	
-	public NonNullList<EntityPlayer> getPlayersUsing()
-	{
-		int i = this.pos.getX();
-		int j = this.pos.getY();
-		int k = this.pos.getZ();
-		
-		NonNullList<EntityPlayer> users = NonNullList.create();
-		
-		for (EntityPlayer entityplayer : this.world.getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB((double)((float)i - 5.0F), (double)((float)j - 5.0F), (double)((float)k - 5.0F), (double)((float)(i + 1) + 5.0F), (double)((float)(j + 1) + 5.0F), (double)((float)(k + 1) + 5.0F))))
-		{
-			if (entityplayer.openContainer instanceof ContainerChest)
-			{
-				IInventory iinventory = ((ContainerChest)entityplayer.openContainer).getLowerChestInventory();
-
-				if (iinventory == this) // || iinventory instanceof InventoryLargeChest && ((InventoryLargeChest)iinventory).isPartOfLargeChest(this))
-				{
-					users.add(entityplayer);
-				}
-			}
-		}
-		
-		return users;
-	}
-
 	// from http://www.minecraftforge.net/forum/topic/62067-solved-itickable-and-tes-not-ticking/
 	@Override
 	public void update()
@@ -150,7 +126,7 @@ public abstract class TileEntityBaseChest extends TileEntity implements IInvento
 
 		if (!this.world.isRemote && (this.numPlayersUsing != 0) && ((this.ticksSinceSync + i + j + k) % 200 == 0))
 		{
-			this.numPlayersUsing = getPlayersUsing().size();
+			this.numPlayersUsing = Preserving.getPlayersWithContainerOpen(this).size();
 		}
 
 		this.prevLidAngle = this.lidAngle;
