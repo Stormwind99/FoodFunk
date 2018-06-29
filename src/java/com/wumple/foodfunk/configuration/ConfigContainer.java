@@ -6,7 +6,6 @@ import com.wumple.foodfunk.Reference;
 
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Name;
-import net.minecraftforge.common.config.Config.RangeDouble;
 import net.minecraftforge.common.config.Config.RangeInt;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -20,14 +19,6 @@ public class ConfigContainer
 	@Name("Enable item rot")
 	@Config.Comment("Will configured items rot over time.")
 	public static boolean rotEnabled = true;
-
-	/*
-	// default rot time now handled by "minecraft:food" Rotting data
-	@Name("Rot time")
-	@Config.Comment("Default rot time (days).")
-	@RangeInt(min = 0)
-	public static int defaultRotTime = 7;	
-	 */
 
 	@Name("Rotting")
 	@Config.Comment("Set rot days and id for items.")
@@ -55,7 +46,7 @@ public class ConfigContainer
 	{
 		@Name("Preserving ratio")
 		@Config.Comment("Contents will rot normally at 0, half speed at 50, and never at 100")
-		@RangeDouble(min = 0, max = 100)
+		@RangeInt(min = 0, max = 100)
 		public HashMap<String, Integer> ratios = new HashMap<String, Integer>();
 	}
 

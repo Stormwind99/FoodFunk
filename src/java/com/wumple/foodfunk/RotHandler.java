@@ -295,12 +295,12 @@ public class RotHandler
 			return Math.max(0, MathHelper.floor((curTime - date)/time * 100D));
 		}
 
-		public int getDays()
+		public int getDaysLeft()
 		{
 			return Math.max(0, MathHelper.floor((curTime - date)/ConfigHandler.TICKS_PER_DAY));
 		}
 
-		public int getTime()
+		public int getDaysTotal()
 		{
 			return MathHelper.floor(time/ConfigHandler.TICKS_PER_DAY);
 		}

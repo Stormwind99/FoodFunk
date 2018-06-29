@@ -124,11 +124,11 @@ public class EventManager
 
 		if(ConfigContainer.rotEnabled && (stack != null) && !stack.isEmpty() && (entity != null))
 		{
-			long time = entity.world.getTotalWorldTime();
+			long curTime = entity.world.getTotalWorldTime();
 			
 			IRot rot = RotHelper.getRot(stack);
 						
-			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(rot, time);
+			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(rot, curTime);
 
 			if(rotTimes != null)
 			{							
@@ -136,8 +136,8 @@ public class EventManager
 						new TextComponentTranslation(
 								"misc.foodfunk.tooltip.rot", 
 								rotTimes.getPercent() + "%", 
-								rotTimes.getDays(),
-								rotTimes.getTime()
+								rotTimes.getDaysLeft(),
+								rotTimes.getDaysTotal()
 								).getUnformattedText());
 				//event.toolTip.add("Rotten: 0% (Day " + days + "/" + time + ")");
 				//event.toolTip.add("Use-By: Day " + rotTimes.getUseBy());
