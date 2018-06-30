@@ -149,10 +149,15 @@ public class EventManager
 				{
 					event.getToolTip().add(
 							new TextComponentTranslation(
-									"misc.foodfunk.tooltip.rot.advanced", 
-									rotTimes.date,
-									rotTimes.time,
-									rotTimes.curTime
+									"misc.foodfunk.tooltip.rot.advanced.datetime", 
+									rotTimes.getDate(),
+									rotTimes.getTime()
+									).getUnformattedText() );
+					event.getToolTip().add(
+							new TextComponentTranslation(
+									"misc.foodfunk.tooltip.rot.advanced.expire", 
+									rotTimes.getCurTime(),
+									rotTimes.getExpirationTimestamp()
 									).getUnformattedText() );
 				}
 			}			
