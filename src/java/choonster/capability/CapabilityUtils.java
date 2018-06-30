@@ -41,30 +41,4 @@ public class CapabilityUtils
 				? provider.getCapability(capability, facing)
 				: null;
 	}
-
-	public static IThreadListener getThreadListener(final MessageContext context)
-	{
-		if (context.side.isServer())
-		{
-			return context.getServerHandler().player.mcServer;
-		} 
-		else if (context.side.isClient()) 
-		{
-			return Minecraft.getMinecraft();
-		}
-		else
-		{
-			throw new RuntimeException("Unknown side");
-		}
-	}
-
-	public static EntityPlayer getPlayer(final MessageContext context) {
-        if (context.side.isServer()) {
-                return context.getServerHandler().player;
-        } else if (context.side.isClient()) {
-            return Minecraft.getMinecraft().player;
-        } else {
-        	throw new RuntimeException("Unknown side");
-        }
-	}
 }

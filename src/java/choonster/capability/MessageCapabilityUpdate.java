@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
+import com.wumple.foodfunk.FoodFunk;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
@@ -105,7 +107,7 @@ public abstract class MessageCapabilityUpdate<HANDLER, DATA> implements IMessage
             ItemStack originalStack = null;
             HANDLER originalHandler = CapabilityUtils.getCapability(originalStack, message.provider.getCapability(), message.provider.getFacing());
 
-            CapabilityUtils.getThreadListener(ctx).addScheduledTask(() -> {
+            FoodFunk.proxy.getThreadListener(ctx).addScheduledTask(() -> {
             	
             } );
             

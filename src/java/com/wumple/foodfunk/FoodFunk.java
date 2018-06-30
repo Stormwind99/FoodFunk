@@ -7,8 +7,10 @@ import com.wumple.foodfunk.capabilities.rot.Rot;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
 import choonster.capability.foodfunk.Messages;
+import choonster.proxy.ISidedProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -23,6 +25,10 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 public class FoodFunk {
 	@Mod.Instance(Reference.MOD_ID)
 	public static FoodFunk instance;
+	
+    @SidedProxy(clientSide = "choonster.proxy.CombinedClientProxy", serverSide = "choonster.proxy.DedicatedServerProxy")
+    public static ISidedProxy proxy;
+	
 	public static Logger logger;
 	public static SimpleNetworkWrapper network;
 	
@@ -33,15 +39,18 @@ public class FoodFunk {
 		Rot.register();
 		Preserving.register();
 		Messages.register();
+		proxy.preInit();
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
+		proxy.init();
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		// add any missing default config rot properties
 		ConfigHandler.init();
+		proxy.postInit();
 	}
 }

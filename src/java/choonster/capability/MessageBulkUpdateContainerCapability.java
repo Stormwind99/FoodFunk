@@ -2,6 +2,8 @@ package choonster.capability;
 
 import javax.annotation.Nullable;
 
+import com.wumple.foodfunk.FoodFunk;
+
 import gnu.trove.map.TIntObjectMap;
 import gnu.trove.map.hash.TIntObjectHashMap;
 import io.netty.buffer.ByteBuf;
@@ -169,8 +171,8 @@ public abstract class MessageBulkUpdateContainerCapability<HANDLER, DATA> implem
 		public final IMessage onMessage(final MESSAGE message, final MessageContext ctx) {
 			if (!message.hasData()) return null; // Don't do anything if no data was sent
 
-			CapabilityUtils.getThreadListener(ctx).addScheduledTask(() -> {
-				final EntityPlayer player = CapabilityUtils.getPlayer(ctx);
+			FoodFunk.proxy.getThreadListener(ctx).addScheduledTask(() -> {
+				final EntityPlayer player = FoodFunk.proxy.getPlayer(ctx);
 
 				final Container container;
 				if (message.windowID == 0) {
