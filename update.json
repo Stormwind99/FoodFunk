@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "2.0.0",
-    "1.12.2-recommended": "2.0.0"
+    "1.12.2-latest": "2.0.1",
+    "1.12.2-recommended": "2.0.1"
   },
   "1.12.2": {
+    "2.0.1": "Server crash fixes, optizations, tooltip fixes",
     "2.0.0": "Rotting and Preserving now implemented with capabilities.  Any container can be made preserving in config.",
     "1.0.4": "Fix dedicated server crash, and added more default config safety",
     "1.0.3": "Fixed another config default crash when other mods remove vanilla items",
