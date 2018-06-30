@@ -119,6 +119,7 @@ public class RotHandler
 	
 		long UBD = cap.getDate();
 		long worldTime = world.getTotalWorldTime();
+		long rotTimeStamp = UBD + rotTime ;
 
 		if(UBD == 0)
 		{
@@ -128,7 +129,7 @@ public class RotHandler
 			//FoodFunk.logger.info("RotHandler.updateRot 1 " + stack.getItem().getRegistryName() + " date " + cap.getDate() + " time " + cap.getTime() + " cur " + worldTime);
 			return stack;
 		} 
-		else if(UBD + rotTime < worldTime)
+		else if(worldTime >= rotTimeStamp)
 		{
 			return forceRot(stack, rotProps.rotID);
 		}
@@ -268,6 +269,13 @@ public class RotHandler
 		if(lowestDate >= 0)
 		{
 			ccap.setRot(lowestDate, rotTime);
+			//FoodFunk.logger.info("RotHandler.handleCraftedRot1 " + crafting.getItem().getRegistryName() + " date " + ccap.getDate() + " time " + ccap.getTime() );
+		}
+		else
+		{
+			long worldTime = world.getTotalWorldTime();
+			ccap.setRot(worldTime, rotProps.getRotTime());
+			//FoodFunk.logger.info("RotHandler.handleCraftedRot2 " + crafting.getItem().getRegistryName() + " date " + ccap.getDate() + " time " + ccap.getTime() );
 		}
 	}
 
@@ -291,6 +299,26 @@ public class RotHandler
 			date = _date;
 			time = _time;
 			curTime = _curTime;
+		}
+		
+		public long getDate()
+		{
+			return date;
+		}
+		
+		public long getTime()
+		{
+			return time;
+		}
+		
+		public long getCurTime()
+		{
+			return curTime;
+		}
+		
+		public long getExpirationTimestamp()
+		{
+			return date + time;
 		}
 
 		public int getPercent()
