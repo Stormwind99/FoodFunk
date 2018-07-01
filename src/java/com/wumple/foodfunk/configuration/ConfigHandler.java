@@ -130,7 +130,10 @@ public class ConfigHandler
 		// Doubt this next one will work until cookingforblockheads does the CM 1.13 flattening
 		addDefaultPreservingProperty("cookingforblockheads:ice_unit", 100);
 		addDefaultPreservingProperty("cfm:esky", 50);
+		addDefaultPreservingProperty("minecraft:cfmesky", 50);
 		addDefaultPreservingProperty("cfm:freezer", 100);
+		addDefaultPreservingProperty("minecraft:cfmfridge", 100);
+		addDefaultPreservingProperty("minecraft:cfmfreezer", 100);
 		
 		ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
 	}
