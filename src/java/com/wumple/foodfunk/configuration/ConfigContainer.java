@@ -16,9 +16,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class ConfigContainer
 {
-	@Name("Enable item rot")
-	@Config.Comment("Will configured items rot over time.")
-	public static boolean rotEnabled = true;
+	@Name("Enable rot")
+	@Config.Comment("Configured items rot over time.")
+	public static boolean enabled = true;
 
 	@Name("Rotting")
 	@Config.Comment("Set rot days and id for items.")
@@ -50,6 +50,21 @@ public class ConfigContainer
 		public HashMap<String, Integer> ratios = new HashMap<String, Integer>();
 	}
 
+	@Name("Debugging")
+	@Config.Comment("Debugging options")
+	public static Debugging zdebugging = new Debugging();
+	
+	public static class Debugging
+	{
+		@Name("Debug mode")
+		@Config.Comment("Enable debug features on this menu, display extra debug info.")
+		public boolean debug = false;
+		
+		@Name("Rot time multiplier")
+		@Config.Comment("Speed or slow all rot. < 1 faster, > 1 slower.")
+		public double rotMultiplier = 1.0F;
+	}
+	
 	@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 	private static class EventHandler {
 		/**

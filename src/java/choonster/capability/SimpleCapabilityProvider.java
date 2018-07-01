@@ -3,13 +3,13 @@
 
 package choonster.capability;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.Capability.IStorage;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
-
-import javax.annotation.Nullable;
 
 /**
  * A simple implementation of {@link ICapabilitySerializable} that supports a single {@link Capability} handler instance.
@@ -141,7 +141,7 @@ public class SimpleCapabilityProvider<HANDLER> implements ICapabilitySerializabl
 	 *
 	 * @return The handler instance
 	 */
-	public final HANDLER getInstance() {
+	public HANDLER getInstance() {
 		return instance;
 	}
 }

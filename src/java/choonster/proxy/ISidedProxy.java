@@ -1,14 +1,12 @@
 package choonster.proxy;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IThreadListener;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-
-import javax.annotation.Nullable;
 
 public interface ISidedProxy {
 	void preInit();
@@ -62,6 +60,8 @@ public interface ISidedProxy {
 	 * Thrown when a proxy method is called from the wrong side.
 	 */
 	class WrongSideException extends RuntimeException {
+	    static final long serialVersionUID = 1234L;
+	    
 		public WrongSideException(final String message) {
 			super(message);
 		}

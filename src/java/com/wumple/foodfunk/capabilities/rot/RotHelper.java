@@ -24,10 +24,10 @@ public class RotHelper
 	 *
 	 * @return The provider
 	 */
-	public static ICapabilityProvider createProvider() {
+	public static ICapabilityProvider createProvider(ItemStack stack) {
 		//return new SimpleCapabilityProvider<>(RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING);
 		
-		return new RotProvider(RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING);
+		return new RotProvider(RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING, stack);
 	}
 
 	/**
@@ -36,9 +36,9 @@ public class RotHelper
 	 * @param Rot The IRot
 	 * @return The provider
 	 */
-	public static ICapabilityProvider createProvider(IRot capability) {
+	public static ICapabilityProvider createProvider(IRot capability, ItemStack stack) {
 		//return new SimpleCapabilityProvider<>(RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING, capability);
 		
-		return new RotProvider(RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING, capability);
+		return new RotProvider(RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING, capability, stack);
 	}
 }

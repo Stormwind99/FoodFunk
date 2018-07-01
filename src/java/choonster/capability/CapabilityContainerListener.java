@@ -43,7 +43,8 @@ public abstract class CapabilityContainerListener<HANDLER> implements IContainer
 	}
 
 	@Override
-	public final void sendAllContents(final Container containerToSend, final NonNullList<ItemStack> itemsList) {
+	public /*final*/ void sendAllContents(final Container containerToSend, final NonNullList<ItemStack> itemsList) {
+	    	
 		// Filter out any items from the list that shouldn't be synced
 		final NonNullList<ItemStack> syncableItemsList = getContentsToSend(itemsList);
 
@@ -58,20 +59,17 @@ public abstract class CapabilityContainerListener<HANDLER> implements IContainer
 		// Filter out any items from the list that shouldn't be synced
 		final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(itemsList.size(), ItemStack.EMPTY);
 		for (int index = 0; index < syncableItemsList.size(); index++) {
-			final ItemStack stack = syncableItemsList.get(index);
+			final ItemStack stack = itemsList.get(index);
 			if (shouldSyncItem(stack)) {
 				syncableItemsList.set(index, stack);
-			} else {
-				syncableItemsList.set(index, ItemStack.EMPTY);
 			}
 		}
 		
 		return syncableItemsList;
 	}
 	
-
 	@Override
-	public final void sendSlotContents(final Container containerToSend, final int slotInd, final ItemStack stack) {
+	public /*final*/ void sendSlotContents(final Container containerToSend, final int slotInd, final ItemStack stack) {
 		if (!shouldSyncItem(stack)) return;
 
 		final HANDLER handler = CapabilityUtils.getCapability(stack, capability, facing);

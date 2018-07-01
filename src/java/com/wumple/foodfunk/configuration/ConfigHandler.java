@@ -159,6 +159,12 @@ public class ConfigHandler
 
 		public long getRotTime()
 		{
+			if (ConfigContainer.zdebugging.debug)
+			{
+				double ticksPerDay = ConfigContainer.zdebugging.rotMultiplier * ConfigHandler.TICKS_PER_DAY;
+				return days * (long)ticksPerDay;
+			}
+			
 			return days * ConfigHandler.TICKS_PER_DAY;
 		}
 

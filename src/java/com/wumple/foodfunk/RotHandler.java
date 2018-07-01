@@ -2,8 +2,6 @@ package com.wumple.foodfunk;
 
 import javax.annotation.Nullable;
 
-import org.apache.logging.log4j.Level;
-
 import com.wumple.foodfunk.capabilities.rot.IRot;
 import com.wumple.foodfunk.capabilities.rot.RotHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
@@ -24,8 +22,6 @@ public class RotHandler
 	{
 		ResourceLocation loc = (it == null) ? null : TileEntity.getKey(it.getClass());
 		String key = (loc == null) ? null : loc.toString();
-		
-		//FoodFunk.logger.info("RotHandler.doesPreserve key " + key);
 		
 		if ( (key != null) && ConfigContainer.preserving.ratios.containsKey(key) )
 		{
@@ -62,8 +58,6 @@ public class RotHandler
 
 	public static ItemStack doRot(World world, ItemStack item)
 	{
-		//FoodFunk.logger.debug("Rotting: " + item.getDisplayName());
-
 		ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(item);
 
 		if ( !doesRot(rotProps) )
@@ -86,21 +80,6 @@ public class RotHandler
 		return item == null ? ItemStack.EMPTY : new ItemStack(item, stack.getCount()); // , meta);
 	}
 
-	/*
-	private static NBTTagCompound ensureTagCompound(ItemStack stack)
-	{
-		NBTTagCompound tags = stack.getTagCompound();
-
-		if(tags == null)
-		{
-			tags = new NBTTagCompound();
-			stack.setTagCompound(tags);
-		}
-
-		return stack.getTagCompound();
-	}
-	*/	
-
 	public static ItemStack updateRot(World world, ItemStack stack, ConfigHandler.RotProperty rotProps)
 	{
 		// TODO integrate with Serene Seasons temperature system
@@ -119,27 +98,25 @@ public class RotHandler
 	
 		long UBD = cap.getDate();
 		long worldTime = world.getTotalWorldTime();
-		long rotTimeStamp = UBD + rotTime ;
-
+		
 		if(UBD == 0)
 		{
-			UBD = (worldTime/ConfigHandler.TICKS_PER_DAY) * ConfigHandler.TICKS_PER_DAY;
-			UBD = UBD <= 0L? 1L : UBD;
-			cap.setRot(UBD, rotTime); 
-			//FoodFunk.logger.info("RotHandler.updateRot 1 " + stack.getItem().getRegistryName() + " date " + cap.getDate() + " time " + cap.getTime() + " cur " + worldTime);
-			return stack;
-		} 
-		else if(worldTime >= rotTimeStamp)
+            // previous calculation:
+            //UBD = (worldTime/ConfigHandler.TICKS_PER_DAY) * ConfigHandler.TICKS_PER_DAY;
+            //UBD = UBD <= 0L? 1L : UBD
+		    UBD=worldTime;
+			cap.setRot(UBD, rotTime); 	
+		}
+		
+		long rotTimeStamp = UBD + rotTime;
+
+		if(worldTime >= rotTimeStamp)
 		{
 			return forceRot(stack, rotProps.rotID);
 		}
-		else
-		{
-			cap.setRot(UBD, rotTime);
-			//FoodFunk.logger.info("RotHandler.updateRot 2 " + stack.getItem().getRegistryName() + " date "  + cap.getDate() + " time " + cap.getTime() + " cur " + worldTime);
-			return stack;
-		}
-
+		
+		cap.setRot(UBD, rotTime);
+		return stack;
 	}
 
 	public static void rotInvo(World world, IInventory inventory)
@@ -149,8 +126,6 @@ public class RotHandler
 			return;
 		}
 		
-		//FoodFunk.logger.info("RotHandler.rotInvo 1 " + inventory.getName());
-
 		boolean flag = false;
 
 		try
@@ -182,7 +157,7 @@ public class RotHandler
 		}
 		catch(Exception e)
 		{
-			FoodFunk.logger.log(Level.ERROR, "An error occured while attempting to rot inventory:", e);
+			FoodFunk.logger.error("An error occured while attempting to rot inventory:", e);
 			return;
 		}
 	}
@@ -228,7 +203,6 @@ public class RotHandler
 		if (cap != null)
 		{
 			cap.reschedule(time);
-			//FoodFunk.logger.info("RotHandler.rescheduleRot 1 " + stack.getItem().getRegistryName() + " date " + cap.getDate() + " time " + cap.getTime() + " cur " + worldTime);
 		}
 		
 		return stack;
@@ -237,7 +211,7 @@ public class RotHandler
 	public static void handleCraftedRot(World world, IInventory craftMatrix, ItemStack crafting)
 	{
 		ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(crafting);
-
+		
 		IRot ccap = RotHelper.getRot(crafting);
 		
 		if(!doesRot(rotProps) || (ccap == null))
@@ -245,38 +219,29 @@ public class RotHandler
 			return; // Crafted item doesn't rot
 		}
 
+		long worldTime = world.getTotalWorldTime();
 		long rotTime = rotProps.getRotTime();
-
-		long lowestDate = ConfigHandler.DAYS_NO_ROT;
+		
+		long lowestDate = worldTime;
 
 		for(int i = 0; i < craftMatrix.getSizeInventory(); i++)
 		{
 			ItemStack stack = craftMatrix.getStackInSlot(i);
 
-			if(stack == null || stack.isEmpty() || stack.getItem() == null || stack.getTagCompound() == null)
+			if(stack == null || stack.isEmpty() || stack.getItem() == null)
 			{
 				continue;
 			}
 
 			IRot cap = RotHelper.getRot(stack);
 
-			if( (cap != null) && (lowestDate < 0 || cap.getDate() < lowestDate))
+			if( (cap != null) && (cap.getDate() < lowestDate))
 			{
 				lowestDate = cap.getDate();
 			}
 		}
 
-		if(lowestDate >= 0)
-		{
-			ccap.setRot(lowestDate, rotTime);
-			//FoodFunk.logger.info("RotHandler.handleCraftedRot1 " + crafting.getItem().getRegistryName() + " date " + ccap.getDate() + " time " + ccap.getTime() );
-		}
-		else
-		{
-			long worldTime = world.getTotalWorldTime();
-			ccap.setRot(worldTime, rotProps.getRotTime());
-			//FoodFunk.logger.info("RotHandler.handleCraftedRot2 " + crafting.getItem().getRegistryName() + " date " + ccap.getDate() + " time " + ccap.getTime() );
-		}
+		ccap.setRot(lowestDate, rotTime);
 	}
 
 	public static class RotTimes
@@ -341,6 +306,16 @@ public class RotHandler
 		{
 			return MathHelper.floor((double)(date + time)/ConfigHandler.TICKS_PER_DAY);
 		}
+		
+		public boolean isSet()
+		{
+			return (date > 0);
+		}
+		
+		public boolean isNoRot()
+		{
+			return (time == ConfigHandler.DAYS_NO_ROT);
+		}
 	}
 	
 	@Nullable
@@ -357,6 +332,16 @@ public class RotHandler
 		}
 
 		return rotTimes;
+	}
+	
+	public static void setDefaults(ItemStack stack, IRot cap)
+	{
+		ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
+
+		if ( doesRot(rotProps) )
+		{
+			cap.setTime(rotProps.getRotTime());
+		}
 	}
 	
 	public static boolean isInTheCold(ItemStack stack)

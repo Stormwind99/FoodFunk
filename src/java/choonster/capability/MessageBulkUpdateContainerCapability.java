@@ -58,19 +58,20 @@ public abstract class MessageBulkUpdateContainerCapability<HANDLER, DATA> implem
 		this.capability = capability;
 		this.facing = facing;
 		this.windowID = windowID;
-
+		
 		for (int index = 0; index < items.size(); index++) {
 			final ItemStack stack = items.get(index);
 
 			final HANDLER handler = CapabilityUtils.getCapability(stack, capability, facing);
-
+			DATA data = null;
+			
 			if (handler != null) {
-				final DATA data = convertCapabilityToData(handler);
-
+				data = convertCapabilityToData(handler);
+				
 				if (data != null) {
 					capabilityData.put(index, data);
 				}
-			}
+			}			
 		}
 	}
 

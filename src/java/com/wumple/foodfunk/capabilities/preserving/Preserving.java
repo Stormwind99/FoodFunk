@@ -2,6 +2,7 @@ package com.wumple.foodfunk.capabilities.preserving;
 
 import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.RotHandler;
+import com.wumple.foodfunk.capabilities.rot.Rot;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
@@ -68,7 +69,11 @@ public class Preserving implements IPreserving
 	
 	public void setOwner(TileEntity ownerIn)
 	{
-		entity = ownerIn;
+	    if (entity != ownerIn)
+	    {
+	        entity = ownerIn;
+	        lastCheckTime = Rot.lastWorldTimestamp;
+	    }
 	}
 	
 	// ----------------------------------------------------------------------
@@ -140,7 +145,7 @@ public class Preserving implements IPreserving
 
 			ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
 
-			if ((!ConfigContainer.rotEnabled) || (!RotHandler.doesRot(rotProps)))
+			if ((!ConfigContainer.enabled) || (!RotHandler.doesRot(rotProps)))
 			{
 				stack = RotHandler.clearRotData(stack);
 			} 

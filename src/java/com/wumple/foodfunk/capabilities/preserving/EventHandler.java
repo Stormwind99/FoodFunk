@@ -1,8 +1,6 @@
 package com.wumple.foodfunk.capabilities.preserving;
 
-import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.RotHandler;
-import com.wumple.foodfunk.capabilities.rot.IRot;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;

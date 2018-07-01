@@ -1,12 +1,17 @@
 package com.wumple.foodfunk.capabilities.rot;
 
+import com.wumple.foodfunk.RotHandler;
+
 import choonster.capability.CapabilityContainerListenerManager;
 import choonster.capability.foodfunk.ContainerListenerRot;
 import choonster.capability.foodfunk.RotInfo;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class Rot implements IRot
 {	
+    public static long lastWorldTimestamp = 0;
+    
 	public static void register()
 	{
 		CapabilityManager.INSTANCE.register(IRot.class, new RotStorage(), () -> new Rot() );
@@ -15,6 +20,7 @@ public class Rot implements IRot
 	}
 	
 	protected RotInfo info = new RotInfo();
+	ItemStack owner = null;
 	
 	public Rot()
 	{
@@ -61,7 +67,6 @@ public class Rot implements IRot
 	public void reschedule(long timeIn)
 	{
 		info.date += timeIn;
-		//info.time += timeIn;
 	}
 	
 	public RotInfo setInfo(RotInfo infoIn)
@@ -73,5 +78,20 @@ public class Rot implements IRot
 	public RotInfo getInfo()
 	{
 		return info;
+	}
+	
+	public void setOwner(ItemStack ownerIn)
+	{
+		if (ownerIn != owner)
+		{
+			owner = ownerIn;
+			RotHandler.setDefaults(owner, this);
+			info.date = lastWorldTimestamp;
+		}
+	}
+	
+	public ItemStack getOwner()
+	{
+	    return owner;
 	}
 }

@@ -102,7 +102,8 @@ public class MessageUpdateContainerRot extends MessageUpdateContainerCapability<
 		@Override
 		protected void applyCapabilityData(final IRot cap, final RotInfo info) {
 			if (cap instanceof Rot) {
-				((Rot) cap).setInfo(info);
+			    Rot rcap = (Rot)cap;
+				rcap.setInfo(info);
 			}
 		}
 	}

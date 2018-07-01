@@ -18,10 +18,10 @@ public class EventHandler
 		 */
 		@SubscribeEvent
 		public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-			ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(event.getObject());
-			
+			ItemStack stack = event.getObject();
+			ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
 			if (RotHandler.doesRot(rotProps)) {
-				event.addCapability(RotProvider.ID, RotHelper.createProvider());
+				event.addCapability(RotProvider.ID, RotHelper.createProvider(stack));
 			}
 		}
 }

@@ -74,10 +74,11 @@ public class MessageBulkUpdateContainerRots extends MessageBulkUpdateContainerCa
 		 * @param rotInfo    The data instance
 		 */
 		@Override
-		protected void applyCapabilityData(final IRot rotItem, final RotInfo rotInfo) {
-			if (rotItem instanceof Rot) {
-				((Rot) rotItem).setInfo(rotInfo);
-			}
-		}
+	      protected void applyCapabilityData(final IRot cap, final RotInfo info) {
+            if (cap instanceof Rot) {
+                Rot rcap = (Rot)cap;
+                rcap.setInfo(info);                
+            }
+        }
 	}
 }

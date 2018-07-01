@@ -1,20 +1,10 @@
 package choonster.capability;
 
-import java.io.IOException;
-
 // TODO MAJOR WORK
 
 import javax.annotation.Nullable;
 
-import com.wumple.foodfunk.FoodFunk;
-
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.ByteBufOutputStream;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -103,13 +93,7 @@ public abstract class MessageCapabilityUpdate<HANDLER, DATA> implements IMessage
 		@Nullable
 		@Override
 		public final IMessage onMessage(final MESSAGE message, final MessageContext ctx) {
-			
-            ItemStack originalStack = null;
-            HANDLER originalHandler = CapabilityUtils.getCapability(originalStack, message.provider.getCapability(), message.provider.getFacing());
-
-            FoodFunk.proxy.getThreadListener(ctx).addScheduledTask(() -> {
-            	
-            } );
+			// TODO
             
             return null;
 		}
