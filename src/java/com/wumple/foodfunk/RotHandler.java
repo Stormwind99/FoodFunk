@@ -7,6 +7,11 @@ import com.wumple.foodfunk.capabilities.rot.RotHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
+import choonster.capability.CapabilityUtils;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,6 +20,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class RotHandler
 {
@@ -120,11 +127,11 @@ public class RotHandler
 		return stack;
 	}
 
-	public static void rotInvo(World world, IInventory inventory)
+	public static boolean rotInvo(World world, IInventory inventory)
 	{
 		if ( (inventory == null) || (inventory.getSizeInventory() <= 0) )
 		{
-			return;
+			return false;
 		}
 		
 		boolean flag = false;
@@ -155,13 +162,136 @@ public class RotHandler
 			{
 				((TileEntity)inventory).markDirty();
 			}
+			
+			return flag;
 		}
 		catch(Exception e)
 		{
 			FoodFunk.logger.error("An error occured while attempting to rot inventory:", e);
-			return;
+			return false;
 		}
 	}
+	 
+    public static boolean rot(World world, Entity entity)
+    {
+        if (world.isRemote || !ConfigContainer.enabled)
+        {
+            return false;
+        }
+        
+        IItemHandler capability = CapabilityUtils.getCapability(entity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        
+        if (capability != null)
+        {
+            return rotInvo(world, capability);
+        }
+        else if (entity instanceof EntityItem)
+        {
+            EntityItem item = (EntityItem)entity;
+            
+            ItemStack rotStack = RotHandler.doRot(world, item.getItem());
+
+            if(item.getItem() != rotStack)
+            {
+                item.setItem(rotStack);
+            }
+        }
+        else if (entity instanceof EntityPlayer)
+        {
+            IInventory invo = ((EntityPlayer)entity).inventory;
+            return rotInvo(world, invo);
+        } 
+        else if (entity instanceof IInventory)
+        {
+            IInventory invo = (IInventory)entity;
+            return rotInvo(world, invo);
+        }
+        
+        return false;
+    }
+    
+    public static <T> T as(Object o, Class<T> t)
+    {
+       return t.isInstance(o) ? t.cast(o) : null;
+    }
+    
+    public static boolean rot(World world, TileEntity tile)
+    {
+        if ((world.isRemote) || (!ConfigContainer.enabled))
+        {
+            return false;
+        }
+        
+        if (tile instanceof IInventory)
+        {
+            IInventory invo = (IInventory)tile; // as(tile, IInventory.class);
+            
+            return rotInvo(world, invo);
+        }
+        
+        return false;
+    }
+    
+    public static boolean rot(World world, Container container)
+    {
+        if ((world.isRemote) || (!ConfigContainer.enabled))
+        {
+            return false;
+        }
+        
+        if (container instanceof IInventory)
+        {
+            IInventory invo = (IInventory)container;
+            
+            return rotInvo(world, invo);
+        }
+        
+        return false;
+    }
+    
+	public static boolean rotInvo(World world, IItemHandler inventory)
+    {
+        if ( (inventory == null) || (inventory.getSlots() <= 0) )
+        {
+            return false;
+        }
+        
+        boolean flag = false;
+
+        try
+        {
+            for(int i = 0; i < inventory.getSlots(); i++)
+            {
+                ItemStack slotItem = inventory.getStackInSlot(i);
+                int count = slotItem.getCount();
+
+                if((slotItem != null) && (!slotItem.isEmpty()))
+                {
+                    ItemStack rotItem = doRot(world, slotItem);
+
+                    if(rotItem == null || rotItem.isEmpty() || (rotItem.getItem() != slotItem.getItem()))
+                    {
+                        if (rotItem == null)
+                        {
+                            rotItem = ItemStack.EMPTY;
+                        }
+                        // Equivalent to inventory.setInventorySlotContents(i, rotItem);
+                        inventory.extractItem(i, count, false);
+                        inventory.insertItem(i, rotItem, false);
+                        flag = true;
+                    }
+                }
+            }
+            
+            return flag;
+        }
+        catch(Exception e)
+        {
+            FoodFunk.logger.error("An error occured while attempting to rot inventory:", e);
+            return false;
+        }
+    }
+
 
 	public static ItemStack removeDeprecatedRotData(ItemStack stack)
 	{

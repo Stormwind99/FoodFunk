@@ -7,16 +7,13 @@ import com.wumple.foodfunk.capabilities.rot.RotHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.EntityItemPickupEvent;
@@ -38,129 +35,56 @@ public class EventManager
 	@SubscribeEvent
 	public static void onEntityJoinWorld(EntityJoinWorldEvent event)
 	{		
-		if(ConfigContainer.enabled && !event.getWorld().isRemote)
-		{
-			if (event.getEntity() instanceof EntityItem)
-			{
-				EntityItem item = (EntityItem)event.getEntity();
-				
-				ItemStack rotStack = RotHandler.doRot(event.getWorld(), item.getItem());
-
-				if(item.getItem() != rotStack)
-				{
-					item.setItem(rotStack);
-				}
-			} 
-			else if (event.getEntity() instanceof EntityPlayer)
-			{
-				IInventory invo = ((EntityPlayer)event.getEntity()).inventory;
-				RotHandler.rotInvo(event.getWorld(), invo);
-			} 
-			else if (event.getEntity() instanceof IInventory)
-			{
-				IInventory invo = (IInventory)event.getEntity();
-				RotHandler.rotInvo(event.getWorld(), invo);
-			}
-		}
+	    RotHandler.rot(event.getWorld(), event.getEntity());
 	}
 	
 	@SubscribeEvent
 	public static void onEntityItemPickup(EntityItemPickupEvent event)
 	{
-	    World world = event.getEntity().getEntityWorld();
-        if(ConfigContainer.enabled && !world.isRemote)
-        {
-            if (event.getEntity() instanceof EntityItem)
-            {
-                EntityItem item = (EntityItem)event.getEntity();
-                
-                ItemStack rotStack = RotHandler.doRot(world, item.getItem());
-
-                if(item.getItem() != rotStack)
-                {
-                    item.setItem(rotStack);
-                }
-            } 
-        }	
+	    RotHandler.rot(event.getEntity().getEntityWorld(), event.getEntity());
 	}
-
 
 	@SubscribeEvent
 	public static void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if(ConfigContainer.enabled && event instanceof RightClickBlock && !event.getWorld().isRemote)
+		if(event instanceof RightClickBlock)
 		{
 			TileEntity tile = event.getEntityPlayer().world.getTileEntity(event.getPos());
 
-			if ((tile != null) && (tile instanceof IInventory))
-			{
-			    IInventory invo = (IInventory)tile;
-			    
-				RotHandler.rotInvo(event.getEntityPlayer().world, invo);
-			}
+			RotHandler.rot(event.getEntityPlayer().world, tile);
 		}
 	}
 
 	@SubscribeEvent
 	public static void onEntityInteract(EntityInteract event)
 	{
-		if(event.isCanceled() || event.getEntityPlayer().world.isRemote)
+		if(event.isCanceled())
 		{
 			return;
 		}
 
-		if(!ConfigContainer.enabled)
-		{
-			return;
-		}
-
-		if (event.getTarget() instanceof IInventory && ConfigContainer.enabled)
-		{
-			IInventory invo = (IInventory)event.getTarget();
-
-			RotHandler.rotInvo(event.getEntityPlayer().world, invo);
-		}
+		RotHandler.rot(event.getEntityPlayer().world, event.getTarget());
 	}
 
 	@SubscribeEvent
 	public static void onPlayerContainerOpen(PlayerContainerEvent.Open event)
 	{
-        if(event.isCanceled() || event.getEntityPlayer().world.isRemote)
+        if(event.isCanceled())
         {
             return;
         }
-
-        if(!ConfigContainer.enabled)
-        {
-            return;
-        }
-
-        if(event.getContainer() instanceof IInventory && ConfigContainer.enabled)
-        {
-            IInventory invo = (IInventory)event.getContainer();
-            RotHandler.rotInvo(event.getEntityPlayer().world, invo);
-        }	    
+            
+        RotHandler.rot(event.getEntityPlayer().world, event.getContainer());
 	}
 	
 	@SubscribeEvent
 	public static void onLivingUpdate(LivingUpdateEvent event)
-	{
-		if(event.getEntityLiving().world.isRemote)
+	{		
+	    EntityLivingBase entity = event.getEntityLiving();
+	    
+		if (entity.ticksExisted % Preserving.slowInterval  == 0)
 		{
-			return;
-		}
-		
-		if (event.getEntityLiving().ticksExisted % Preserving.slowInterval  == 0)
-		{
-			if(event.getEntityLiving() instanceof EntityPlayer)
-			{
-				InventoryPlayer invo = (InventoryPlayer)((EntityPlayer)event.getEntityLiving()).inventory;
-	
-				if(ConfigContainer.enabled)
-				{
-					RotHandler.rotInvo(event.getEntityLiving().world, invo);
-				}
-			}
+		    RotHandler.rot(event.getEntityLiving().world, entity);
 		}
 	}
 	
