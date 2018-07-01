@@ -34,11 +34,14 @@ public class FoodFunk {
 	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		logger = event.getModLog();
+	    logger = event.getModLog();
+	    
+	    Rot.register();
+        Preserving.register();
+        
 		network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
-		Rot.register();
-		Preserving.register();
 		Messages.register();
+		
 		proxy.preInit();
 	}
 

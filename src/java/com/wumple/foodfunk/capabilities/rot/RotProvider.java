@@ -26,7 +26,7 @@ public class RotProvider extends SimpleCapabilityProvider<IRot>
 	ItemStack owner = null;
 	
 	public RotProvider(Capability<IRot> capability, @Nullable EnumFacing facing, ItemStack stack) {
-		super(capability, facing, capability.getDefaultInstance());
+		super(capability, facing, (capability != null) ? capability.getDefaultInstance() : null);
 		owner = stack;
 	}
 

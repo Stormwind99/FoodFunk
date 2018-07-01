@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "2.0.2",
-    "1.12.2-recommended": "2.0.2"
+    "1.12.2-latest": "2.0.3",
+    "1.12.2-recommended": "2.0.3"
   },
   "1.12.2": {
+    "2.0.3": "Potential mod init incompatibility workarounds",
     "2.0.2": "Tooltip sync fixes.  Bulk capability container update fix.  More tooltips.",
     "2.0.1": "Server crash fixes, optizations, tooltip fixes",
     "2.0.0": "Rotting and Preserving now implemented with capabilities.  Any container can be made preserving in config.",

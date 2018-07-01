@@ -51,7 +51,7 @@ public class SimpleCapabilityProvider<HANDLER> implements ICapabilitySerializabl
 	 * @param facing     The EnumFacing to provide the handler for
 	 */
 	public SimpleCapabilityProvider(Capability<HANDLER> capability, @Nullable EnumFacing facing) {
-		this(capability, facing, capability.getDefaultInstance());
+		this(capability, facing, (capability != null) ? capability.getDefaultInstance() : null);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class SimpleCapabilityProvider<HANDLER> implements ICapabilitySerializabl
 	 */
 	@Override
 	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
-		return capability == getCapability();
+		return ((capability != null) && (capability == getCapability()));
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class SimpleCapabilityProvider<HANDLER> implements ICapabilitySerializabl
 	@Override
 	@Nullable
 	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
-		if (capability == getCapability()) {
+		if (hasCapability(capability, facing)) {
 			return getCapability().cast(getInstance());
 		}
 
@@ -109,12 +109,15 @@ public class SimpleCapabilityProvider<HANDLER> implements ICapabilitySerializabl
 
 	@Override
 	public NBTBase serializeNBT() {
-		return getCapability().writeNBT(getInstance(), getFacing());
+		return (getCapability() == null) ? null : getCapability().writeNBT(getInstance(), getFacing());
 	}
 
 	@Override
 	public void deserializeNBT(NBTBase nbt) {
-		getCapability().readNBT(getInstance(), getFacing(), nbt);
+	    if (getCapability() != null)
+	    {
+	        getCapability().readNBT(getInstance(), getFacing(), nbt);
+	    }
 	}
 
 	/**
