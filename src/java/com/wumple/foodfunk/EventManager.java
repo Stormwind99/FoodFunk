@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -170,10 +171,10 @@ public class EventManager
         EntityPlayer player = (EntityPlayer)(entity);
         if (player != null)
         {
-            if ((player.openContainer != null) && player.openContainer.getCanCraft(player))
+            if (player.openContainer != null)
             {
                 Slot slot = player.openContainer.getSlot(0);
-                if ((slot != null) && (slot.getStack() == stack))
+                if ((slot != null) && (slot instanceof SlotCrafting) && (slot.getStack() == stack))
                 {
                     beingCrafted = true;
                 }
@@ -198,23 +199,10 @@ public class EventManager
 						
 			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(rot, curTime);
 			
-			boolean beingCrafted = isItemBeingCraftedBy(stack, entity);
-
-			EntityPlayer player = (EntityPlayer)(entity);
-			if (player != null)
-			{
-			    if ((player.openContainer != null) && player.openContainer.getCanCraft(player))
-			    {
-			        Slot slot = player.openContainer.getSlot(0);
-			        if ((slot != null) && (slot.getStack() == stack))
-			        {
-			            beingCrafted = true;
-			        }
-			    }
-			}
-			
 			if(rotTimes != null)
 			{	
+			    boolean beingCrafted = isItemBeingCraftedBy(stack, entity);
+			    
 				if (rotTimes.isSet() && !beingCrafted)
 				{
 					if (rotTimes.getPercent() >= 100)

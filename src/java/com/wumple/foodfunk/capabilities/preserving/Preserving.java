@@ -21,6 +21,8 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 @Mod.EventBusSubscriber
 public class Preserving implements IPreserving
@@ -81,106 +83,140 @@ public class Preserving implements IPreserving
 
 
 	/**
-	 * Automatically adjust the use-by date on food items stored within the chest so they rot at half speed
+	 * Automatically adjust the use-by date on food items stored within to slow or stop rot
 	 */
 	public void rotUpdate()
 	{
-		// Cold chest code
-
-		if ( (entity.getWorld() == null) ||	entity.getWorld().isRemote ||
-				!(entity instanceof IInventory) )
+		if ( (entity.getWorld() == null) ||	entity.getWorld().isRemote )
 		{
 			return;
 		}
 		
-		IInventory inventory = (IInventory)entity;		
-
-		long worldTime = entity.getWorld().getTotalWorldTime();
-
-		if(lastCheckTime <= ConfigHandler.DAYS_NO_ROT)
-		{
-			lastCheckTime = worldTime;
-		}
-
-		/*
-		 * MAYBE small bug - when chest open and tooltip up, rot can decrease.  Closing/re-opening chest fixes it.
-		 * Tried below: refresh more often when this.numPlayersUsing > 0
-		 * 
-		 * Other ideas:
-		 * Could be chest tick rate vs login/logout time, or tooltip update time vs rot refresh
-		 * Might need to fix lastCheck with persisted fraction upon load
-		 * Maybe even just contained ItemStack's NBT data not getting refreshed when chest open
-		 */
-
 		// tick of 0 represents "cache any transient data" like preserving ratio
-		if (tick == 0)
-		{
-			preservingRatio = RotHandler.getPreservingRatio(entity);
-		}
-		
-		if (tick < slowInterval)
-		{
-			tick++;
-			return;
-		}
-	
-		// reset to 1 since 0 is special "cache any transient data" state
-		tick = 1;
+        if (tick == 0)
+        {
+            preservingRatio = RotHandler.getPreservingRatio(entity);
+        }
+        
+        if (tick < slowInterval)
+        {
+            tick++;
+            return;
+        }
+    
+        // reset to 1 since 0 is special "cache any transient data" state
+        tick = 1;
+        
+        long worldTime = entity.getWorld().getTotalWorldTime();
 
-		long time = worldTime - lastCheckTime;
-		lastCheckTime = worldTime;
-		
+        if(lastCheckTime <= ConfigHandler.DAYS_NO_ROT)
+        {
+            lastCheckTime = worldTime;
+        }
+
+        long time = worldTime - lastCheckTime;
+        lastCheckTime = worldTime;
+
+        if (entity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+        {
+            IItemHandler capability = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+            rotUpdateInternal(capability, time, worldTime);
+        }
+        else if (entity instanceof IInventory)
+		{	
+    		IInventory inventory = (IInventory)entity;
+    		rotUpdateInternal(inventory, time, worldTime);
+		}
+	}
+
+	public void rotUpdateInternal(IInventory inventory, long time, long worldTime)
+	{
 		final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSizeInventory(), ItemStack.EMPTY);
 
-		int numDirty = 0;
+		boolean dirty = false;
 		
 		for(int i = 0; i < inventory.getSizeInventory(); i++)
 		{
 			ItemStack stack = inventory.getStackInSlot(i);
-
-			if((stack == null) || stack.isEmpty())
-			{
-				continue;
-			}
-
-			ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
-
-			if ((!ConfigContainer.enabled) || (!RotHandler.doesRot(rotProps)))
-			{
-				stack = RotHandler.clearRotData(stack);
-			} 
-			else
-			{
-				stack = RotHandler.rescheduleRot(stack, getRotTime(time), worldTime);
-			}
 			
-			syncableItemsList.set(i, stack);
-			numDirty++;
+			dirty |= checkStackRot(stack, time, worldTime, i, syncableItemsList);
 		}
 		
-		if (numDirty > 0)
+		if (dirty)
 		{
 			entity.markDirty();
+			
+			sendContainerUpdate(entity, syncableItemsList);
+		}
+	}
+	
+    public void rotUpdateInternal(IItemHandler inventory, long time, long worldTime)
+    {
+        final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSlots(), ItemStack.EMPTY);
 
-			// update each client/player that has this container open
-			NonNullList<EntityPlayer> users = getPlayersWithContainerOpen(entity);
-			if (!users.isEmpty())
+        boolean dirty = false;
+        
+        for(int i = 0; i < inventory.getSlots(); i++)
+        {
+            // TODO - investigate it IItemHandler.extractItem() needed instead
+            ItemStack stack = inventory.getStackInSlot(i);
+            
+            dirty |= checkStackRot(stack, time, worldTime, i, syncableItemsList);
+        }
+        
+        if (dirty)
+        {
+            entity.markDirty();
+            
+            sendContainerUpdate(entity, syncableItemsList);
+        }
+    }	
+	
+    protected boolean checkStackRot(ItemStack stack, long time, long worldTime, int index, NonNullList<ItemStack> syncableItemsList)
+    {
+        if((stack == null) || stack.isEmpty())
+        {
+            return false;
+        }
+
+        ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
+
+        if ((!ConfigContainer.enabled) || (!RotHandler.doesRot(rotProps)))
+        {
+            stack = RotHandler.clearRotData(stack);
+        } 
+        else
+        {
+            stack = RotHandler.rescheduleRot(stack, getRotTime(time), worldTime);
+        }
+        
+        syncableItemsList.set(index, stack);
+        return true;
+    }
+
+	
+	protected void sendContainerUpdate(TileEntity entity, NonNullList<ItemStack> syncableItemsList)
+	{
+		// update each client/player that has this container open
+		NonNullList<EntityPlayer> users = getPlayersWithContainerOpen(entity);
+		if (!users.isEmpty())
+		{
+			for (EntityPlayer player : users)
 			{
-				for (EntityPlayer player : users)
+				if (player instanceof EntityPlayerMP)
 				{
-					if (player instanceof EntityPlayerMP)
+					Container containerToSend = player.openContainer;
+					final MessageBulkUpdateContainerRots message = new MessageBulkUpdateContainerRots(containerToSend.windowId, syncableItemsList);
+					// Don't send the message if there's nothing to update	
+					if (message.hasData())
 					{
-						Container containerToSend = player.openContainer;
-						final MessageBulkUpdateContainerRots message = new MessageBulkUpdateContainerRots(containerToSend.windowId, syncableItemsList);
-						// Don't send the message if there's nothing to update	
-						if (message.hasData())
-						{
-							FoodFunk.network.sendTo(message, (EntityPlayerMP)player);
-						}
+						FoodFunk.network.sendTo(message, (EntityPlayerMP)player);
 					}
 				}
 			}
-		}	
+		}
+		
+		// TODO: consider player.inventoryContainer
 	}
 	
 	public static NonNullList<EntityPlayer> getPlayersWithContainerOpen(TileEntity entity)

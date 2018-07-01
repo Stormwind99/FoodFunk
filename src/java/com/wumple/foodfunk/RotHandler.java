@@ -22,17 +22,18 @@ public class RotHandler
 	{
 		ResourceLocation loc = (it == null) ? null : TileEntity.getKey(it.getClass());
 		String key = (loc == null) ? null : loc.toString();
+		boolean preserving = false;
 		
 		if ( (key != null) && ConfigContainer.preserving.ratios.containsKey(key) )
 		{
 			int ratio = ConfigContainer.preserving.ratios.get(key);
 			if (ratio != 0)
 			{
-				return true;
+			    preserving = true;
 			}
 		}
 		
-		return false;
+		return preserving;
 	}
 	
 	public static int getPreservingRatio(TileEntity it)
