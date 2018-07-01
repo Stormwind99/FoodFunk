@@ -202,51 +202,36 @@ public class EventManager
 			if(rotTimes != null)
 			{	
 			    boolean beingCrafted = isItemBeingCraftedBy(stack, entity);
+			    String key = null;
 			    
 				if (rotTimes.isSet() && !beingCrafted)
-				{
+				{				    
 					if (rotTimes.getPercent() >= 100)
 					{
-						event.getToolTip().add(
-								new TextComponentTranslation(
-										"misc.foodfunk.tooltip.decaying", 
-										rotTimes.getPercent() + "%", 
-										rotTimes.getDaysLeft(),
-										rotTimes.getDaysTotal()
-										).getUnformattedText());
-					}
+					    key = "misc.foodfunk.tooltip.decaying";					}
 					else
 					{
-						event.getToolTip().add(
-								new TextComponentTranslation(
-										"misc.foodfunk.tooltip.rot", 
-										rotTimes.getPercent() + "%", 
-										rotTimes.getDaysLeft(),
-										rotTimes.getDaysTotal()
-										).getUnformattedText());
+						key = "misc.foodfunk.tooltip.rot";
 					}
 				}
 				else if (rotTimes.isNoRot())
 				{
-					event.getToolTip().add(
-							new TextComponentTranslation(
-									"misc.foodfunk.tooltip.preserved", 
-									rotTimes.getPercent() + "%", 
-									rotTimes.getDaysLeft(),
-									rotTimes.getDaysTotal()
-									).getUnformattedText());
-					
+					key = "misc.foodfunk.tooltip.preserved";					
 				}
 				else if (rotTimes.time > 0)
 				{
-					event.getToolTip().add(
-							new TextComponentTranslation(
-									"misc.foodfunk.tooltip.fresh", 
-									rotTimes.getPercent() + "%", 
-									rotTimes.getDaysLeft(),
-									rotTimes.getDaysTotal()
-									).getUnformattedText());
+					key = "misc.foodfunk.tooltip.fresh";
 				}
+				
+                if (key != null)
+                {
+                    event.getToolTip().add(
+                        new TextComponentTranslation( key, 
+                                rotTimes.getPercent() + "%", 
+                                rotTimes.getDaysLeft(),
+                                rotTimes.getDaysTotal()
+                                ).getUnformattedText());
+                }
 				
 				if ( event.getFlags().isAdvanced() && ConfigContainer.zdebugging.debug )
 				{
