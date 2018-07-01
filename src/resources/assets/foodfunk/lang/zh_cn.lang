@@ -1,7 +1,26 @@
 language.name=Chinese
 
 item.foodfunk.rotten_food.name=腐坏食物
+item.foodfunk.spoiled_milk.name=变质牛奶
+
+tile.foodfunk.esky.name=保温箱
+tile.foodfunk.freezer.name=冰箱
+
+container.foodfunk.esky=保温箱
+container.foodfunk.freezer=冰箱
 
 achievement.foodfunk.TenSecondRule=10秒准则
 
-achievement.foodfunk.TenSecondRule.desc=食用腐败的食物
+achievement.foodfunk.TenSecondRule.desc=食用腐坏食物
+
+misc.foodfunk.tooltip.decaying=腐坏
+misc.foodfunk.tooltip.preserved=新鲜
+misc.foodfunk.tooltip.fresh=新鲜 %3$s 天
+misc.foodfunk.tooltip.rot=腐坏： %s（%s/%s天）
+misc.foodfunk.tooltip.advanced.datetime=%s 日 %s 时
+misc.foodfunk.tooltip.advanced.expire=在 %s / %s
+
+misc.foodfunk.tooltip.cold0=环境温度
+misc.foodfunk.tooltip.cold1=微冷
+misc.foodfunk.tooltip.cold2=较冷
+misc.foodfunk.tooltip.cold3=寒冷
