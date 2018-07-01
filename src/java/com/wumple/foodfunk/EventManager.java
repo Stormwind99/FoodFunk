@@ -32,64 +32,58 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
 public class EventManager
 {
-	@SubscribeEvent
-	public static void onEntityJoinWorld(EntityJoinWorldEvent event)
-	{		
-	    RotHandler.rot(event.getWorld(), event.getEntity());
-	}
-	
-	@SubscribeEvent
-	public static void onEntityItemPickup(EntityItemPickupEvent event)
-	{
-	    RotHandler.rot(event.getEntity().getEntityWorld(), event.getEntity());
-	}
+    @SubscribeEvent
+    public static void onEntityJoinWorld(EntityJoinWorldEvent event)
+    {		
+        RotHandler.rot(event.getWorld(), event.getEntity());
+    }
 
-	@SubscribeEvent
-	public static void onPlayerInteract(PlayerInteractEvent event)
-	{
-		if(event instanceof RightClickBlock)
-		{
-			TileEntity tile = event.getEntityPlayer().world.getTileEntity(event.getPos());
+    @SubscribeEvent
+    public static void onEntityItemPickup(EntityItemPickupEvent event)
+    {
+        RotHandler.rot(event.getEntity().getEntityWorld(), event.getEntity());
+    }
 
-			RotHandler.rot(event.getEntityPlayer().world, tile);
-		}
-	}
-
-	@SubscribeEvent
-	public static void onEntityInteract(EntityInteract event)
-	{
-		if(event.isCanceled())
-		{
-			return;
-		}
-
-		RotHandler.rot(event.getEntityPlayer().world, event.getTarget());
-	}
-
-	@SubscribeEvent
-	public static void onPlayerContainerOpen(PlayerContainerEvent.Open event)
-	{
-        if(event.isCanceled())
+    @SubscribeEvent
+    public static void onPlayerInteract(PlayerInteractEvent event)
+    {
+        if(event instanceof RightClickBlock)
         {
-            return;
+            TileEntity tile = event.getEntityPlayer().world.getTileEntity(event.getPos());
+
+            RotHandler.rot(event.getEntityPlayer().world, tile);
         }
-            
+    }
+
+    // might duplicate onPlayerInteract - remove if so
+    @SubscribeEvent
+    public static void onEntityInteract(EntityInteract event)
+    {
+        // think it is safe to rot even if (event.isCanceled())
+        RotHandler.rot(event.getEntityPlayer().world, event.getTarget());
+    }
+
+    // likely duplicates onPlayerInteract - remove if so
+    @SubscribeEvent
+    public static void onPlayerContainerOpen(PlayerContainerEvent.Open event)
+    {
+        // think it is safe to rot even if (event.isCanceled())
         RotHandler.rot(event.getEntityPlayer().world, event.getContainer());
-	}
-	
-	@SubscribeEvent
-	public static void onLivingUpdate(LivingUpdateEvent event)
-	{		
-	    EntityLivingBase entity = event.getEntityLiving();
-	    
-		if (entity.ticksExisted % Preserving.slowInterval  == 0)
-		{
-		    RotHandler.rot(event.getEntityLiving().world, entity);
-		}
-	}
-	
-	public static boolean isItemBeingCraftedBy(ItemStack stack, Entity entity)
-	{
+    }
+
+    @SubscribeEvent
+    public static void onLivingUpdate(LivingUpdateEvent event)
+    {		
+        EntityLivingBase entity = event.getEntityLiving();
+
+        if (entity.ticksExisted % Preserving.slowInterval  == 0)
+        {
+            RotHandler.rot(event.getEntityLiving().world, entity);
+        }
+    }
+
+    public static boolean isItemBeingCraftedBy(ItemStack stack, Entity entity)
+    {
         boolean beingCrafted = false;
 
         EntityPlayer player = (EntityPlayer)(entity);
@@ -106,93 +100,93 @@ public class EventManager
         }
 
         return beingCrafted;
-	}
+    }
 
-	@SubscribeEvent
-	@SideOnly(Side.CLIENT)
-	public static void onItemTooltip(ItemTooltipEvent event)
-	{
-		ItemStack stack = event.getItemStack();
-		Entity entity = event.getEntity();
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public static void onItemTooltip(ItemTooltipEvent event)
+    {
+        ItemStack stack = event.getItemStack();
+        Entity entity = event.getEntity();
 
-		if(ConfigContainer.enabled && (stack != null) && !stack.isEmpty() && (entity != null))
-		{
-			long curTime = entity.world.getTotalWorldTime();
-			
-			IRot rot = RotHelper.getRot(stack);
-						
-			RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(rot, curTime);
-			
-			if(rotTimes != null)
-			{	
-			    boolean beingCrafted = isItemBeingCraftedBy(stack, entity);
-			    String key = null;
-			    
-				if (rotTimes.isSet() && !beingCrafted)
-				{				    
-					if (rotTimes.getPercent() >= 100)
-					{
-					    key = "misc.foodfunk.tooltip.decaying";					}
-					else
-					{
-						key = "misc.foodfunk.tooltip.rot";
-					}
-				}
-				else if (rotTimes.isNoRot())
-				{
-					key = "misc.foodfunk.tooltip.preserved";					
-				}
-				else if (rotTimes.time > 0)
-				{
-					key = "misc.foodfunk.tooltip.fresh";
-				}
-				
+        if(ConfigContainer.enabled && (stack != null) && !stack.isEmpty() && (entity != null))
+        {
+            long curTime = entity.world.getTotalWorldTime();
+
+            IRot rot = RotHelper.getRot(stack);
+
+            RotHandler.RotTimes rotTimes = RotHandler.getRotTimes(rot, curTime);
+
+            if(rotTimes != null)
+            {	
+                boolean beingCrafted = isItemBeingCraftedBy(stack, entity);
+                String key = null;
+
+                if (rotTimes.isSet() && !beingCrafted)
+                {				    
+                    if (rotTimes.getPercent() >= 100)
+                    {
+                        key = "misc.foodfunk.tooltip.decaying";					}
+                    else
+                    {
+                        key = "misc.foodfunk.tooltip.rot";
+                    }
+                }
+                else if (rotTimes.isNoRot())
+                {
+                    key = "misc.foodfunk.tooltip.preserved";					
+                }
+                else if (rotTimes.time > 0)
+                {
+                    key = "misc.foodfunk.tooltip.fresh";
+                }
+
                 if (key != null)
                 {
                     event.getToolTip().add(
-                        new TextComponentTranslation( key, 
-                                rotTimes.getPercent() + "%", 
-                                rotTimes.getDaysLeft(),
-                                rotTimes.getDaysTotal()
-                                ).getUnformattedText());
+                            new TextComponentTranslation( key, 
+                                    rotTimes.getPercent() + "%", 
+                                    rotTimes.getDaysLeft(),
+                                    rotTimes.getDaysTotal()
+                                    ).getUnformattedText());
                 }
-				
-				if ( event.getFlags().isAdvanced() && ConfigContainer.zdebugging.debug )
-				{
-					event.getToolTip().add(
-							new TextComponentTranslation(
-									"misc.foodfunk.tooltip.advanced.datetime", 
-									rotTimes.getDate(),
-									rotTimes.getTime()
-									).getUnformattedText() );
-					event.getToolTip().add(
-							new TextComponentTranslation(
-									"misc.foodfunk.tooltip.advanced.expire", 
-									rotTimes.getCurTime(),
-									rotTimes.getExpirationTimestamp()
-									).getUnformattedText() );
-				}
-			}			
 
-			// TODO: add "cold" or "frozen" to tooltip if in esky or freezer
-		}
-	}
+                if ( event.getFlags().isAdvanced() && ConfigContainer.zdebugging.debug )
+                {
+                    event.getToolTip().add(
+                            new TextComponentTranslation(
+                                    "misc.foodfunk.tooltip.advanced.datetime", 
+                                    rotTimes.getDate(),
+                                    rotTimes.getTime()
+                                    ).getUnformattedText() );
+                    event.getToolTip().add(
+                            new TextComponentTranslation(
+                                    "misc.foodfunk.tooltip.advanced.expire", 
+                                    rotTimes.getCurTime(),
+                                    rotTimes.getExpirationTimestamp()
+                                    ).getUnformattedText() );
+                }
+            }			
 
-	@SubscribeEvent
-	public static void onCrafted(ItemCraftedEvent event) // Prevents exploit of making foods with almost rotten food to prolong total life of food supplies
-	{
-		if((!ConfigContainer.enabled) || event.player.world.isRemote || event.crafting == null || event.crafting.isEmpty() || event.crafting.getItem() == null)
-		{
-			return;
-		}
+            // TODO: add "cold" or "frozen" to tooltip if in esky or freezer
+        }
+    }
 
-		RotHandler.handleCraftedRot(event.player.world, event.craftMatrix, event.crafting);
-	}
-	
-	@SubscribeEvent
-	public static void onWorldTick(TickEvent.WorldTickEvent event)
-	{
-	    long timestamp = event.world.getTotalWorldTime();
-	    Rot.lastWorldTimestamp = timestamp;
-	}
+    @SubscribeEvent
+    public static void onCrafted(ItemCraftedEvent event) // Prevents exploit of making foods with almost rotten food to prolong total life of food supplies
+    {
+        if((!ConfigContainer.enabled) || event.player.world.isRemote || event.crafting == null || event.crafting.isEmpty() || event.crafting.getItem() == null)
+        {
+            return;
+        }
+
+        RotHandler.handleCraftedRot(event.player.world, event.craftMatrix, event.crafting);
+    }
+
+    @SubscribeEvent
+    public static void onWorldTick(TickEvent.WorldTickEvent event)
+    {
+        long timestamp = event.world.getTotalWorldTime();
+        Rot.lastWorldTimestamp = timestamp;
+    }
 }

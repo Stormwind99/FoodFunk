@@ -11,17 +11,17 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Mod.EventBusSubscriber
 public class EventHandler
 {
-		/**
-		 * Attach the {@link IRot} capability to vanilla items.
-		 *
-		 * @param event The event
-		 */
-		@SubscribeEvent
-		public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-			ItemStack stack = event.getObject();
-			ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
-			if (RotHandler.doesRot(rotProps)) {
-				event.addCapability(RotProvider.ID, RotHelper.createProvider(stack));
-			}
-		}
+    /**
+     * Attach the {@link IRot} capability to vanilla items.
+     *
+     * @param event The event
+     */
+    @SubscribeEvent
+    public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
+        ItemStack stack = event.getObject();
+        ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
+        if (RotHandler.doesRot(rotProps)) {
+            event.addCapability(RotProvider.ID, RotHelper.createProvider(stack));
+        }
+    }
 }
