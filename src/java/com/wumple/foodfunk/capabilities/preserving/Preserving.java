@@ -12,6 +12,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
@@ -238,6 +239,7 @@ public class Preserving implements IPreserving
         // TODO: consider player.inventoryContainer
     }
 
+    // horrible hack - find players with container open, by searching nearby and for a known item in the container
     public static NonNullList<EntityPlayer> getPlayersWithContainerOpen(TileEntity container, ItemStack itemToSearchFor)
     {
         int i = container.getPos().getX();
@@ -245,6 +247,12 @@ public class Preserving implements IPreserving
         int k = container.getPos().getZ();
 
         NonNullList<EntityPlayer> users = NonNullList.create();
+        
+        IInventory icontainer = null;
+        if (container instanceof IInventory)
+        {
+            icontainer = (IInventory)container;
+        }
 
         for (EntityPlayer player : container.getWorld().getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB((double)((float)i - 5.0F), (double)((float)j - 5.0F), (double)((float)k - 5.0F), (double)((float)(i + 1) + 5.0F), (double)((float)(j + 1) + 5.0F), (double)((float)(k + 1) + 5.0F))))
         {
@@ -254,7 +262,12 @@ public class Preserving implements IPreserving
             {
                 IInventory iinventory = ((ContainerChest)player.openContainer).getLowerChestInventory();
 
-                if (iinventory == container) // || iinventory instanceof InventoryLargeChest && ((InventoryLargeChest)iinventory).isPartOfLargeChest(this))
+                if (iinventory == container) // || (iinventory instanceof InventoryLargeChest && ((InventoryLargeChest)iinventory).isPartOfLargeChest(container))
+                {
+                    add = true;
+                }
+            
+                if (!add && (icontainer != null) && (iinventory instanceof InventoryLargeChest) && ((InventoryLargeChest)iinventory).isPartOfLargeChest(icontainer))
                 {
                     add = true;
                 }
