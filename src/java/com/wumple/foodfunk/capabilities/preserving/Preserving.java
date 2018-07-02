@@ -17,6 +17,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
@@ -32,15 +33,18 @@ public class Preserving implements IPreserving
     static public final int slowInterval = 90;
     static public final int fastInterval = 4; // when someone has chest open
 
-    // transient
+    // transient data
     // ticks since last rot refresh of contents
     int tick = 0;
     TileEntity entity = null;
     int preservingRatio = 0;
 
-    // persisted
+    // persisted data
     long lastCheckTime = ConfigHandler.DAYS_NO_ROT;
 
+    // ----------------------------------------------------------------------
+    // init
+    
     public static void register()
     {
         CapabilityManager.INSTANCE.register(IPreserving.class, new PreservingStorage(), () -> new Preserving() );
@@ -80,13 +84,12 @@ public class Preserving implements IPreserving
     }
 
     // ----------------------------------------------------------------------
-
-
+    // Internal
 
     /**
      * Automatically adjust the use-by date on food items stored within to slow or stop rot
      */
-    public void rotUpdate()
+    protected void rotUpdate()
     {
         if ( (entity.getWorld() == null) ||	entity.getWorld().isRemote )
         {
@@ -135,7 +138,7 @@ public class Preserving implements IPreserving
         }
     }
 
-    public void rotUpdateInternal(IInventory inventory, long time, long worldTime)
+    protected void rotUpdateInternal(IInventory inventory, long time, long worldTime)
     {
         final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSizeInventory(), ItemStack.EMPTY);
 
@@ -163,7 +166,7 @@ public class Preserving implements IPreserving
         }
     }
 
-    public void rotUpdateInternal(IItemHandler inventory, long time, long worldTime)
+    protected void rotUpdateInternal(IItemHandler inventory, long time, long worldTime)
     {
         final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSlots(), ItemStack.EMPTY);
 
@@ -181,16 +184,25 @@ public class Preserving implements IPreserving
                 itemToSearchFor = stack;
             }
 
+            // TODO move to Rot
             dirty |= checkStackRot(stack, time, worldTime, i, syncableItemsList);
         }
 
+        // TODO move to Rot, hopefully ContainerListenerRot will eliminate this
         if (dirty)
         {
             entity.markDirty();
 
             sendContainerUpdate(entity, itemToSearchFor, syncableItemsList);
         }
-    }	
+    }
+    
+    /*
+    protected boolean checkStackRot2(long worldTime)
+    {
+        
+    }
+    */
 
     protected boolean checkStackRot(ItemStack stack, long time, long worldTime, int index, NonNullList<ItemStack> syncableItemsList)
     {
@@ -302,20 +314,26 @@ public class Preserving implements IPreserving
     {
         return (time * preservingRatio) / 100;
     }
-
-    @SubscribeEvent
-    public void onTick(TickEvent.WorldTickEvent event)
+    
+    protected void handleOnTick(World world)
     {
         if (entity != null)
         {
             if (entity.isInvalid())
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
+                entity = null;
             }
-            else if (!event.world.isRemote)
+            else if (!world.isRemote)
             {
                 rotUpdate();
             }
-        }
+        }        
+    }
+
+    @SubscribeEvent
+    public void onTick(TickEvent.WorldTickEvent event)
+    {
+        handleOnTick(event.world);
     }
 }

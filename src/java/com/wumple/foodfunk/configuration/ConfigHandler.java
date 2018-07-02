@@ -1,5 +1,8 @@
 package com.wumple.foodfunk.configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.wumple.foodfunk.ObjectHandler;
@@ -12,11 +15,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ConfigHandler
 {
 	public static final int DAYS_NO_ROT = -1;
 	public static final long TICKS_PER_DAY = 24000L;
+	public static final String FOOD_TAG = "minecraft:food";
 	
 	public static boolean addDefaultPreservingProperty(String name, int ratio)
 	{
@@ -178,7 +183,7 @@ public class ConfigHandler
 	}
 
 	@Nullable 
-	public static RotProperty getRotPropertyBase(String key1)
+	protected static RotProperty getRotPropertyBase(String key1)
 	{
 		RotProperty rotProp = null;
 
@@ -202,10 +207,27 @@ public class ConfigHandler
 
 		return rotProp;
 	}
+	
+    @Nullable 
+    protected static RotProperty getRotPropertyBase(List<String> keys)
+    {
+        RotProperty rotProp = null;
+        
+        for (String key : keys)
+        {
+            rotProp = getRotPropertyBase(key);
+            if (rotProp != null)
+            {
+                break;
+            }
+        }
+        
+        return rotProp;
+    }
 
 
 	@Nullable 
-	public static RotProperty getRotPropertyBase(Item item)
+	protected static RotProperty getRotPropertyBase(Item item)
 	{
 		String key1 = "" + Item.REGISTRY.getNameForObject(item);
 		// WAS : look up a backup key with item meta data?
@@ -222,10 +244,8 @@ public class ConfigHandler
 		// hack-ish: handle default "minecraft:food" since a official tag for food doesn't exist (at least yet)
 		if ((prop == null) && (item instanceof ItemFood))
 		{
-			prop = getRotPropertyBase("minecraft:food");
+			prop = getRotPropertyBase(FOOD_TAG);
 		}
-
-		// TODO: tag support
 
 		return prop;
 	}
@@ -233,6 +253,34 @@ public class ConfigHandler
 	@Nullable 
 	public static RotProperty getRotProperty(ItemStack itemStack)
 	{
-		return getRotProperty(itemStack.getItem());
+	    if (itemStack == null)
+	    {
+	        return null;
+	    }
+	    
+	    ArrayList<String> nameKeys = new ArrayList<String>();
+	    
+	    Item item = itemStack.getItem();
+	    
+	    String key2 = "" + Item.REGISTRY.getNameForObject(item);
+
+	    nameKeys.add(key2 + "@" + itemStack.getMetadata());
+	    nameKeys.add(key2);
+	        
+        if (!itemStack.isEmpty())
+        {
+            int oreIds[] = OreDictionary.getOreIDs(itemStack);
+            for (int oreId : oreIds)
+            {
+                nameKeys.add( OreDictionary.getOreName(oreId) );
+            }
+        }
+        
+        if (item instanceof ItemFood)
+        {
+            nameKeys.add(FOOD_TAG);
+        }
+	    
+		return getRotPropertyBase(nameKeys);
 	}
 }
