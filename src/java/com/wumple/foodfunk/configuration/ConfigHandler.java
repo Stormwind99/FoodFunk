@@ -147,7 +147,8 @@ public class ConfigHandler
 	{
 		public String id;
 		public String rotID = null;
-		int days = ConfigHandler.DAYS_NO_ROT;
+		public int days = ConfigHandler.DAYS_NO_ROT;
+		public Integer rotMeta = null;
 
 		RotProperty()
 		{
@@ -162,7 +163,7 @@ public class ConfigHandler
 		RotProperty(String _id, String _rotID)
 		{
 			id = _id;
-			rotID = _rotID;
+			setRotID(_rotID);
 		}
 
 		public long getRotTime()
@@ -179,6 +180,29 @@ public class ConfigHandler
 		public boolean doesRot()
 		{
 			return (days > DAYS_NO_ROT);
+		}
+		
+		public void setRotID(String key)
+		{
+		    // metadata support - class:name@metadata
+		    int length = (key != null) ? key.length() : 0;
+		    if ((length >= 2) && (key.charAt(length-2) == '@'))
+		    {
+		        String metastring = key.substring(length-1);
+		        rotMeta = Integer.valueOf(metastring);
+		        rotID = key.substring(0, length-2);
+		    }
+		    else if ((length >= 3) && (key.charAt(length-3) == '@'))
+		    {
+		        String metastring = key.substring(length-2);
+		        rotMeta = Integer.valueOf(metastring);
+		        rotID = key.substring(0, length-3);
+		    }
+		    else
+		    {
+		        rotID = key;
+		        rotMeta = null;
+		    }
 		}
 	}
 
@@ -201,7 +225,7 @@ public class ConfigHandler
 			}
 			else
 			{
-				rotProp.rotID = rotID;
+				rotProp.setRotID(rotID);
 			}
 		}
 

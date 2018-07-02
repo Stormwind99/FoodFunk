@@ -1,5 +1,7 @@
 package com.wumple.foodfunk;
 
+import java.util.Random;
+
 import javax.annotation.Nullable;
 
 import com.wumple.foodfunk.capabilities.rot.IRot;
@@ -18,14 +20,18 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class RotHandler
 {
+    protected static Random random = new Random();
+    
     public static boolean doesPreserve(TileEntity it)
     {
         ResourceLocation loc = (it == null) ? null : TileEntity.getKey(it.getClass());
@@ -79,14 +85,36 @@ public class RotHandler
         }
     }
 
-    private static ItemStack forceRot(ItemStack stack, String rotID)
+    private static ItemStack forceRot(ItemStack stack, ConfigHandler.RotProperty rot)
     {
         // WAS int meta = rotProps.rotMeta < 0? item.getItemDamage() : rotProps.rotMeta;
         // int meta = stack.getMetadata();
+        
+        if (rot.rotID.isEmpty())
+        {
+            return ItemStack.EMPTY;
+        }
 
-        Item item = Item.REGISTRY.getObject(new ResourceLocation(rotID));
+        Item item = Item.REGISTRY.getObject(new ResourceLocation(rot.rotID));
 
-        return item == null ? ItemStack.EMPTY : new ItemStack(item, stack.getCount()); // , meta);
+        if (item == null)
+        {
+            NonNullList<ItemStack> ores = OreDictionary.getOres(rot.rotID);
+            if (!ores.isEmpty())
+            {
+                ItemStack choice = ores.get( random.nextInt(ores.size()) );
+                return choice.copy();
+            }
+        }
+        
+        if (item == null)
+        {
+            return ItemStack.EMPTY;
+        }
+        
+        return (rot.rotMeta == null) ? 
+                new ItemStack(item, stack.getCount()) : 
+                new ItemStack(item, stack.getCount(), rot.rotMeta.intValue());
     }
 
     public static ItemStack updateRot(World world, ItemStack stack, ConfigHandler.RotProperty rotProps)
@@ -122,7 +150,7 @@ public class RotHandler
 
         if(worldTime >= rotTimeStamp)
         {
-            return forceRot(stack, rotProps.rotID);
+            return forceRot(stack, rotProps);
         }
 
         // this shouldn't be needed - but if rotProps.rotTime changes from config change, this will update it
@@ -329,7 +357,7 @@ public class RotHandler
                 {
                     ItemStack rotItem = doRot(world, slotItem);
 
-                    if(rotItem == null || rotItem.isEmpty() || (rotItem.getItem() != slotItem.getItem()))
+                    if(rotItem == null || rotItem.isEmpty() || (rotItem != slotItem))
                     {
                         if (rotItem == null)
                         {
