@@ -4,9 +4,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.wumple.foodfunk.capabilities.preserving.Preserving;
 import com.wumple.foodfunk.capabilities.rot.Rot;
+import com.wumple.foodfunk.capability.Messages;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
-import choonster.capability.foodfunk.Messages;
 import choonster.proxy.ISidedProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;

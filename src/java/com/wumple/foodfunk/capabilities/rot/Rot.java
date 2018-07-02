@@ -1,10 +1,10 @@
 package com.wumple.foodfunk.capabilities.rot;
 
 import com.wumple.foodfunk.RotHandler;
+import com.wumple.foodfunk.capability.ContainerListenerRot;
+import com.wumple.foodfunk.capability.RotInfo;
 
 import choonster.capability.CapabilityContainerListenerManager;
-import choonster.capability.foodfunk.ContainerListenerRot;
-import choonster.capability.foodfunk.RotInfo;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 

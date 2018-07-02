@@ -1,4 +1,4 @@
-package choonster.capability.foodfunk;
+package com.wumple.foodfunk.capability;
 
 import com.wumple.foodfunk.capabilities.rot.IRot;
 

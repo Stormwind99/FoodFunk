@@ -1,6 +1,6 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package choonster.capability.foodfunk;
+package com.wumple.foodfunk.capability;
 
 import mcp.MethodsReturnNonnullByDefault;
 

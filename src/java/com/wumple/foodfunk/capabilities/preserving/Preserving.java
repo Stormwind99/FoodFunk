@@ -3,10 +3,10 @@ package com.wumple.foodfunk.capabilities.preserving;
 import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.RotHandler;
 import com.wumple.foodfunk.capabilities.rot.Rot;
+import com.wumple.foodfunk.capability.MessageBulkUpdateContainerRots;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
-import choonster.capability.foodfunk.MessageBulkUpdateContainerRots;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
