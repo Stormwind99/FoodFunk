@@ -140,9 +140,16 @@ public class Preserving implements IPreserving
 
         boolean dirty = false;
 
+        ItemStack itemToSearchFor = null;
+        
         for(int i = 0; i < inventory.getSizeInventory(); i++)
         {
             ItemStack stack = inventory.getStackInSlot(i);
+
+            if ((itemToSearchFor == null) && (!stack.isEmpty()))
+            {
+                itemToSearchFor = stack;
+            }
 
             dirty |= checkStackRot(stack, time, worldTime, i, syncableItemsList);
         }
@@ -151,7 +158,7 @@ public class Preserving implements IPreserving
         {
             entity.markDirty();
 
-            sendContainerUpdate(entity, syncableItemsList);
+            sendContainerUpdate(entity, itemToSearchFor, syncableItemsList);
         }
     }
 
@@ -160,11 +167,18 @@ public class Preserving implements IPreserving
         final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSlots(), ItemStack.EMPTY);
 
         boolean dirty = false;
+        
+        ItemStack itemToSearchFor = null;
 
         for(int i = 0; i < inventory.getSlots(); i++)
         {
             // TODO - investigate if IItemHandler.extractItem() needed instead
             ItemStack stack = inventory.getStackInSlot(i);
+            
+            if ((itemToSearchFor == null) && (!stack.isEmpty()))
+            {
+                itemToSearchFor = stack;
+            }
 
             dirty |= checkStackRot(stack, time, worldTime, i, syncableItemsList);
         }
@@ -173,7 +187,7 @@ public class Preserving implements IPreserving
         {
             entity.markDirty();
 
-            sendContainerUpdate(entity, syncableItemsList);
+            sendContainerUpdate(entity, itemToSearchFor, syncableItemsList);
         }
     }	
 
@@ -200,10 +214,10 @@ public class Preserving implements IPreserving
     }
 
 
-    protected void sendContainerUpdate(TileEntity entity, NonNullList<ItemStack> syncableItemsList)
+    protected void sendContainerUpdate(TileEntity entity, ItemStack itemToSearchFor, NonNullList<ItemStack> syncableItemsList)
     {
         // update each client/player that has this container open
-        NonNullList<EntityPlayer> users = getPlayersWithContainerOpen(entity);
+        NonNullList<EntityPlayer> users = getPlayersWithContainerOpen(entity, itemToSearchFor);
         if (!users.isEmpty())
         {
             for (EntityPlayer player : users)
@@ -224,7 +238,7 @@ public class Preserving implements IPreserving
         // TODO: consider player.inventoryContainer
     }
 
-    public static NonNullList<EntityPlayer> getPlayersWithContainerOpen(TileEntity container)
+    public static NonNullList<EntityPlayer> getPlayersWithContainerOpen(TileEntity container, ItemStack itemToSearchFor)
     {
         int i = container.getPos().getX();
         int j = container.getPos().getY();
@@ -241,6 +255,17 @@ public class Preserving implements IPreserving
                 IInventory iinventory = ((ContainerChest)player.openContainer).getLowerChestInventory();
 
                 if (iinventory == container) // || iinventory instanceof InventoryLargeChest && ((InventoryLargeChest)iinventory).isPartOfLargeChest(this))
+                {
+                    add = true;
+                }
+            }
+            
+            // horrid hack - if container contains item we know about, it is the container we are looking for
+            if (!add && (player.openContainer != null) && (itemToSearchFor != null) && (!itemToSearchFor.isEmpty()))
+            {
+                NonNullList<ItemStack> stack = player.openContainer.getInventory();
+                
+                if (stack.contains(itemToSearchFor))
                 {
                     add = true;
                 }

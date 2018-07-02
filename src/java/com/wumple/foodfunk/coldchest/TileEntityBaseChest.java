@@ -126,7 +126,7 @@ public abstract class TileEntityBaseChest extends TileEntity implements IInvento
 
 		if (!this.world.isRemote && (this.numPlayersUsing != 0) && ((this.ticksSinceSync + i + j + k) % 200 == 0))
 		{
-			this.numPlayersUsing = Preserving.getPlayersWithContainerOpen(this).size();
+			this.numPlayersUsing = Preserving.getPlayersWithContainerOpen(this, null).size();
 		}
 
 		this.prevLidAngle = this.lidAngle;
