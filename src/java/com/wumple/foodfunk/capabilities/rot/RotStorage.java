@@ -12,9 +12,13 @@ public class RotStorage implements IStorage<IRot>
 	public NBTBase writeNBT(Capability<IRot> capability, IRot instance, EnumFacing side) 
 	{ 
 		NBTTagCompound tags = new NBTTagCompound();
-		
-		tags.setLong("rotStartTimestamp", instance.getDate());
-		tags.setLong("rotLengthTime", instance.getTime());
+
+		// some other mod doing bad things?
+	    if (instance != null)
+	    {
+	        tags.setLong("rotStartTimestamp", instance.getDate());
+	        tags.setLong("rotLengthTime", instance.getTime());
+	    }
 		
 		return tags; 
 	} 
@@ -24,16 +28,20 @@ public class RotStorage implements IStorage<IRot>
 	{ 
 		NBTTagCompound tags = (NBTTagCompound)nbt;
 		
-		// handle backwards compatibility for now
-		if (tags.hasKey("EM_ROT_DATE"))
-		{
-			instance.setDate( tags.getLong("EM_ROT_DATE") );
-			instance.setTime( tags.getLong("EM_ROT_TIME") );		
-		}
-		else
-		{
-			instance.setDate( tags.getLong("rotStartTimestamp") );
-			instance.setTime( tags.getLong("rotLengthTime") );
+		// some other mod doing bad things?
+		if ((tags != null) && (instance != null))
+		{	
+    		// handle backwards compatibility for now
+    		if (tags.hasKey("EM_ROT_DATE"))
+    		{
+    			instance.setDate( tags.getLong("EM_ROT_DATE") );
+    			instance.setTime( tags.getLong("EM_ROT_TIME") );		
+    		}
+    		else
+    		{
+    			instance.setDate( tags.getLong("rotStartTimestamp") );
+    			instance.setTime( tags.getLong("rotLengthTime") );
+    		}
 		}
 	} 
 }
