@@ -22,12 +22,12 @@ public class MessageBulkUpdateContainerRots extends MessageBulkUpdateContainerCa
     @SuppressWarnings("unused")
     public MessageBulkUpdateContainerRots()
     {
-        super(RotProvider.CAPABILITY);
+        super(Rot.CAPABILITY);
     }
 
     public MessageBulkUpdateContainerRots(final int windowID, final NonNullList<ItemStack> items)
     {
-        super(RotProvider.CAPABILITY, null, windowID, items);
+        super(Rot.CAPABILITY, null, windowID, items);
     }
 
     /**

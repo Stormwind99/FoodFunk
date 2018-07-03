@@ -1,6 +1,7 @@
 package com.wumple.foodfunk.capability.preserving;
 
 import com.wumple.foodfunk.FoodFunk;
+import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.MessageBulkUpdateContainerRots;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
@@ -14,9 +15,13 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -27,6 +32,14 @@ import net.minecraftforge.items.IItemHandler;
 @Mod.EventBusSubscriber
 public class Preserving implements IPreserving
 {
+    // The {@link Capability} instance
+    @CapabilityInject(IPreserving.class)
+    public static final Capability<IPreserving> CAPABILITY = null;
+    public static final EnumFacing DEFAULT_FACING = null;
+
+    // IDs of the capability
+    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "preserving");
+    
     // ticks to wait until rot refresh of contents
     static public final int slowInterval = 90;
     static public final int fastInterval = 4; // when someone has chest open

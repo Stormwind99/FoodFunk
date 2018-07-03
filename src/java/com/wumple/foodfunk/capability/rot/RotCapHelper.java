@@ -18,7 +18,7 @@ public class RotCapHelper
     @Nullable
     public static IRot getRot(@Nullable ItemStack itemStack)
     {
-        return CapabilityUtils.getCapability(itemStack, RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING);
+        return CapabilityUtils.getCapability(itemStack, Rot.CAPABILITY, Rot.DEFAULT_FACING);
     }
 
     /**
@@ -28,10 +28,10 @@ public class RotCapHelper
      */
     public static ICapabilityProvider createProvider(ItemStack stack)
     {
-        // return new SimpleCapabilityProvider<>(RotProvider.CAPABILITY,
-        // RotProvider.DEFAULT_FACING);
+        // return new SimpleCapabilityProvider<>(Rot.CAPABILITY,
+        // Rot.DEFAULT_FACING);
 
-        return new RotProvider(RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING, stack);
+        return new RotProvider(Rot.CAPABILITY, Rot.DEFAULT_FACING, stack);
     }
 
     /**
@@ -43,9 +43,9 @@ public class RotCapHelper
      */
     public static ICapabilityProvider createProvider(IRot capability, ItemStack stack)
     {
-        // return new SimpleCapabilityProvider<>(RotProvider.CAPABILITY,
-        // RotProvider.DEFAULT_FACING, capability);
+        // return new SimpleCapabilityProvider<>(Rot.CAPABILITY,
+        // Rot.DEFAULT_FACING, capability);
 
-        return new RotProvider(RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING, capability, stack);
+        return new RotProvider(Rot.CAPABILITY, Rot.DEFAULT_FACING, capability, stack);
     }
 }

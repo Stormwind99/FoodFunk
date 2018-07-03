@@ -1,7 +1,7 @@
 package com.wumple.foodfunk.capability;
 
 import com.wumple.foodfunk.capability.rot.IRot;
-import com.wumple.foodfunk.capability.rot.RotProvider;
+import com.wumple.foodfunk.capability.rot.Rot;
 
 import choonster.capability.CapabilityContainerListener;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -19,7 +19,7 @@ public class ContainerListenerRot extends CapabilityContainerListener<IRot>
 
     public ContainerListenerRot(final EntityPlayerMP player)
     {
-        super(player, RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING);
+        super(player, Rot.CAPABILITY, Rot.DEFAULT_FACING);
     }
 
     /**

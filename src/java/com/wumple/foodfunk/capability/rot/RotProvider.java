@@ -15,14 +15,6 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class RotProvider extends SimpleCapabilityProvider<IRot>
 {
-    // The {@link Capability} instance
-    @CapabilityInject(IRot.class)
-    public static final Capability<IRot> CAPABILITY = null;
-    public static final EnumFacing DEFAULT_FACING = null;
-
-    // IDs of the capability
-    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "rot");
-
     ItemStack owner = null;
 
     public RotProvider(Capability<IRot> capability, @Nullable EnumFacing facing, ItemStack stack)

@@ -1,7 +1,12 @@
 package com.wumple.foodfunk;
 
-import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.preserving.Preserving;
+import com.wumple.foodfunk.capability.rot.IRot;
+import com.wumple.foodfunk.capability.rot.Rot;
+import com.wumple.foodfunk.capability.rot.RotCapHelper;
+import com.wumple.foodfunk.capability.rot.RotHandler;
+import com.wumple.foodfunk.capability.rot.RotHelper;
+import com.wumple.foodfunk.capability.rot.RotProvider;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
@@ -36,7 +41,7 @@ public class EventHandler
     public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
         ItemStack stack = event.getObject();
         if (ConfigHandler.Rotting.doesRot(stack)) {
-            event.addCapability(RotProvider.ID, RotCapHelper.createProvider(stack));
+            event.addCapability(Rot.ID, RotCapHelper.createProvider(stack));
         }
     }
     

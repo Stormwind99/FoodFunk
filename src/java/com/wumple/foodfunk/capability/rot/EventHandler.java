@@ -39,7 +39,7 @@ public class EventHandler
         ItemStack stack = event.getObject();
         if (ConfigHandler.Rotting.doesRot(stack))
         {
-            event.addCapability(RotProvider.ID, RotCapHelper.createProvider(stack));
+            event.addCapability(Rot.ID, RotCapHelper.createProvider(stack));
         }
     }
 

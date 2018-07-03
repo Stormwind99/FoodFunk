@@ -3,6 +3,7 @@ package com.wumple.foodfunk.capability.rot;
 import java.util.List;
 import java.util.Random;
 
+import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.ContainerListenerRot;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
@@ -14,15 +15,26 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class Rot implements IRot
 {
+    // The {@link Capability} instance
+    @CapabilityInject(IRot.class)
+    public static final Capability<IRot> CAPABILITY = null;
+    public static final EnumFacing DEFAULT_FACING = null;
+
+    // IDs of the capability
+    public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "rot");
+    
     protected static Random random = new Random();
     protected static long lastWorldTimestamp = 0;
 

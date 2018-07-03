@@ -21,7 +21,7 @@ public class PreservingHelper
     @Nullable
     public static IPreserving getPreserving(@Nullable TileEntity it)
     {
-        return CapabilityUtils.getCapability(it, PreservingProvider.CAPABILITY, PreservingProvider.DEFAULT_FACING);
+        return CapabilityUtils.getCapability(it, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
     }
 
     /**
@@ -31,10 +31,10 @@ public class PreservingHelper
      */
     public static ICapabilityProvider createProvider(TileEntity owner)
     {
-        // return new SimpleCapabilityProvider<>(RotProvider.CAPABILITY,
-        // RotProvider.DEFAULT_FACING);
+        // return new SimpleCapabilityProvider<>(Rot.CAPABILITY,
+        // Rot.DEFAULT_FACING);
 
-        return new PreservingProvider(PreservingProvider.CAPABILITY, PreservingProvider.DEFAULT_FACING, owner);
+        return new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, owner);
     }
 
     /**
@@ -46,10 +46,10 @@ public class PreservingHelper
      */
     public static ICapabilityProvider createProvider(IPreserving capability, TileEntity owner)
     {
-        // return new SimpleCapabilityProvider<>(PreservingProvider.CAPABILITY,
-        // PreservingProvider.DEFAULT_FACING, capability);
+        // return new SimpleCapabilityProvider<>(Preserving.CAPABILITY,
+        // Preserving.DEFAULT_FACING, capability);
 
-        return new PreservingProvider(PreservingProvider.CAPABILITY, PreservingProvider.DEFAULT_FACING, capability,
+        return new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, capability,
                 owner);
     }
 }

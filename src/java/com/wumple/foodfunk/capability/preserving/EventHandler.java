@@ -23,9 +23,8 @@ public class EventHandler
 
         if (ConfigHandler.Preserving.doesPreserve(entity))
         {
-            PreservingProvider provider = new PreservingProvider(PreservingProvider.CAPABILITY,
-                    PreservingProvider.DEFAULT_FACING, entity);
-            event.addCapability(PreservingProvider.ID, provider);
+            PreservingProvider provider = new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, entity);
+            event.addCapability(Preserving.ID, provider);
         }
     }
 }

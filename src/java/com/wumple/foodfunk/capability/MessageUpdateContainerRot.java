@@ -22,12 +22,12 @@ public class MessageUpdateContainerRot extends MessageUpdateContainerCapability<
     @SuppressWarnings("unused")
     public MessageUpdateContainerRot()
     {
-        super(RotProvider.CAPABILITY);
+        super(Rot.CAPABILITY);
     }
 
     public MessageUpdateContainerRot(final int windowID, final int slotNumber, final IRot cap)
     {
-        super(RotProvider.CAPABILITY, RotProvider.DEFAULT_FACING, windowID, slotNumber, cap);
+        super(Rot.CAPABILITY, Rot.DEFAULT_FACING, windowID, slotNumber, cap);
     }
 
     /**
