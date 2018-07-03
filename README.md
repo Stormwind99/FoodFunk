@@ -2,10 +2,10 @@
 
 Minecraft mod: What is that funky smell in my backpack? Food spoils over time unless preserved. Configure any item to rot, any container to preserve items.
 
-* Food [rots](Food-Spoiling-(Rot)) over time.  Make any item [rot](Food-Spoiling-(Rot)) into any other item (or none at all) over a specified time (via [configuration](Configuration)).
-* Preserving containers (the [Esky](Esky) and [Freezer](Freezer)) slow or stop rot a specified amount.  Add more via [configuration](Configuration).
-* Default [configuration](Configuration) entries support vanilla Minecraft and [other food mods](Compatibility). 
-* Any item from any mod can be [specified](Configuration), and specifiers include support for metadata and ore dictionary names.
+* Food [rots](https://github.com/Stormwind99/FoodFunk/wiki/Food-Spoiling-(Rot)) over time.  Make any item [rot](https://github.com/Stormwind99/FoodFunk/wiki/Food-Spoiling-(Rot)) into any other item (or none at all) over a specified time (via [configuration](https://github.com/Stormwind99/FoodFunk/wiki/Configuration)).
+* Preserving containers (the [Esky](https://github.com/Stormwind99/FoodFunk/wiki/Esky) and [Freezer](https://github.com/Stormwind99/FoodFunk/wiki/Freezer)) slow or stop rot a specified amount.  Add more via [configuration](https://github.com/Stormwind99/FoodFunk/wiki/Configuration).
+* Default [configuration](https://github.com/Stormwind99/FoodFunk/wiki/Configuration) entries support vanilla Minecraft and [other food mods](https://github.com/Stormwind99/FoodFunk/wiki/Compatibility). 
+* Any item from any mod can be [specified](https://github.com/Stormwind99/FoodFunk/wiki/Configuration), and specifiers include support for metadata and ore dictionary names.
 
 ## Screenshots
 
