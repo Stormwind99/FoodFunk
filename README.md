@@ -1,6 +1,6 @@
 # Food Funk
 
-Minecraft mod: What is that funky smell in my backpack? Food spoils over time. Any item can be configured to rot or preserve.
+Minecraft mod: What is that funky smell in my backpack? Food spoils over time unless preserved. Configure any item to rot, any container to preserve items.
 
 * Food [rots](Food-Spoiling-(Rot)) over time.  Make any item [rot](Food-Spoiling-(Rot)) into any other item (or none at all) over a specified time (via [configuration](Configuration)).
 * Preserving containers (the [Esky](Esky) and [Freezer](Freezer)) slow or stop rot a specified amount.  Add more via [configuration](Configuration).
