@@ -15,7 +15,7 @@ Minecraft mod: What is that funky smell in my backpack? Food spoils over time un
 ## Credits
 
 * [Stormwind99](https://github.com/Stormwind99) - author
-* [Funwayguy](https://github.com/Funwayguy), [GenDeathrow](https://github.com/GenDeathrow), [thislooksfun](https://github.com/thislooksfun), [TimbuckTato](https://github.com/TimbuckTato) - authors of [EnviroMine](https://minecraft.curseforge.com/projects/enviromine)
+* [Funwayguy](https://github.com/Funwayguy), [GenDeathrow](https://github.com/GenDeathrow), [thislooksfun](https://github.com/thislooksfun), [TimbuckTato](https://github.com/TimbuckTato) - authors of discontinued [EnviroMine](https://minecraft.curseforge.com/projects/enviromine) mod
    * Inspired by the food rot feature - thanks to the authors!
    * Some item and block textures, text, and code snippets 
    * If you want food rot for 1.7.10 or earlier, consider [EnviroMine](https://minecraft.curseforge.com/projects/enviromine) - it's lots of fun!
