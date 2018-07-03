@@ -16,38 +16,50 @@ import javax.annotation.Nullable;
  *
  * @author Choonster
  */
-public class CapabilityProviderSerializable<HANDLER> extends CapabilityProviderSimple<HANDLER> implements INBTSerializable<NBTBase> {
+public class CapabilityProviderSerializable<HANDLER> extends CapabilityProviderSimple<HANDLER>
+        implements INBTSerializable<NBTBase>
+{
 
-	/**
-	 * Create a provider for the default handler instance.
-	 *
-	 * @param capability The Capability instance to provide the handler for
-	 * @param facing     The EnumFacing to provide the handler for
-	 */
-	public CapabilityProviderSerializable(final Capability<HANDLER> capability, @Nullable final EnumFacing facing) {
-		this(capability, facing, capability.getDefaultInstance());
-	}
+    /**
+     * Create a provider for the default handler instance.
+     *
+     * @param capability
+     *            The Capability instance to provide the handler for
+     * @param facing
+     *            The EnumFacing to provide the handler for
+     */
+    public CapabilityProviderSerializable(final Capability<HANDLER> capability, @Nullable final EnumFacing facing)
+    {
+        this(capability, facing, capability.getDefaultInstance());
+    }
 
-	/**
-	 * Create a provider for the specified handler instance.
-	 *
-	 * @param capability The Capability instance to provide the handler for
-	 * @param facing     The EnumFacing to provide the handler for
-	 * @param instance   The handler instance to provide
-	 */
-	public CapabilityProviderSerializable(final Capability<HANDLER> capability, @Nullable final EnumFacing facing, @Nullable final HANDLER instance) {
-		super(capability, facing, instance);
-	}
+    /**
+     * Create a provider for the specified handler instance.
+     *
+     * @param capability
+     *            The Capability instance to provide the handler for
+     * @param facing
+     *            The EnumFacing to provide the handler for
+     * @param instance
+     *            The handler instance to provide
+     */
+    public CapabilityProviderSerializable(final Capability<HANDLER> capability, @Nullable final EnumFacing facing,
+            @Nullable final HANDLER instance)
+    {
+        super(capability, facing, instance);
+    }
 
-	@Nullable
-	@Override
-	public NBTBase serializeNBT() {
-		return getCapability().writeNBT(getInstance(), getFacing());
-	}
+    @Nullable
+    @Override
+    public NBTBase serializeNBT()
+    {
+        return getCapability().writeNBT(getInstance(), getFacing());
+    }
 
-	@Override
-	public void deserializeNBT(final NBTBase nbt) {
-		getCapability().readNBT(getInstance(), getFacing(), nbt);
-	}
+    @Override
+    public void deserializeNBT(final NBTBase nbt)
+    {
+        getCapability().readNBT(getInstance(), getFacing(), nbt);
+    }
 
 }

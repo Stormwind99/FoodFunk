@@ -1,6 +1,6 @@
-package com.wumple.foodfunk.capabilities.preserving;
+package com.wumple.foodfunk.capability.preserving;
 
-import com.wumple.foodfunk.RotHandler;
+import com.wumple.foodfunk.configuration.ConfigHandler;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -13,14 +13,18 @@ public class EventHandler
     /**
      * Attach the {@link IPreserving} capability to relevant items.
      *
-     * @param event The event
+     * @param event
+     *            The event
      */
     @SubscribeEvent
-    public static void attachCapabilities(AttachCapabilitiesEvent<TileEntity> event) {
+    public static void attachCapabilities(AttachCapabilitiesEvent<TileEntity> event)
+    {
         TileEntity entity = event.getObject();
 
-        if (RotHandler.doesPreserve(entity)) {
-            PreservingProvider provider = new PreservingProvider(PreservingProvider.CAPABILITY, PreservingProvider.DEFAULT_FACING, entity);
+        if (ConfigHandler.Preserving.doesPreserve(entity))
+        {
+            PreservingProvider provider = new PreservingProvider(PreservingProvider.CAPABILITY,
+                    PreservingProvider.DEFAULT_FACING, entity);
             event.addCapability(PreservingProvider.ID, provider);
         }
     }

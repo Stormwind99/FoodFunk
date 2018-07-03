@@ -3,7 +3,7 @@ package com.wumple.misc;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-public class OreDictionaryHelper
+public class OreDictionaryUtil
 {
     public static boolean hasOreName(ItemStack stack, String oreName)
     {
@@ -18,7 +18,8 @@ public class OreDictionaryHelper
         int id = OreDictionary.getOreID(oreName);
         for (int i : OreDictionary.getOreIDs(stack))
         {
-            if (i == id) return true;
+            if (i == id)
+                return true;
         }
         return false;
     }

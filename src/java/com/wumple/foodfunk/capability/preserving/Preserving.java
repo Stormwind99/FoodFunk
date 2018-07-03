@@ -1,22 +1,20 @@
-package com.wumple.foodfunk.capabilities.preserving;
+package com.wumple.foodfunk.capability.preserving;
 
 import com.wumple.foodfunk.FoodFunk;
-import com.wumple.foodfunk.RotHandler;
-import com.wumple.foodfunk.capabilities.rot.Rot;
 import com.wumple.foodfunk.capability.MessageBulkUpdateContainerRots;
-import com.wumple.foodfunk.configuration.ConfigContainer;
+import com.wumple.foodfunk.capability.rot.IRot;
+import com.wumple.foodfunk.capability.rot.Rot;
+import com.wumple.foodfunk.capability.rot.RotCapHelper;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.misc.ContainerUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -35,19 +33,19 @@ public class Preserving implements IPreserving
 
     // transient data
     // ticks since last rot refresh of contents
-    int tick = 0;
-    TileEntity entity = null;
-    int preservingRatio = 0;
+    protected int tick = 0;
+    protected TileEntity entity = null;
+    protected int preservingRatio = 0;
 
     // persisted data
     long lastCheckTime = ConfigHandler.DAYS_NO_ROT;
 
     // ----------------------------------------------------------------------
-    // init
-    
+    // Init
+
     public static void register()
     {
-        CapabilityManager.INSTANCE.register(IPreserving.class, new PreservingStorage(), () -> new Preserving() );
+        CapabilityManager.INSTANCE.register(IPreserving.class, new PreservingStorage(), () -> new Preserving());
     }
 
     Preserving()
@@ -74,24 +72,24 @@ public class Preserving implements IPreserving
         lastCheckTime = time;
     }
 
+    /*
+     * Set the owner of this capability, and init based on that owner
+     */
     public void setOwner(TileEntity ownerIn)
     {
         if (entity != ownerIn)
         {
             entity = ownerIn;
-            lastCheckTime = Rot.lastWorldTimestamp;
+            lastCheckTime = Rot.getLastWorldTimestamp();
         }
     }
-
-    // ----------------------------------------------------------------------
-    // Internal
 
     /**
      * Automatically adjust the use-by date on food items stored within to slow or stop rot
      */
-    protected void rotUpdate()
+    public void freshenContents()
     {
-        if ( (entity.getWorld() == null) ||	entity.getWorld().isRemote )
+        if ((entity.getWorld() == null) || entity.getWorld().isRemote)
         {
             return;
         }
@@ -99,7 +97,7 @@ public class Preserving implements IPreserving
         // tick of 0 represents "cache any transient data" like preserving ratio
         if (tick == 0)
         {
-            preservingRatio = RotHandler.getPreservingRatio(entity);
+            preservingRatio = ConfigHandler.Preserving.getPreservingRatio(entity);
         }
 
         if (tick < slowInterval)
@@ -113,7 +111,7 @@ public class Preserving implements IPreserving
 
         long worldTime = entity.getWorld().getTotalWorldTime();
 
-        if(lastCheckTime <= ConfigHandler.DAYS_NO_ROT)
+        if (lastCheckTime <= ConfigHandler.DAYS_NO_ROT)
         {
             lastCheckTime = worldTime;
         }
@@ -121,32 +119,39 @@ public class Preserving implements IPreserving
         long time = worldTime - lastCheckTime;
         lastCheckTime = worldTime;
 
-        rotUpdateInternal(time, worldTime);
+        freshenContentsAny(time, worldTime);
     }
 
-    protected void rotUpdateInternal(long time, long worldTime)
+    // ----------------------------------------------------------------------
+    // Internal
+
+    /**
+     * Automatically adjust the use-by date on food items stored within to slow or stop rot
+     */
+    protected void freshenContentsAny(long time, long worldTime)
     {
         if (entity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
         {
             IItemHandler capability = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-            rotUpdateInternal(capability, time, worldTime);
+            freshenTheseContents(capability, time, worldTime);
         }
         else if (entity instanceof IInventory)
-        {	
-            IInventory inventory = (IInventory)entity;
-            rotUpdateInternal(inventory, time, worldTime);
+        {
+            IInventory inventory = (IInventory) entity;
+            freshenTheseContents(inventory, time, worldTime);
         }
     }
 
-    protected void rotUpdateInternal(IInventory inventory, long time, long worldTime)
+    protected void freshenTheseContents(IInventory inventory, long time, long worldTime)
     {
-        final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSizeInventory(), ItemStack.EMPTY);
+        final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSizeInventory(),
+                ItemStack.EMPTY);
 
         boolean dirty = false;
 
         ItemStack itemToSearchFor = null;
-        
-        for(int i = 0; i < inventory.getSizeInventory(); i++)
+
+        for (int i = 0; i < inventory.getSizeInventory(); i++)
         {
             ItemStack stack = inventory.getStackInSlot(i);
 
@@ -155,7 +160,7 @@ public class Preserving implements IPreserving
                 itemToSearchFor = stack;
             }
 
-            dirty |= checkStackRot(stack, time, worldTime, i, syncableItemsList);
+            dirty |= freshenStack(stack, time, worldTime, i, syncableItemsList);
         }
 
         if (dirty)
@@ -166,26 +171,26 @@ public class Preserving implements IPreserving
         }
     }
 
-    protected void rotUpdateInternal(IItemHandler inventory, long time, long worldTime)
+    protected void freshenTheseContents(IItemHandler inventory, long time, long worldTime)
     {
         final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSlots(), ItemStack.EMPTY);
 
         boolean dirty = false;
-        
+
         ItemStack itemToSearchFor = null;
 
-        for(int i = 0; i < inventory.getSlots(); i++)
+        for (int i = 0; i < inventory.getSlots(); i++)
         {
             // TODO - investigate if IItemHandler.extractItem() needed instead
             ItemStack stack = inventory.getStackInSlot(i);
-            
+
             if ((itemToSearchFor == null) && (!stack.isEmpty()))
             {
                 itemToSearchFor = stack;
             }
 
             // TODO move to Rot
-            dirty |= checkStackRot(stack, time, worldTime, i, syncableItemsList);
+            dirty |= freshenStack(stack, time, worldTime, i, syncableItemsList);
         }
 
         // TODO move to Rot, hopefully ContainerListenerRot will eliminate this
@@ -196,41 +201,33 @@ public class Preserving implements IPreserving
             sendContainerUpdate(entity, itemToSearchFor, syncableItemsList);
         }
     }
-    
-    /*
-    protected boolean checkStackRot2(long worldTime)
-    {
-        
-    }
-    */
 
-    protected boolean checkStackRot(ItemStack stack, long time, long worldTime, int index, NonNullList<ItemStack> syncableItemsList)
+    protected boolean freshenStack(ItemStack stack, long time, long worldTime, int index,
+            NonNullList<ItemStack> syncableItemsList)
     {
-        if((stack == null) || stack.isEmpty())
+        if ((stack == null) || stack.isEmpty())
         {
             return false;
         }
 
-        ConfigHandler.RotProperty rotProps = ConfigHandler.getRotProperty(stack);
+        IRot cap = RotCapHelper.getRot(stack);
 
-        if ((!ConfigContainer.enabled) || (!RotHandler.doesRot(rotProps)))
+        if (cap != null)
         {
-            stack = RotHandler.clearRotData(stack);
-        } 
-        else
-        {
-            stack = RotHandler.rescheduleRot(stack, getRotTime(time), worldTime);
+            cap.reschedule(time);
+            syncableItemsList.set(index, stack);
         }
 
         syncableItemsList.set(index, stack);
         return true;
     }
 
-
-    protected void sendContainerUpdate(TileEntity entity, ItemStack itemToSearchFor, NonNullList<ItemStack> syncableItemsList)
+    // TODO have Rot or ContainerListenerRot do this instead
+    protected void sendContainerUpdate(TileEntity entity, ItemStack itemToSearchFor,
+            NonNullList<ItemStack> syncableItemsList)
     {
         // update each client/player that has this container open
-        NonNullList<EntityPlayer> users = getPlayersWithContainerOpen(entity, itemToSearchFor);
+        NonNullList<EntityPlayer> users = ContainerUtil.getPlayersWithContainerOpen(entity, itemToSearchFor);
         if (!users.isEmpty())
         {
             for (EntityPlayer player : users)
@@ -238,73 +235,18 @@ public class Preserving implements IPreserving
                 if (player instanceof EntityPlayerMP)
                 {
                     Container containerToSend = player.openContainer;
-                    final MessageBulkUpdateContainerRots message = new MessageBulkUpdateContainerRots(containerToSend.windowId, syncableItemsList);
-                    // Don't send the message if there's nothing to update	
+                    final MessageBulkUpdateContainerRots message = new MessageBulkUpdateContainerRots(
+                            containerToSend.windowId, syncableItemsList);
+                    // Don't send the message if there's nothing to update
                     if (message.hasData())
                     {
-                        FoodFunk.network.sendTo(message, (EntityPlayerMP)player);
+                        FoodFunk.network.sendTo(message, (EntityPlayerMP) player);
                     }
                 }
             }
         }
 
         // TODO: consider player.inventoryContainer
-    }
-
-    // horrible hack - find players with container open, by searching nearby and for a known item in the container
-    public static NonNullList<EntityPlayer> getPlayersWithContainerOpen(TileEntity container, ItemStack itemToSearchFor)
-    {
-        int i = container.getPos().getX();
-        int j = container.getPos().getY();
-        int k = container.getPos().getZ();
-
-        NonNullList<EntityPlayer> users = NonNullList.create();
-        
-        IInventory icontainer = null;
-        if (container instanceof IInventory)
-        {
-            icontainer = (IInventory)container;
-        }
-
-        for (EntityPlayer player : container.getWorld().getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB((double)((float)i - 5.0F), (double)((float)j - 5.0F), (double)((float)k - 5.0F), (double)((float)(i + 1) + 5.0F), (double)((float)(j + 1) + 5.0F), (double)((float)(k + 1) + 5.0F))))
-        {
-            boolean add = false;
-
-            if (player.openContainer instanceof ContainerChest)
-            {
-                IInventory iinventory = ((ContainerChest)player.openContainer).getLowerChestInventory();
-
-                if (iinventory == container) // || (iinventory instanceof InventoryLargeChest && ((InventoryLargeChest)iinventory).isPartOfLargeChest(container))
-                {
-                    add = true;
-                }
-            
-                if (!add && (icontainer != null) && (iinventory instanceof InventoryLargeChest) && ((InventoryLargeChest)iinventory).isPartOfLargeChest(icontainer))
-                {
-                    add = true;
-                }
-            }
-            
-            // horrid hack - if container contains item we know about, it is the container we are looking for
-            if (!add && (player.openContainer != null) && (itemToSearchFor != null) && (!itemToSearchFor.isEmpty()))
-            {
-                NonNullList<ItemStack> stack = player.openContainer.getInventory();
-                
-                if (stack.contains(itemToSearchFor))
-                {
-                    add = true;
-                }
-            }
-
-            // if player.openContainer.listeners
-
-            if (add)
-            {
-                users.add(player);
-            }
-        }
-
-        return users;
     }
 
     /**
@@ -314,7 +256,7 @@ public class Preserving implements IPreserving
     {
         return (time * preservingRatio) / 100;
     }
-    
+
     protected void handleOnTick(World world)
     {
         if (entity != null)
@@ -326,10 +268,13 @@ public class Preserving implements IPreserving
             }
             else if (!world.isRemote)
             {
-                rotUpdate();
+                freshenContents();
             }
-        }        
+        }
     }
+
+    // ----------------------------------------------------------------------
+    // Event Handlers
 
     @SubscribeEvent
     public void onTick(TickEvent.WorldTickEvent event)
