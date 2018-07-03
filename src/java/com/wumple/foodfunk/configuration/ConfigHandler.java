@@ -30,8 +30,7 @@ public class ConfigHandler
         Rotting.addDefaultRotProperty("minecraft:food", ObjectHandler.rotten_food, 7);
         Rotting.addDefaultRotProperty(Items.ROTTEN_FLESH, "minecraft:rotten_flesh", null, DAYS_NO_ROT);
         Rotting.addDefaultRotProperty(ObjectHandler.rotten_food, "foodfunk:rotten_food", null, DAYS_NO_ROT);
-        // TODO Rotting.addDefaultRotProperty(ObjectHandler.rotted_item, null,
-        // DAYS_NO_ROT);
+        // TODO Rotting.addDefaultRotProperty(ObjectHandler.rotted_item, null, DAYS_NO_ROT);
         Rotting.addDefaultRotProperty(Items.MILK_BUCKET, "minecraft:milk_bucket", ObjectHandler.spoiled_milk, 7);
         Rotting.addDefaultRotProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 7);
         Rotting.addDefaultRotProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:fermented_spider_eye", Items.ROTTEN_FLESH,
@@ -48,8 +47,7 @@ public class ConfigHandler
         Preserving.addDefaultPreservingProperty("foodfunk:esky", 50);
         Preserving.addDefaultPreservingProperty("foodfunk:freezer", 100);
         Preserving.addDefaultPreservingProperty("cookingforblockheads:fridge", 50);
-        // Doubt this next one will work until cookingforblockheads does the CM 1.13
-        // flattening
+        // Doubt this next one will work until cookingforblockheads does the MC 1.1 flattening
         Preserving.addDefaultPreservingProperty("cookingforblockheads:ice_unit", 100);
         Preserving.addDefaultPreservingProperty("cfm:esky", 50);
         Preserving.addDefaultPreservingProperty("minecraft:cfmesky", 50);
