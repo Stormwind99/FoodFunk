@@ -41,10 +41,14 @@ public class Rot implements IRot
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "rot");
     
     // MAYBE re-init on WorldEvent.Load instead of waiting for first world tick to do so via handler
+    // the last world time/tick count/timestamp received during world tick
+    //    needed since no access to world later
     protected static long lastWorldTimestamp = 0;
     protected static Random random = new Random();
 
+    // RotInfo holds the rot data (composition due to cap network serialization classes)
     protected RotInfo info = new RotInfo();
+    // what itemstack is this cap attached to?
     ItemStack owner = null;
 
     public static void register()
@@ -177,10 +181,6 @@ public class Rot implements IRot
             owner = null;
             return forceRot(stack, rotProps);
         }
-
-        // this shouldn't be needed - but if rotProps.rotTime changes from config
-        // change, this will update it
-        setRot(UBD, rotTime);
 
         return stack;
     }
@@ -315,11 +315,11 @@ public class Rot implements IRot
         {
             key = "misc.foodfunk.tooltip.state.cold0";
         }
-        else if ((ratio > 0) && (ratio < 50))
+        else if ((ratio > 0) && (ratio <= 50))
         {
             key = "misc.foodfunk.tooltip.state.cold1";
         }
-        else if ((ratio >= 50) && (ratio < 100))
+        else if ((ratio > 50) && (ratio < 100))
         {
             key = "misc.foodfunk.tooltip.state.cold2";
         }

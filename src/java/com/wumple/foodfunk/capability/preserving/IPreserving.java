@@ -4,11 +4,17 @@ import net.minecraft.tileentity.TileEntity;
 
 public interface IPreserving
 {
+    /**
+     * Get the timestamp of the last check of this preserving cap owner's items
+     */
     long getLastCheckTime();
 
+    /**
+     * Set the timestamp of the last check of this preserving cap owner's items
+     */
     void setLastCheckTime(long time);
 
-    /*
+    /**
      * Set the owner of this capability, and init based on that owner
      */
     void setOwner(TileEntity ownerIn);
