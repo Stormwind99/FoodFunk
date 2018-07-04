@@ -13,14 +13,14 @@ achievement.foodfunk.TenSecondRule=10 Second Rule
 
 achievement.foodfunk.TenSecondRule.desc=Eat rotten food
 
-misc.foodfunk.tooltip.decaying=Decaying
-misc.foodfunk.tooltip.preserved=Preserved
-misc.foodfunk.tooltip.fresh=Fresh %3$s days
-misc.foodfunk.tooltip.rot=Rotten: %s (Day %s/%s)
+misc.foodfunk.tooltip.decaying=§4Decaying§r
+misc.foodfunk.tooltip.preserved=§ePreserved§r
+misc.foodfunk.tooltip.fresh=§aFresh %3$s days§r
+misc.foodfunk.tooltip.rot=Rotten: %s §6(Day %s/%s)§r
 misc.foodfunk.tooltip.advanced.datetime=Date %s Time %s
 misc.foodfunk.tooltip.advanced.expire=When %s / %s
 
-misc.foodfunk.tooltip.state.cold0=Ambient temperature
-misc.foodfunk.tooltip.state.cold1=Chilled
-misc.foodfunk.tooltip.state.cold2=Cold
-misc.foodfunk.tooltip.state.cold3=Frozen
+misc.foodfunk.tooltip.state.cold0=§7Ambient temperature§r
+misc.foodfunk.tooltip.state.cold1=§1Chilled§r
+misc.foodfunk.tooltip.state.cold2=§9Cold§r
+misc.foodfunk.tooltip.state.cold3=§bFrozen§r

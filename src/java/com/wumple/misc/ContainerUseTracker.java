@@ -105,21 +105,8 @@ public class ContainerUseTracker
     public static TileEntity getUsedContainer(Entity player, ItemStack stack)
     {
         TileEntity tileentity = getUsedContainer(player);
-        // MAYBE GuiScreenEvent.DrawScreenEvent.Pre(screen, mouseX, mouseY, partialTicks)
-        // GuiChest.hoveredSlot, inventoryRows, inventorySlots, lowerChestInventory, upperChestInventory
-        // Minecraft.currentScreen
-        //GuiChest guichest = (GuiChest)Minecraft.getMinecraft().currentScreen;
-        //guichest.inventorySlots;
-        //guichest.getSlotUnderMouse();
-        //guichest.inventorySlots.getInventory();
-        //guichest.inventorySlots.getSlot(slotId);
-        //guichest.inventorySlots.inventorySlots;
-        //guichest.inventorySlots.inventoryItemStacks;
-        //guichest.inventorySlots.
-        //slot.inventory
-        //NonNullList<ItemStack> ilist = guichest.inventorySlots.getInventory();
-        //guichest.inventorySlots.getSlot(slotId);
-        //return ContainerUtil.doesContain(tileentity, stack) ? tileentity : null;
+        
+        // Wish we could check that tileentity contained stack and slot held stack
         
         GuiScreen guiscreen = Minecraft.getMinecraft().currentScreen;
         if (guiscreen instanceof GuiChest)

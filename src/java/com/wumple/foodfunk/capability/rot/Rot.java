@@ -184,7 +184,7 @@ public class Rot implements IRot
 
         return stack;
     }
-
+    
     /*
      * Build tooltip info based on this rot
      */
@@ -194,66 +194,31 @@ public class Rot implements IRot
         {
             if (info != null)
             {
-                // Rot state
-                boolean beingCrafted = CraftingUtil.isItemBeingCraftedBy(stack, entity);
-                String key = null;
-
-                if (info.isSet() && !beingCrafted)
-                {
-                    if (info.getPercent() >= 100)
-                    {
-                        key = "misc.foodfunk.tooltip.decaying";
-                    }
-                    else
-                    {
-                        key = "misc.foodfunk.tooltip.rot";
-                    }
-                }
-                else if (info.isNoRot())
-                {
-                    key = "misc.foodfunk.tooltip.preserved";
-                }
-                else if (info.time > 0)
-                {
-                    key = "misc.foodfunk.tooltip.fresh";
-                }
-
-                if (key != null)
-                {
-                    tips.add(new TextComponentTranslation(key, info.getPercent() + "%", info.getDaysLeft(),
-                            info.getDaysTotal()).getUnformattedText());
-                }
-                
                 // preserving container state aka fake temperature - ambient, chilled, cold, frozen
                 if (info.isSet())
                 {
                     if (entity.openContainer != null)
                     {
-                        //TileEntity tecontainer = ContainerUtil.getTileEntityForContainer(entity.openContainer, stack, entity.getPosition(), entity.getEntityWorld());
                         TileEntity tecontainer = ContainerUseTracker.getUsedContainer(entity, stack);
                         IPreserving cap = PreservingHelper.getPreserving(tecontainer);
                         if (cap != null)
                         {
                             int ratio = cap.getRatio();
-                            if (ratio <= 0)
-                            {
-                                tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.state.cold0", ratio).getUnformattedText());
-                            }
-                            else if ((ratio > 0) && (ratio < 50))
-                            {
-                                tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.state.cold1", ratio).getUnformattedText());
-                            }
-                            else if ((ratio >= 50) && (ratio < 100))
-                            {
-                                tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.state.cold2", ratio).getUnformattedText());
-                            }
-                            else if (ratio >= 100)
-                            {
-                                tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.state.cold3", ratio).getUnformattedText());
-                            }
+                            String key = getTemperatureTooltipKey(ratio);                            
+                            tips.add(new TextComponentTranslation(key, ratio).getUnformattedText());
                         }
                     }
                 }
+
+                // Rot state
+                boolean beingCrafted = CraftingUtil.isItemBeingCraftedBy(stack, entity);
+                String key = getRotStateTooltipKey(beingCrafted);
+
+                if (key != null)
+                {
+                    tips.add(new TextComponentTranslation(key, info.getPercent() + "%", info.getDaysLeft(),
+                            info.getDaysTotal()).getUnformattedText());
+                }                
 
                 //  advanced tooltip debug info
                 if (advanced && ConfigContainer.zdebugging.debug)
@@ -342,6 +307,57 @@ public class Rot implements IRot
         }
     }
 
+    protected static String getTemperatureTooltipKey(final int ratio)
+    {
+        String key = null;
+        
+        if (ratio <= 0)
+        {
+            key = "misc.foodfunk.tooltip.state.cold0";
+        }
+        else if ((ratio > 0) && (ratio < 50))
+        {
+            key = "misc.foodfunk.tooltip.state.cold1";
+        }
+        else if ((ratio >= 50) && (ratio < 100))
+        {
+            key = "misc.foodfunk.tooltip.state.cold2";
+        }
+        else if (ratio >= 100)
+        {
+            key = "misc.foodfunk.tooltip.state.cold3";
+        }
+        
+        return key;
+    }
+    
+    protected String getRotStateTooltipKey(boolean beingCrafted)
+    {
+        String key = null;
+        
+        if (info.isSet() && !beingCrafted)
+        {
+            if (info.getPercent() >= 100)
+            {
+                key = "misc.foodfunk.tooltip.decaying";
+            }
+            else
+            {
+                key = "misc.foodfunk.tooltip.rot";
+            }
+        }
+        else if (info.isNoRot())
+        {
+            key = "misc.foodfunk.tooltip.preserved";
+        }
+        else if (info.time > 0)
+        {
+            key = "misc.foodfunk.tooltip.fresh";
+        }
+
+        return key;
+    }
+    
     // ----------------------------------------------------------------------
     // Possible deprecated
 
