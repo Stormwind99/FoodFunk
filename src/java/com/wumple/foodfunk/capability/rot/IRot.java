@@ -2,7 +2,7 @@ package com.wumple.foodfunk.capability.rot;
 
 import java.util.List;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -40,7 +40,7 @@ public interface IRot
     /*
      * Build tooltip info based on this rot
      */
-    public void doTooltip(ItemStack stack, Entity entity, boolean advanced, List<String> tips);
+    public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips);
 
     /*
      * Set rot on crafted items dependent on the ingredients

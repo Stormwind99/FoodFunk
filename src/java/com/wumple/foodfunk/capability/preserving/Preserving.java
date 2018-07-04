@@ -84,6 +84,11 @@ public class Preserving implements IPreserving
     {
         lastCheckTime = time;
     }
+    
+    public int getRatio()
+    {
+        return preservingRatio;
+    }
 
     /*
      * Set the owner of this capability, and init based on that owner

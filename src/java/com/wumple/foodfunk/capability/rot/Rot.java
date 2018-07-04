@@ -5,16 +5,20 @@ import java.util.Random;
 
 import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.ContainerListenerRot;
+import com.wumple.foodfunk.capability.preserving.IPreserving;
+import com.wumple.foodfunk.capability.preserving.PreservingHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.misc.ContainerUtil;
 import com.wumple.misc.CraftingUtil;
 
 import choonster.capability.CapabilityContainerListenerManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -182,12 +186,13 @@ public class Rot implements IRot
     /*
      * Build tooltip info based on this rot
      */
-    public void doTooltip(ItemStack stack, Entity entity, boolean advanced, List<String> tips)
+    public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
     {
         if (ConfigContainer.enabled && (stack != null) && !stack.isEmpty() && (entity != null))
         {
             if (info != null)
             {
+                // Rot state
                 boolean beingCrafted = CraftingUtil.isItemBeingCraftedBy(stack, entity);
                 String key = null;
 
@@ -216,7 +221,40 @@ public class Rot implements IRot
                     tips.add(new TextComponentTranslation(key, info.getPercent() + "%", info.getDaysLeft(),
                             info.getDaysTotal()).getUnformattedText());
                 }
+                
+                // preserving container state aka fake temperature - ambient, chilled, cold, frozen
+                /*
+                if (info.isSet())
+                {
+                    if (entity.openContainer != null)
+                    {
+                        TileEntity tecontainer = ContainerUtil.getTileEntityForContainer(entity.openContainer, stack, entity.getPosition(), entity.getEntityWorld());
+                        IPreserving cap = PreservingHelper.getPreserving(tecontainer);
+                        if (cap != null)
+                        {
+                            int ratio = cap.getRatio();
+                            if (ratio <= 0)
+                            {
+                                tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.state.cold0", ratio).getUnformattedText());
+                            }
+                            else if ((ratio > 0) && (ratio < 50))
+                            {
+                                tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.state.cold1", ratio).getUnformattedText());
+                            }
+                            else if ((ratio >= 50) && (ratio < 100))
+                            {
+                                tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.state.cold2", ratio).getUnformattedText());
+                            }
+                            else if (ratio >= 100)
+                            {
+                                tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.state.cold3", ratio).getUnformattedText());
+                            }
+                        }
+                    }
+                }
+                */
 
+                //  advanced tooltip debug info
                 if (advanced && ConfigContainer.zdebugging.debug)
                 {
                     tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.datetime", info.getDate(),
@@ -225,8 +263,6 @@ public class Rot implements IRot
                             info.getExpirationTimestamp()).getUnformattedText());
                 }
             }
-
-            // TODO: add "cold" or "frozen" to tooltip if in esky or freezer
         }
     }
 

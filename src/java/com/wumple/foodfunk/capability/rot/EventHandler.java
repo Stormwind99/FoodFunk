@@ -102,7 +102,7 @@ public class EventHandler
 
         if (rot != null)
         {
-            rot.doTooltip(stack, event.getEntity(), event.getFlags().isAdvanced(), event.getToolTip());
+            rot.doTooltip(stack, event.getEntityPlayer(), event.getFlags().isAdvanced(), event.getToolTip());
         }
     }
 

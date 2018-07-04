@@ -65,8 +65,7 @@ public class RotHandler
             return false;
         }
 
-        IItemHandler capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
-                null);
+        IItemHandler capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
         if (capability != null)
         {

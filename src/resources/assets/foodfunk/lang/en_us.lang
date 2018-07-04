@@ -20,7 +20,7 @@ misc.foodfunk.tooltip.rot=Rotten: %s (Day %s/%s)
 misc.foodfunk.tooltip.advanced.datetime=Date %s Time %s
 misc.foodfunk.tooltip.advanced.expire=When %s / %s
 
-misc.foodfunk.tooltip.cold0=Ambient temperature
-misc.foodfunk.tooltip.cold1=Chilled
-misc.foodfunk.tooltip.cold2=Cold
-misc.foodfunk.tooltip.cold3=Frozen
+misc.foodfunk.tooltip.state.cold0=Ambient temperature
+misc.foodfunk.tooltip.state.cold1=Chilled
+misc.foodfunk.tooltip.state.cold2=Cold
+misc.foodfunk.tooltip.state.cold3=Frozen
