@@ -9,6 +9,7 @@ import com.wumple.foodfunk.capability.rot.RotCapHelper;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.misc.ContainerUtil;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -28,6 +29,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -103,11 +106,12 @@ public class Preserving implements IPreserving
             lastCheckTime = Rot.getLastWorldTimestamp();
         }
     }
-
+    
     /**
-     * Automatically adjust the use-by date on food items stored within to slow or stop rot
+     * Tick counters, cache data, etc
+     * @return boolean should we freshen contents this tick?
      */
-    public void freshenContents()
+    protected boolean updateAndCache()
     {
         // tick of 0 represents "cache any transient data" like preserving ratio
         if (tick == 0)
@@ -118,12 +122,19 @@ public class Preserving implements IPreserving
         if (tick < slowInterval)
         {
             tick++;
-            return;
+            return false;
         }
 
         // reset to 1 since 0 is special "cache any transient data" state
         tick = 1;
-        
+        return true;
+    }
+
+    /**
+     * Automatically adjust the use-by date on food items stored within to slow or stop rot
+     */
+    public void freshenContents()
+    {        
         // only freshen on server, and rely on cap data being sent to clients
         if ((entity.getWorld() == null) || entity.getWorld().isRemote)
         {
@@ -287,9 +298,13 @@ public class Preserving implements IPreserving
                 MinecraftForge.EVENT_BUS.unregister(this);
                 entity = null;
             }
-            else if (!world.isRemote)
+            else 
             {
-                freshenContents();
+                boolean freshen = updateAndCache();
+                if (freshen)
+                {
+                    freshenContents();
+                }
             }
         }
     }
@@ -303,5 +318,14 @@ public class Preserving implements IPreserving
         handleOnTick(event.world);
     }
     
-
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        World world = Minecraft.getMinecraft().world;
+        if ((world != null) && (world.isRemote == true))
+        {
+            handleOnTick(world);
+        }
+    }
 }
