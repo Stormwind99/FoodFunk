@@ -5,9 +5,11 @@ import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -105,10 +107,12 @@ public class EventHandler
             rot.doTooltip(stack, event.getEntityPlayer(), event.getFlags().isAdvanced(), event.getToolTip());
         }
     }
-
+   
+    /**
+     *  Prevents exploit of making foods with almost rotten food to prolong total life of food supplies
+     */
     @SubscribeEvent
-    public static void onCrafted(ItemCraftedEvent event) // Prevents exploit of making foods with almost rotten food to
-                                                         // prolong total life of food supplies
+    public static void onCrafted(ItemCraftedEvent event) 
     {
         if ((!ConfigContainer.enabled) || event.player.world.isRemote || event.crafting == null
                 || event.crafting.isEmpty() || event.crafting.getItem() == null)
@@ -119,10 +123,28 @@ public class EventHandler
         RotHelper.handleCraftedRot(event.player.world, event.craftMatrix, event.crafting);
     }
 
+    /**
+     * Update Rot system current timestamp on server
+     */
     @SubscribeEvent
     public static void onWorldTick(TickEvent.WorldTickEvent event)
     {
         long timestamp = event.world.getTotalWorldTime();
         Rot.setLastWorldTimestamp(timestamp);
+    }
+    
+    /**
+     * Update Rot system current timestamp on client
+     */
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public static void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        World world = Minecraft.getMinecraft().world;
+        if ((world != null) && (world.isRemote == true))
+        {
+            long timestamp = world.getTotalWorldTime();
+            Rot.setLastWorldTimestamp(timestamp);
+        }
     }
 }
