@@ -9,6 +9,7 @@ import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.preserving.PreservingHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.misc.ContainerUseTracker;
 import com.wumple.misc.ContainerUtil;
 import com.wumple.misc.CraftingUtil;
 
@@ -39,8 +40,9 @@ public class Rot implements IRot
     // IDs of the capability
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "rot");
     
-    protected static Random random = new Random();
+    // MAYBE re-init on WorldEvent.Load instead of waiting for first world tick to do so via handler
     protected static long lastWorldTimestamp = 0;
+    protected static Random random = new Random();
 
     protected RotInfo info = new RotInfo();
     ItemStack owner = null;
@@ -223,12 +225,12 @@ public class Rot implements IRot
                 }
                 
                 // preserving container state aka fake temperature - ambient, chilled, cold, frozen
-                /*
                 if (info.isSet())
                 {
                     if (entity.openContainer != null)
                     {
-                        TileEntity tecontainer = ContainerUtil.getTileEntityForContainer(entity.openContainer, stack, entity.getPosition(), entity.getEntityWorld());
+                        //TileEntity tecontainer = ContainerUtil.getTileEntityForContainer(entity.openContainer, stack, entity.getPosition(), entity.getEntityWorld());
+                        TileEntity tecontainer = ContainerUseTracker.getUsedContainer(entity, stack);
                         IPreserving cap = PreservingHelper.getPreserving(tecontainer);
                         if (cap != null)
                         {
@@ -252,7 +254,6 @@ public class Rot implements IRot
                         }
                     }
                 }
-                */
 
                 //  advanced tooltip debug info
                 if (advanced && ConfigContainer.zdebugging.debug)
@@ -359,8 +360,7 @@ public class Rot implements IRot
                 tags.removeTag("EM_ROT_TIME");
             }
 
-            // remove empty NBT tag compound from rotten items so they can be merged - saw
-            // this bug onces
+            // remove empty NBT tag compound from rotten items so they can be merged - saw this bug once
             if (tags.hasNoTags())
             {
                 stack.setTagCompound(null);

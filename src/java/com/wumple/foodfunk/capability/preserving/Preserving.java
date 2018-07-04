@@ -18,11 +18,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -107,11 +109,6 @@ public class Preserving implements IPreserving
      */
     public void freshenContents()
     {
-        if ((entity.getWorld() == null) || entity.getWorld().isRemote)
-        {
-            return;
-        }
-
         // tick of 0 represents "cache any transient data" like preserving ratio
         if (tick == 0)
         {
@@ -126,6 +123,12 @@ public class Preserving implements IPreserving
 
         // reset to 1 since 0 is special "cache any transient data" state
         tick = 1;
+        
+        // only freshen on server, and rely on cap data being sent to clients
+        if ((entity.getWorld() == null) || entity.getWorld().isRemote)
+        {
+            return;
+        }
 
         long worldTime = entity.getWorld().getTotalWorldTime();
 
@@ -299,4 +302,6 @@ public class Preserving implements IPreserving
     {
         handleOnTick(event.world);
     }
+    
+
 }

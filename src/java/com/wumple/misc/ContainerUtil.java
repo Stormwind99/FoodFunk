@@ -122,39 +122,45 @@ public class ContainerUtil
         for (BlockPos pos : BlockPos.getAllInBoxMutable(x1, y1, z1, x2, y2, z2))
         {
             TileEntity tileentity = world.getTileEntity(pos);
-            if (tileentity != null)
+            if (doesContain(tileentity, itemToSearchFor))
             {
-                // check TileEntity's IItemHandler capability, if provided
-                IItemHandler capability = CapabilityUtils.getCapability(tileentity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-                if (capability != null)
-                {
-                    for (int slot = 0; slot < capability.getSlots(); ++slot)
-                    {
-                        if (capability.getStackInSlot(slot) == itemToSearchFor)
-                        {
-                            return tileentity;
-                        }
-                    }
-                }
-                
-                // check TileEntity's IInventory interface, if provided
-                if (tileentity instanceof IInventory)
-                {
-                    IInventory iinventory = (IInventory)tileentity;
-                    for (int slot = 0; slot < iinventory.getSizeInventory(); ++slot)
-                    {
-                        if (iinventory.getStackInSlot(slot) == itemToSearchFor)
-                        {
-                            return tileentity;
-                        }
-                    }
-
-                }
-                
+                return tileentity;
             }
         }
         
         return null;
     }
 
+    static public boolean doesContain(TileEntity tileentity, ItemStack itemToSearchFor)
+    {
+        // check TileEntity's IItemHandler capability, if provided
+        IItemHandler capability = CapabilityUtils.getCapability(tileentity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        if (capability != null)
+        {
+            for (int slot = 0; slot < capability.getSlots(); ++slot)
+            {
+                if (capability.getStackInSlot(slot) == itemToSearchFor)
+                {
+                    return true;
+                }
+            }
+        }
+        
+        // check TileEntity's IInventory interface, if provided
+        if (tileentity instanceof IInventory)
+        {
+            IInventory iinventory = (IInventory)tileentity;
+            for (int slot = 0; slot < iinventory.getSizeInventory(); ++slot)
+            {
+                if (iinventory.getStackInSlot(slot) == itemToSearchFor)
+                {
+                    return true;
+                }
+            }
+
+        }
+        
+        return false;
+    }
 }
+
