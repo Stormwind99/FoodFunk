@@ -199,7 +199,7 @@ public class Rot implements IRot
                 {
                     if (entity.openContainer != null)
                     {
-                        TileEntity tecontainer = ContainerUseTracker.getUsedContainer(entity, stack);
+                        TileEntity tecontainer = ContainerUseTracker.getUsedOpenContainer(entity, stack);
                         IPreserving cap = PreservingHelper.getPreserving(tecontainer);
                         if (cap != null)
                         {

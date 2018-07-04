@@ -5,13 +5,13 @@ import com.wumple.foodfunk.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -25,7 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Horrible hack to have access to TileEntity AND Container used by EntityPlayer at once
  * during Tooltips, etc.
  * 
- * Only usable on client.  Server will have empty info since it can't track multiple players.
+ * Only usable on client.  Server will have empty info since we don't track multiple players.
  */
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -91,6 +91,7 @@ public class ContainerUseTracker
         // TODO else probably a bug       
     }
     
+    @SideOnly(Side.CLIENT)
     public static TileEntity getUsedContainer(Entity player)
     {
         if (lastUsedBy == player)
@@ -102,29 +103,12 @@ public class ContainerUseTracker
         return null;
     }
     
-    public static TileEntity getUsedContainer(Entity player, ItemStack stack)
+    /*
+     * Get the currently open container just used by the player, with stack as a hint to contents
+     */
+    @SideOnly(Side.CLIENT)
+    public static TileEntity getUsedOpenContainer(Entity player, ItemStack stack)
     {
-        TileEntity tileentity = getUsedContainer(player);
-        
-        // Wish we could check that tileentity contained stack and slot held stack
-        
-        GuiScreen guiscreen = Minecraft.getMinecraft().currentScreen;
-        if (guiscreen instanceof GuiChest)
-        {
-            GuiChest guichest = (GuiChest)guiscreen;
-            Slot slot = (guichest != null) ? guichest.getSlotUnderMouse() : null;
-            if ((slot != null) && !(slot.inventory instanceof InventoryPlayer))
-            {
-                return tileentity;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        else
-        {
-            return tileentity;
-        }
+        return GuiUtil.isSlotUnderMouse(stack) ? getUsedContainer(player) : null;
     }
 }

@@ -131,6 +131,9 @@ public class ContainerUtil
         return null;
     }
 
+    /*
+     * Does the tileentity (via its IItemHandler cap or IInventory interface) contain itemToSearchFor?
+     */
     static public boolean doesContain(TileEntity tileentity, ItemStack itemToSearchFor)
     {
         // check TileEntity's IItemHandler capability, if provided
@@ -163,4 +166,3 @@ public class ContainerUtil
         return false;
     }
 }
-
