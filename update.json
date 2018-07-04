@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "2.1.0",
-    "1.12.2-recommended": "2.1.0"
+    "1.12.2-latest": "2.1.1",
+    "1.12.2-recommended": "2.1.1"
   },
   "1.12.2": {
+    "2.1.1": "Added cold, frozen, etc tooltips in preserving containers.  Added tooltip text colors.",
     "2.1.0": "Refactoring, optimization, and cleanup.",
     "2.0.6": "Mod compat workaround for RotStorage crash",
     "2.0.5": "Config support for metadata and ore dictionary",
