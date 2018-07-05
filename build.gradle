@@ -15,6 +15,7 @@ buildscript {
 plugins {
   id "com.matthewprenger.cursegradle" version "1.0.10"
   id "co.riiid.gradle" version "0.4.2"
+  id "com.jfrog.bintray" version "1.7"
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -59,6 +60,13 @@ version = config.version
 group = config.group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = config.mod_id
 
+allprojects {
+    repositories {
+        jcenter()
+    }
+    apply plugin: 'java'
+}
+
 sourceSets {
     main {
         java { srcDirs = ["$projectDir/src/java"] }
@@ -93,7 +101,7 @@ processResources {
         include 'mcmod.info'
 
         // replace mcmod.info variables with build.properties settings
-        expand 'version':project.version, 'mcversion':project.minecraft.version, 'updatejson':config.updatejson
+        expand 'version':project.version, 'mcversion':project.minecraft.version, 'updatejson':config.updatejson, 'url':config.url
     }
 
     // copy everything else, thats not the mcmod.info
@@ -152,6 +160,7 @@ def getArchivePath() {
 }
 
 /// CurseGradle
+// See https://github.com/matthewprenger/CurseGradle
 
 curseforge {
     apiKey = priv.cfkey
@@ -165,6 +174,7 @@ curseforge {
 }
  
 /// Github
+// See https://github.com/riiid/gradle-github-plugin
 
 github {
     owner = config.github_owner
@@ -174,4 +184,43 @@ github {
     tagName = "${config.version}"
     body = getChangeInfo()
     assets = [ getArchivePath() ]
+}
+
+def githubUrl = "https://github.com/${config.github_owner}/${config.github_repo}"
+def repoUrl = "${githubUrl}.git"
+
+/// Bintray
+// See https://github.com/bintray/gradle-bintray-plugin#readme
+
+bintray {
+    user = config.bintray_user
+    key = priv.bintray_api_key
+    configurations = ['archives']
+    pkg {
+        repo = config.bintray_repo
+        name = config.bintray_package
+        licenses = ["${config.license}"]
+	websiteUrl  = config.url
+        issueTrackerUrl="${githubUrl}/issues"
+        vcsUrl = repoUrl
+        labels = ['minecraft', 'forge', 'minecraft-mod' ]
+        publish = true
+        githubRepo = "${config.github_owner}/${config.github_repo}"
+        githubReleaseNotesFile = 'README.md' 
+        version {
+            name = "${config.version}"
+            desc = getChangeInfo()
+            websiteUrl="${config.url}"
+            vcsTag = "${config.version}"
+            released = new Date()
+        }
+    }
+}
+
+/// Uploads
+
+task uploadAll {
+    dependsOn 'curseforge'
+    dependsOn 'githubRelease'
+    dependsOn 'bintrayUpload'
 }
