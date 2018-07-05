@@ -46,16 +46,13 @@ minecraft {
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 
     // This does the token replacement so names, version numbers, etc only need to be in one authoritative file
-    // TODO replace with a token such as @VERSION@
-    replace 'GRADLE:MOD_ID', config.mod_id
-    replace 'GRADLE:MOD_NAME', config.mod_name
-    replace 'GRADLE:BUILD', config.build_number
-    replace 'GRADLE:VERSION', config.version
-    replace 'GRADLE:INTERNALVERSIONMAJOR', config.internal_version_major
-    replace 'GRADLE:DEPENDENCIES', config.dependencies
-    replace 'GRADLE:UPDATEJSON', config.updatejson
-
-    replaceIn 'Reference.java'
+    replace '@MOD_ID@', config.mod_id
+    replace '@MOD_NAME@', config.mod_name
+    replace '@BUILD@', config.build_number
+    replace '@VERSION@', config.version
+    replace '@INTERNALVERSIONMAJOR@', config.internal_version_major
+    replace '@DEPENDENCIES@', config.dependencies
+    replace '@UPDATEJSON@', config.updatejson
 }
 
 version = config.version
