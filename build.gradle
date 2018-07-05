@@ -1,5 +1,5 @@
-// build.gradle for mod
-// Based on build.gradle from Botania by vazkii - https://botaniamod.net/
+// build.gradle for a Minecraft Forge mod
+// Originally based on build.gradle from Botania by vazkii - https://botaniamod.net/
 
 // START do not edit
 buildscript {
@@ -14,6 +14,7 @@ buildscript {
 
 plugins {
   id "com.matthewprenger.cursegradle" version "1.0.10"
+  id "co.riiid.gradle" version "0.4.2"
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -31,9 +32,10 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
 ext.configFile = file('build.properties')
+ext.privateFile = file('private.properties')
 
 ext.config = parseConfig(configFile)
-ext.priv = parseConfigIf(file('private.properties'))
+ext.priv = parseConfigIf(privateFile)
 
 
 minecraft {
@@ -83,8 +85,7 @@ dependencies {
 
 }
 
-processResources
-{
+processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -115,6 +116,7 @@ jar {
 
 /// Local functions
 
+// parse the config file (in Java properties format)
 def parseConfig(File config) {
     config.withReader {
         def prop = new Properties()
@@ -123,11 +125,33 @@ def parseConfig(File config) {
     }
 }
 
+// if the file exists, parse the config file (in Java properties format)
 def parseConfigIf(File config) {
-	if (config.isFile()) {
-		return parseConfig(config)
-   }
-   return new ConfigObject()
+    if (config.isFile()) {
+       return parseConfig(config)
+    }
+    return new ConfigObject()
+}
+
+// get this version's changelog from Forge-format update.json
+def getChangeInfo() {
+    def filename = "${projectDir}/${config.changelog}"
+    def updateJsonFile = new File(filename)
+    if (!updateJsonFile.isFile()) {
+        throw new GradleException("${filename} missing")               
+    }
+    def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
+    // this should error if changelog is missing change for this version - add one!
+    if (!updateJson.containsKey("${minecraft.version}") || !updateJson."${minecraft.version}".containsKey("${version}")) {
+        throw new GradleException("${filename} missing changelog for ${minecraft.version} ${version}")               
+    }
+    return new String(updateJson."${minecraft.version}"."${version}")
+}
+
+// build our own archive path that is relative and unix-format
+// since jar.archivePath is Windows format absolute path and github plugin makes ugly Github release asset file name from it
+def getArchivePath() {
+	return new String("build/libs/${jar.archiveName}")
 }
 
 /// CurseGradle
@@ -137,19 +161,20 @@ curseforge {
     project {
         id = config.curseforge_id
         changelog = { ->
-            def filename = "${projectDir}/${config.changelog}"
-            def updateJsonFile = new File(filename)
-            if (!updateJsonFile.isFile()) {
-					throw new GradleException("${filename} missing")               
-            }
-            def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
-            // this should error if changelog is missing change for this version - add one!
-            if (!updateJson.containsKey("${minecraft.version}") || !updateJson."${minecraft.version}".containsKey("${version}")) {
-					throw new GradleException("${filename} missing changelog for ${minecraft.version} ${version}")               
-            }
-            def changeinfo = new String(updateJson."${minecraft.version}"."${version}")
-            return changeinfo
+            return getChangeInfo()
         }
         releaseType = "release"
     }
+}
+ 
+/// Github
+
+github {
+    owner = config.github_owner
+    repo = config.github_repo
+    token = priv.github_token
+    name = "${config.version}"
+    tagName = "${config.version}"
+    body = getChangeInfo()
+    assets = [ getArchivePath() ]
 }
