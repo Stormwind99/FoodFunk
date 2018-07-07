@@ -1,5 +1,7 @@
 package choonster.capability;
 
+import java.util.HashMap;
+
 import javax.annotation.Nullable;
 
 import com.wumple.foodfunk.FoodFunk;
@@ -50,7 +52,7 @@ public abstract class MessageBulkUpdateContainerCapability<HANDLER, DATA> implem
     /**
      * The capability data instances for each slot, indexed by their index in the original {@link List<ItemStack>}.
      */
-    final TIntObjectMap<DATA> capabilityData = new TIntObjectHashMap<>();
+    final HashMap<Integer, DATA> capabilityData = new HashMap<Integer, DATA>();
 
     protected MessageBulkUpdateContainerCapability(final Capability<HANDLER> capability)
     {
@@ -134,11 +136,9 @@ public abstract class MessageBulkUpdateContainerCapability<HANDLER, DATA> implem
         }
 
         buf.writeInt(capabilityData.size());
-        capabilityData.forEachEntry((index, data) -> {
+        capabilityData.forEach((index, data) -> {
             buf.writeInt(index);
             writeCapabilityData(buf, data);
-
-            return true;
         });
     }
 
@@ -218,7 +218,7 @@ public abstract class MessageBulkUpdateContainerCapability<HANDLER, DATA> implem
                     return;
                 }
 
-                message.capabilityData.forEachEntry((index, data) -> {
+                message.capabilityData.forEach((index, data) -> {
                     final ItemStack originalStack = container.getSlot(index).getStack();
                     final HANDLER originalHandler = CapabilityUtils.getCapability(originalStack, message.capability,
                             message.facing);
@@ -237,8 +237,6 @@ public abstract class MessageBulkUpdateContainerCapability<HANDLER, DATA> implem
                             container.putStackInSlot(index, newStack);
                         }
                     }
-
-                    return true;
                 });
             });
 

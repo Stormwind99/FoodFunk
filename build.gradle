@@ -1,5 +1,15 @@
-// build.gradle for a Minecraft Forge mod
-// Originally based on build.gradle from Botania by vazkii - https://botaniamod.net/
+/**
+ * build gradle for a Minecraft Forge mod
+ *
+ * - Uses a separate build.properties config file (so build gradle can be upgraded while keeping settings)
+ * - Generates mod data files and constants
+ * - Tracks and auto-increments build number
+ * - Builds Forge mods
+ * - Uploads releases to Curseforge, Github, and Bintray
+ *
+ * Originally based on build.gradle from Botania by vazkii - https://botaniamod.net/
+ *
+*/
 
 // START do not edit
 buildscript {
@@ -19,29 +29,27 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.matthewprenger.cursegradle'
 apply plugin: 'maven'
 // END do not edit
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
+// --------------------------------------------------------------------------
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
-import groovy.json.JsonSlurper
-import groovy.json.JsonOutput
+/// Load configuration
 
-ext.configFile = file('build.properties')
-ext.privateFile = file('private.properties')
+loadBuildNumber()
+loadConfig()
 
-ext.config = parseConfig(configFile)
-ext.priv = parseConfigIf(privateFile)
-
+/// Build
 
 minecraft {
     version = "${config.mc_version}-${config.forge_version}"
-    runDir = "eclipse"
+    runDir = "run"
 
     mappings = config.mc_mappings
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
@@ -49,16 +57,13 @@ minecraft {
     // This does the token replacement so names, version numbers, etc only need to be in one authoritative file
     replace '@MOD_ID@', config.mod_id
     replace '@MOD_NAME@', config.mod_name
-    replace '@BUILD@', config.build_number
+    replace '@BUILD@', buildnum.BUILD_NUMBER
     replace '@VERSION@', config.version
-    replace '@INTERNALVERSIONMAJOR@', config.internal_version_major
     replace '@DEPENDENCIES@', config.dependencies
     replace '@UPDATEJSON@', config.updatejson
-}
 
-version = config.version
-group = config.group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = config.mod_id
+    replaceIn 'Reference.java'
+}
 
 allprojects {
     repositories {
@@ -68,8 +73,11 @@ allprojects {
 }
 
 sourceSets {
+    // for default layout, see https://docs.gradle.org/current/userguide/java_plugin.html
     main {
-        java { srcDirs = ["$projectDir/src/java"] }
+        // default: src/main/java contains the Java source code
+        // default: src/test/java contains the Java tests
+        // custom: src/resources contains mod data (server-required) and assets (client-only)
         resources { srcDirs = ["$projectDir/src/resources"] }
     }
 }
@@ -91,22 +99,22 @@ dependencies {
 }
 
 processResources {
-    // this will ensure that this task is redone when the versions change.
+    // ensure that this task is redone when the versions change.
     inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    inputs.property "minecraft.version", project.minecraft.version
     inputs.property "updatejson", config.updatejson
 
-    // replace stuff in mcmod.info, nothing else
+    // replace stuff in mcmod.info and pack.mcmeta, nothing else
     from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
+        include 'mcmod.info', 'pack.mcmeta'
 
         // replace mcmod.info variables with build.properties settings
-        expand 'version':project.version, 'mcversion':project.minecraft.version, 'updatejson':config.updatejson, 'url':config.url
+	expand(getMergedConfig())
     }
 
-    // copy everything else, thats not the mcmod.info
+    // copy everything else, thats not the above listed files
     from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+        exclude 'mcmod.info', 'pack.mcmeta'
     }
 }
 
@@ -119,50 +127,14 @@ jar {
     exclude "**/*.exe"
 }
 
-/// Local functions
-
-// parse the config file (in Java properties format)
-def parseConfig(File config) {
-    config.withReader {
-        def prop = new Properties()
-        prop.load(it)
-        return (new ConfigSlurper().parse(prop))
-    }
-}
-
-// if the file exists, parse the config file (in Java properties format)
-def parseConfigIf(File config) {
-    if (config.isFile()) {
-       return parseConfig(config)
-    }
-    return new ConfigObject()
-}
-
-// get this version's changelog from Forge-format update.json
-def getChangeInfo() {
-    def filename = "${projectDir}/${config.changelog}"
-    def updateJsonFile = new File(filename)
-    if (!updateJsonFile.isFile()) {
-        throw new GradleException("${filename} missing")               
-    }
-    def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
-    // this should error if changelog is missing change for this version - add one!
-    if (!updateJson.containsKey("${minecraft.version}") || !updateJson."${minecraft.version}".containsKey("${version}")) {
-        throw new GradleException("${filename} missing changelog for ${minecraft.version} ${version}")               
-    }
-    return new String(updateJson."${minecraft.version}"."${version}")
-}
-
-// build our own archive path that is relative and unix-format
-// since jar.archivePath is Windows format absolute path and github plugin makes ugly Github release asset file name from it
-def getArchivePath() {
-	return new String("build/libs/${jar.archiveName}")
-}
+// --------------------------------------------------------------------------
 
 /// CurseGradle
 // See https://github.com/matthewprenger/CurseGradle
 
 curseforge {
+    group 'upload'
+    description 'Upload release to Curseforge'
     apiKey = priv.cfkey
     project {
         id = config.curseforge_id
@@ -177,7 +149,9 @@ curseforge {
 // See https://github.com/riiid/gradle-github-plugin
 
 github {
-    owner = config.github_owner
+    group 'upload'
+    description 'Upload release and build artifacts to Github'
+    owner = config.github_userz
     repo = config.github_repo
     token = priv.github_token
     name = "${config.version}"
@@ -186,13 +160,15 @@ github {
     assets = [ getArchivePath() ]
 }
 
-def githubUrl = "https://github.com/${config.github_owner}/${config.github_repo}"
-def repoUrl = "${githubUrl}.git"
-
 /// Bintray
 // See https://github.com/bintray/gradle-bintray-plugin#readme
 
+def githubUrl = "https://github.com/${config.github_userz}/${config.github_repo}"
+def repoUrl = "${githubUrl}.git"
+
 bintray {
+    group 'upload'
+    description 'Upload release and build artifacts to Bintray'
     user = config.bintray_user
     key = priv.bintray_api_key
     configurations = ['archives']
@@ -205,7 +181,7 @@ bintray {
         vcsUrl = repoUrl
         labels = ['minecraft', 'forge', 'minecraft-mod' ]
         publish = true
-        githubRepo = "${config.github_owner}/${config.github_repo}"
+        githubRepo = "${config.github_userz}/${config.github_repo}"
         githubReleaseNotesFile = 'README.md' 
         version {
             name = "${config.version}"
@@ -219,8 +195,104 @@ bintray {
 
 /// Uploads
 
+// upload built mod and/or artifacts to all release/artifact locations
 task uploadAll {
+    group 'upload'
+    description 'Upload built mod and/or artifacts to all release/artifact locations'
     dependsOn 'curseforge'
     dependsOn 'githubRelease'
     dependsOn 'bintrayUpload'
+}
+
+// --------------------------------------------------------------------------
+// Local functions
+
+/// Misc
+
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
+// get this version's changelog from Forge-format update.json
+def getChangeInfo() {
+    def filename = "${projectDir}/${config.changelog}"
+    def updateJsonFile = new File(filename)
+    if (!updateJsonFile.isFile()) {
+        throw new GradleException("${filename} missing")               
+    }
+    def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
+    // this should error if changelog is missing change for this version - add one!
+    if (!updateJson.containsKey("${minecraft.version}") || !updateJson."${minecraft.version}".containsKey("${config.version}")) {
+        throw new GradleException("${filename} missing changelog for MC ${minecraft.version} ${config.mod_id} ${config.version}")               
+    }
+    return new String(updateJson."${minecraft.version}"."${config.version}")
+}
+
+// build our own archive path that is relative and unix-format
+// since jar.archivePath is Windows format absolute path and github plugin makes ugly Github release asset file name from it
+def getArchivePath() {
+    return new String("build/libs/${jar.archiveName}")
+}
+
+/// Build number tracking
+
+// load the previous build number, and increment in-memory for this build
+def loadBuildNumber() {
+    ext.versionFile = file('version.properties')
+    ext.buildnum = new Properties([BUILD_NUMBER: "0"]);
+    if (versionFile.isFile()) {
+        versionFile.withReader { buildnum.load(it) }
+    }
+    def buildNumber = Integer.toString(Integer.parseInt(buildnum.BUILD_NUMBER) + 1)
+    buildnum.BUILD_NUMBER = buildNumber
+}
+
+// save the new build number
+task('saveBuildNumber') {
+    doLast {
+       versionFile.withWriter { buildnum.store(it, "Automated build number increase") }
+    }
+}
+
+// trigger saving new build number when the build actually starts
+tasks.whenTaskAdded { task ->
+    if (task.name == 'build') {
+        task.dependsOn 'saveBuildNumber'
+    }
+}
+
+/// Configuration
+
+// parse the config file (in Groovy format)
+def parseConfig(File config) {
+    config.withReader {
+        return (new ConfigSlurper().parse(config.toURI().toURL()))
+    }
+}
+
+// if the file exists, parse the config file (in Groovy format)
+def parseConfigIf(File config) {
+    if (config.isFile()) {
+       return parseConfig(config)
+    }
+    return new ConfigObject()
+}
+
+// load build configuration properties and set any dependent data
+def loadConfig() {
+    def configFile = file('build.properties')
+    ext.config = parseConfig(configFile)
+    def privateFile = file('private.properties')
+    ext.priv = parseConfigIf(privateFile)
+
+    version = config.version
+    group = config.group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+    archivesBaseName = config.mod_id
+}
+
+// Merge different configs before passing for expansion which can only take only config
+def getMergedConfig() {
+    def mergedConfig = new ConfigObject()
+    mergedConfig << project.properties
+    mergedConfig << config
+    return mergedConfig
 }
