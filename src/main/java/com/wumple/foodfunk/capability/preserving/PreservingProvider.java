@@ -2,14 +2,10 @@ package com.wumple.foodfunk.capability.preserving;
 
 import javax.annotation.Nullable;
 
-import com.wumple.foodfunk.Reference;
-
 import choonster.capability.SimpleCapabilityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
 
 // TODO filter out if item doesn't preserve anymore?
 

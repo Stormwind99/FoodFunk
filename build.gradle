@@ -296,3 +296,9 @@ def getMergedConfig() {
     mergedConfig << config
     return mergedConfig
 }
+
+// --------------------------------------------------------------------------
+// Default task
+
+build {
+}

@@ -10,7 +10,6 @@ import com.wumple.foodfunk.capability.preserving.PreservingHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.misc.ContainerUseTracker;
-import com.wumple.misc.ContainerUtil;
 import com.wumple.misc.CraftingUtil;
 
 import choonster.capability.CapabilityContainerListenerManager;

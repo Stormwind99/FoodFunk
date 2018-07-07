@@ -6,8 +6,6 @@ import javax.annotation.Nullable;
 
 import com.wumple.foodfunk.FoodFunk;
 
-import gnu.trove.map.TIntObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;

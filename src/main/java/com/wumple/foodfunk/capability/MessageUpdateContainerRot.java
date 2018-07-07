@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotInfo;
-import com.wumple.foodfunk.capability.rot.RotProvider;
 
 import choonster.capability.MessageUpdateContainerCapability;
 import io.netty.buffer.ByteBuf;
