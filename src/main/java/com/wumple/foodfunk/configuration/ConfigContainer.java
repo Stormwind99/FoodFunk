@@ -39,7 +39,7 @@ public class ConfigContainer
     }
 
     @Name("Preserving")
-    @Config.Comment("Set preserving rations for containers.")
+    @Config.Comment("Set preserving rations for container TileEntities.")
     public static Preserving preserving = new Preserving();
 
     public static class Preserving
