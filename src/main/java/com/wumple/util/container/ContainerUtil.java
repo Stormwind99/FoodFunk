@@ -1,7 +1,7 @@
-package com.wumple.util;
+package com.wumple.util.container;
 
-import choonster.capability.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;
+
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import com.wumple.util.capability.CapabilityUtils;
 
 public class ContainerUtil
 {

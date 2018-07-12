@@ -1,30 +1,35 @@
-package choonster.proxy;
+package com.wumple.util.proxy;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
+/**
+ * 
+ * @author Choonster
+ *
+ */
 public class DedicatedServerProxy implements ISidedProxy
 {
     @Override
-    public void preInit()
+    public void preInit(FMLPreInitializationEvent event)
     {
-
     }
 
     @Override
-    public void init()
+    public void init(FMLInitializationEvent event)
     {
-
     }
 
     @Override
-    public void postInit()
+    public void postInit(FMLPostInitializationEvent event)
     {
-
     }
 
     @Override

@@ -1,20 +1,28 @@
-package choonster.proxy;
+package com.wumple.util.proxy;
 
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
+/**
+ * 
+ * @author Choonster
+ *
+ */
 public interface ISidedProxy
 {
-    void preInit();
+    void preInit(FMLPreInitializationEvent event);
 
-    void init();
+    void init(FMLInitializationEvent event);
 
-    void postInit();
+    void postInit(FMLPostInitializationEvent event);
 
     /**
      * Perform a right click on the client side.

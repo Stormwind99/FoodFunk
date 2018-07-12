@@ -1,10 +1,8 @@
-package choonster.capability;
+package com.wumple.util.capability;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
-
-import com.wumple.foodfunk.Reference;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,7 +37,7 @@ public class CapabilityContainerListenerManager
         containerListenerFactories.add(factory);
     }
 
-    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+    @Mod.EventBusSubscriber
     @SuppressWarnings("unused")
     private static class EventHandler
     {

@@ -1,6 +1,6 @@
-package com.wumple.util;
+package com.wumple.util.container;
 
-import com.wumple.foodfunk.Reference;
+import com.wumple.util.GuiUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.Container;
@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Only usable on client.  Server will have empty info since we don't track multiple players.
  */
 
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@Mod.EventBusSubscriber
 public class ContainerUseTracker
 {
     public static TileEntity lastUsedTileEntity = null;

@@ -6,4 +6,9 @@ public class Util
     {
         return t.isInstance(o) ? t.cast(o) : null;
     }
+    
+    public static <T> T getValueOrDefault(T value, T defaultValue)
+    {
+        return value == null ? defaultValue : value;
+    }
 }

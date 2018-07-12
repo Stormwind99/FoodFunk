@@ -1,4 +1,4 @@
-package choonster.capability;
+package com.wumple.util.capability;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;

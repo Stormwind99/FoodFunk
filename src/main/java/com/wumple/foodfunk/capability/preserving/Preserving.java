@@ -7,7 +7,7 @@ import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotCapHelper;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.util.ContainerUtil;
+import com.wumple.util.container.ContainerUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;

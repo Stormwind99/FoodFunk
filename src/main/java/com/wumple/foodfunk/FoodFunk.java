@@ -6,8 +6,8 @@ import com.wumple.foodfunk.capability.Messages;
 import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.util.proxy.ISidedProxy;
 
-import choonster.proxy.ISidedProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -19,7 +19,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 /*
  * FoodFunk mod - food rots over time (and also supports generic item rotting)
- * Originally based on food rot from old discontinued EnviroMine mod - thanks to the authors!
+ * Inspired by the food rot feature from old discontinued EnviroMine mod - thanks to the authors!
  */
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, dependencies = Reference.DEPENDENCIES,
         updateJSON = Reference.UPDATEJSON)
@@ -28,7 +28,7 @@ public class FoodFunk
     @Mod.Instance(Reference.MOD_ID)
     public static FoodFunk instance;
 
-    @SidedProxy(clientSide = "choonster.proxy.CombinedClientProxy", serverSide = "choonster.proxy.DedicatedServerProxy")
+    @SidedProxy(clientSide = "com.wumple.util.proxy.CombinedClientProxy", serverSide = "com.wumple.util.proxy.DedicatedServerProxy")
     public static ISidedProxy proxy;
 
     public static Logger logger;
@@ -45,13 +45,13 @@ public class FoodFunk
         network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
         Messages.register();
 
-        proxy.preInit();
+        proxy.preInit(event);
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event)
     {
-        proxy.init();
+        proxy.init(event);
     }
 
     @Mod.EventHandler
@@ -59,6 +59,6 @@ public class FoodFunk
     {
         // add any missing default config rot properties
         ConfigHandler.init();
-        proxy.postInit();
+        proxy.postInit(event);
     }
 }

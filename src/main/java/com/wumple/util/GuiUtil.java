@@ -15,7 +15,7 @@ public class GuiUtil
      * Is the gui slot under the mouse holding the given itemstack?
      */
     @SideOnly(Side.CLIENT)
-    protected static boolean isSlotUnderMouse(ItemStack stack)
+    public static boolean isSlotUnderMouse(ItemStack stack)
     {
         GuiScreen guiscreen = Minecraft.getMinecraft().currentScreen;
         if (guiscreen instanceof GuiContainer)

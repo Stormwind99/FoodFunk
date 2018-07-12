@@ -1,4 +1,4 @@
-package choonster.capability;
+package com.wumple.util.capability;
 
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

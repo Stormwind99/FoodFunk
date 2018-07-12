@@ -1,7 +1,7 @@
 // by Choonster
 // from https://github.com/Choonster-Minecraft-Mods/TestMod3
 
-package choonster.capability;
+package com.wumple.util.capability;
 
 import javax.annotation.Nullable;
 

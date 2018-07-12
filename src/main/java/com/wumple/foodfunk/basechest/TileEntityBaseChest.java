@@ -2,7 +2,7 @@ package com.wumple.foodfunk.basechest;
 
 import javax.annotation.Nullable;
 
-import com.wumple.util.ContainerUtil;
+import com.wumple.util.container.ContainerUtil;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;

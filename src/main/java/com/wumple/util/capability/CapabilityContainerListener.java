@@ -1,9 +1,8 @@
-package choonster.capability;
+package com.wumple.util.capability;
 
 import javax.annotation.Nullable;
 
-import com.wumple.foodfunk.FoodFunk;
-
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
@@ -12,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 /**
  * Syncs the capability handler instances for items in {@link Container}s.
@@ -45,6 +45,11 @@ public abstract class CapabilityContainerListener<HANDLER> implements IContainer
         this.capability = capability;
         this.facing = facing;
     }
+    
+    private void sendTo(IMessage message, EntityPlayer player)
+    {
+    	// TODO FoodFunk.network.sendTo(message, player);
+    }
 
     @Override
     public /* final */ void sendAllContents(final Container containerToSend, final NonNullList<ItemStack> itemsList)
@@ -55,9 +60,10 @@ public abstract class CapabilityContainerListener<HANDLER> implements IContainer
 
         final MessageBulkUpdateContainerCapability<HANDLER, ?> message = createBulkUpdateMessage(
                 containerToSend.windowId, syncableItemsList);
+        // Only send the message if there's something to update
         if (message.hasData())
-        { // Don't send the message if there's nothing to update
-            FoodFunk.network.sendTo(message, player);
+        {
+            sendTo(message, player);
         }
     }
 
@@ -90,9 +96,10 @@ public abstract class CapabilityContainerListener<HANDLER> implements IContainer
 
         final MessageUpdateContainerCapability<HANDLER, ?> message = createSingleUpdateMessage(containerToSend.windowId,
                 slotInd, handler);
+        // Only send the message if there's something to update
         if (message.hasData())
-        { // Don't send the message if there's nothing to update
-            FoodFunk.network.sendTo(message, player);
+        { 
+        	sendTo(message, player);
         }
     }
 

@@ -6,7 +6,7 @@ import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotInfo;
 
-import choonster.capability.MessageUpdateContainerCapability;
+import com.wumple.util.capability.MessageUpdateContainerCapability;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.inventory.Container;
 import net.minecraft.nbt.NBTTagCompound;

@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.preserving.PreservingProvider;
 
-import choonster.capability.CapabilityUtils;
+import com.wumple.util.capability.CapabilityUtils;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 

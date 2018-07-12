@@ -1,16 +1,16 @@
-package choonster.capability;
+package com.wumple.util.capability;
 
 import java.util.HashMap;
 
 import javax.annotation.Nullable;
 
-import com.wumple.foodfunk.FoodFunk;
-
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -183,6 +183,18 @@ public abstract class MessageBulkUpdateContainerCapability<HANDLER, DATA> implem
             implements IMessageHandler<MESSAGE, IMessage>
     {
 
+    	private IThreadListener getThreadListener(final MessageContext ctx)
+    	{
+    		// TODO FoodFunk.proxy.getThreadListener(ctx)
+    		return Minecraft.getMinecraft();
+    	}
+    	
+    	private EntityPlayer getPlayer(final MessageContext ctx)
+    	{
+    		// TODO FoodFunk.proxy.getPlayer(ctx)
+    		return Minecraft.getMinecraft().player;
+    	}
+    	
         /**
          * Called when a message is received of the appropriate type. You can optionally return a reply message, or null if no reply is needed.
          *
@@ -199,8 +211,8 @@ public abstract class MessageBulkUpdateContainerCapability<HANDLER, DATA> implem
             if (!message.hasData())
                 return null; // Don't do anything if no data was sent
 
-            FoodFunk.proxy.getThreadListener(ctx).addScheduledTask(() -> {
-                final EntityPlayer player = FoodFunk.proxy.getPlayer(ctx);
+            getThreadListener(ctx).addScheduledTask(() -> {
+                final EntityPlayer player = getPlayer(ctx);
 
                 final Container container;
                 if (message.windowID == 0)

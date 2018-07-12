@@ -2,7 +2,7 @@ package com.wumple.foodfunk.capability.rot;
 
 import javax.annotation.Nullable;
 
-import choonster.capability.CapabilityUtils;
+import com.wumple.util.capability.CapabilityUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 

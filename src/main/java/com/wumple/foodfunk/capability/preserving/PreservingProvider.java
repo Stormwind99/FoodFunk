@@ -2,7 +2,7 @@ package com.wumple.foodfunk.capability.preserving;
 
 import javax.annotation.Nullable;
 
-import choonster.capability.SimpleCapabilityProvider;
+import com.wumple.util.capability.SimpleCapabilityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

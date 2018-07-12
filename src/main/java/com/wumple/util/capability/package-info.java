@@ -1,6 +1,6 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-package choonster.proxy;
+package com.wumple.util.capability;
 
 import mcp.MethodsReturnNonnullByDefault;
 

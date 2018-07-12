@@ -3,7 +3,7 @@ package com.wumple.foodfunk.capability.rot;
 import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 
-import choonster.capability.CapabilityUtils;
+import com.wumple.util.capability.CapabilityUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
