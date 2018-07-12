@@ -47,6 +47,8 @@ loadConfig()
 
 /// Build
 
+defaultTasks 'build'
+
 minecraft {
     version = "${config.mc_version}-${config.forge_version}"
     runDir = "run"
@@ -135,13 +137,13 @@ jar {
 curseforge {
     group 'upload'
     description 'Upload release to Curseforge'
-    apiKey = priv.cfkey
+    apiKey = priv.curseforge_apikey
     project {
         id = config.curseforge_id
         changelog = { ->
             return getChangeInfo()
         }
-        releaseType = "release"
+        releaseType = config.curseforge_releasetype
     }
 }
  
@@ -199,9 +201,9 @@ bintray {
 task uploadAll {
     group 'upload'
     description 'Upload built mod and/or artifacts to all release/artifact locations'
-    dependsOn 'curseforge'
-    dependsOn 'githubRelease'
     dependsOn 'bintrayUpload'
+    dependsOn 'githubRelease'
+    dependsOn 'curseforge'
 }
 
 // --------------------------------------------------------------------------
@@ -221,10 +223,11 @@ def getChangeInfo() {
     }
     def updateJson = new JsonSlurper().parse(updateJsonFile) as Map
     // this should error if changelog is missing change for this version - add one!
-    if (!updateJson.containsKey("${minecraft.version}") || !updateJson."${minecraft.version}".containsKey("${config.version}")) {
-        throw new GradleException("${filename} missing changelog for MC ${minecraft.version} ${config.mod_id} ${config.version}")               
+    def info = updateJson.find{ it.key == "${minecraft.version}"}?.value?.find{ it.key == "${config.version}"}?.value
+    if (!info) {
+        throw new GradleException("${filename} missing changelog for MC ${minecraft.version} ${config.mod_id} ${config.version}")
     }
-    return new String(updateJson."${minecraft.version}"."${config.version}")
+    return info
 }
 
 // build our own archive path that is relative and unix-format
@@ -254,10 +257,8 @@ task('saveBuildNumber') {
 }
 
 // trigger saving new build number when the build actually starts
-tasks.whenTaskAdded { task ->
-    if (task.name == 'build') {
-        task.dependsOn 'saveBuildNumber'
-    }
+build {
+    dependsOn 'saveBuildNumber'
 }
 
 /// Configuration
@@ -297,8 +298,3 @@ def getMergedConfig() {
     return mergedConfig
 }
 
-// --------------------------------------------------------------------------
-// Default task
-
-build {
-}
