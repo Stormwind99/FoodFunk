@@ -1,13 +1,16 @@
 package com.wumple.foodfunk.capability;
 
+import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
-
 import com.wumple.util.capability.CapabilityContainerListener;
+
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 
 /**
  * Syncs the {@link IHiddenBlockRevealer} capability for items in {@link Container}s.
@@ -20,6 +23,12 @@ public class ContainerListenerRot extends CapabilityContainerListener<IRot>
     public ContainerListenerRot(final EntityPlayerMP player)
     {
         super(player, Rot.CAPABILITY, Rot.DEFAULT_FACING);
+    }
+    
+    @Override
+    protected void sendTo(IMessage message, EntityPlayerMP player)
+    {
+    	FoodFunk.network.sendTo(message, player);
     }
 
     /**

@@ -114,7 +114,7 @@ public class Preserving implements IPreserving
         // tick of 0 represents "cache any transient data" like preserving ratio
         if (tick == 0)
         {
-            preservingRatio = ConfigHandler.Preserving.getPreservingRatio(entity);
+            preservingRatio = ConfigHandler.preserving.getProperty(entity);
         }
 
         if (tick < slowInterval)

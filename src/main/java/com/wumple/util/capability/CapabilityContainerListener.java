@@ -46,11 +46,8 @@ public abstract class CapabilityContainerListener<HANDLER> implements IContainer
         this.facing = facing;
     }
     
-    private void sendTo(IMessage message, EntityPlayer player)
-    {
-    	// TODO FoodFunk.network.sendTo(message, player);
-    }
-
+    abstract protected void sendTo(IMessage message, EntityPlayerMP player);
+    
     @Override
     public /* final */ void sendAllContents(final Container containerToSend, final NonNullList<ItemStack> itemsList)
     {

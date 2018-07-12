@@ -2,15 +2,19 @@ package com.wumple.foodfunk.capability;
 
 import javax.annotation.Nullable;
 
+import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotInfo;
-
 import com.wumple.util.capability.MessageBulkUpdateContainerCapability;
+
 import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IThreadListener;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 /**
  * Updates the {@link Rot} for each slot of a {@link Container}.
@@ -79,6 +83,16 @@ public class MessageBulkUpdateContainerRots extends MessageBulkUpdateContainerCa
     public static class Handler
             extends MessageBulkUpdateContainerCapability.Handler<IRot, RotInfo, MessageBulkUpdateContainerRots>
     {
+    	
+       	protected IThreadListener getThreadListener(final MessageContext ctx)
+    	{
+    		return FoodFunk.proxy.getThreadListener(ctx);
+    	}
+    	
+       	protected EntityPlayer getPlayer(final MessageContext ctx)
+    	{
+    		return FoodFunk.proxy.getPlayer(ctx);
+    	}
 
         /**
          * Apply the capability data from the data instance to the capability handler instance.

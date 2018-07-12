@@ -17,6 +17,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.oredict.OreDictionary;
+import com.wumple.util.config.MatchingConfig;
 
 public class ConfigHandler
 {
@@ -44,16 +45,16 @@ public class ConfigHandler
         Rotting.addDefaultRotProperty(Items.COOKED_PORKCHOP, "minecraft:cooked_porkchop", Items.ROTTEN_FLESH, 7);
         Rotting.addDefaultRotProperty(Items.COOKED_FISH, "minecraft:cooked_fish", Items.ROTTEN_FLESH, 7);
 
-        Preserving.addDefaultPreservingProperty("foodfunk:esky", 50);
-        Preserving.addDefaultPreservingProperty("foodfunk:freezer", 100);
-        Preserving.addDefaultPreservingProperty("cookingforblockheads:fridge", 50);
+        preserving.addDefaultProperty("foodfunk:esky", 50);
+        preserving.addDefaultProperty("foodfunk:freezer", 100);
+        preserving.addDefaultProperty("cookingforblockheads:fridge", 50);
         // Doubt this next one will work until cookingforblockheads does the MC 1.13 flattening
-        Preserving.addDefaultPreservingProperty("cookingforblockheads:ice_unit", 100);
-        Preserving.addDefaultPreservingProperty("cfm:esky", 50);
-        Preserving.addDefaultPreservingProperty("minecraft:cfmesky", 50);
-        Preserving.addDefaultPreservingProperty("cfm:freezer", 100);
-        Preserving.addDefaultPreservingProperty("minecraft:cfmfridge", 100);
-        Preserving.addDefaultPreservingProperty("minecraft:cfmfreezer", 100);
+        preserving.addDefaultProperty("cookingforblockheads:ice_unit", 100);
+        preserving.addDefaultProperty("cfm:esky", 50);
+        preserving.addDefaultProperty("minecraft:cfmesky", 50);
+        preserving.addDefaultProperty("cfm:freezer", 100);
+        preserving.addDefaultProperty("minecraft:cfmfridge", 100);
+        preserving.addDefaultProperty("minecraft:cfmfreezer", 100);
 
         ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
     }
@@ -313,52 +314,8 @@ public class ConfigHandler
 
     // ----------------------------------------------------------------------
     // Preserving
-
-    public static class Preserving
-    {
-        public static boolean addDefaultPreservingProperty(String name, int ratio)
-        {
-            if (name == null)
-            {
-                name = "";
-            }
-
-            ConfigContainer.preserving.ratios.putIfAbsent(name, ratio);
-
-            return true;
-        }
-
-        public static boolean doesPreserve(TileEntity it)
-        {
-            ResourceLocation loc = (it == null) ? null : TileEntity.getKey(it.getClass());
-            String key = (loc == null) ? null : loc.toString();
-            boolean preserving = false;
-
-            if ((key != null) && ConfigContainer.preserving.ratios.containsKey(key))
-            {
-                int ratio = ConfigContainer.preserving.ratios.get(key);
-                if (ratio != 0)
-                {
-                    preserving = true;
-                }
-            }
-
-            return preserving;
-        }
-
-        public static int getPreservingRatio(TileEntity it)
-        {
-            ResourceLocation loc = (it == null) ? null : TileEntity.getKey(it.getClass());
-            String key = (loc == null) ? null : loc.toString();
-
-            int ratio = 0;
-            if ((key != null) && ConfigContainer.preserving.ratios.containsKey(key))
-            {
-                ratio = ConfigContainer.preserving.ratios.get(key);
-
-            }
-
-            return ratio;
-        }
-    }
+    
+    static final int NO_PRESERVING = 0;
+    
+    public static MatchingConfig<Integer> preserving = new MatchingConfig<Integer>(ConfigContainer.preserving.ratios, NO_PRESERVING);
 }
