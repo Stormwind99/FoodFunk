@@ -1,4 +1,4 @@
-package com.wumple.misc;
+package com.wumple.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

@@ -1,6 +1,6 @@
 package com.wumple.foodfunk.rotten;
 
-import com.wumple.foodfunk.ObjectHandler;
+import com.wumple.util.RegistrationHelpers;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +16,7 @@ public class ItemRottenFood extends ItemFood
         setMaxStackSize(64);
         setCreativeTab(CreativeTabs.MISC);
 
-        ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:rotten_food");
+        RegistrationHelpers.nameHelper(this, "foodfunk:rotten_food");
     }
 
     public ItemRottenFood(int amount)

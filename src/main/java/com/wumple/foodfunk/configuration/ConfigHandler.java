@@ -47,7 +47,7 @@ public class ConfigHandler
         Preserving.addDefaultPreservingProperty("foodfunk:esky", 50);
         Preserving.addDefaultPreservingProperty("foodfunk:freezer", 100);
         Preserving.addDefaultPreservingProperty("cookingforblockheads:fridge", 50);
-        // Doubt this next one will work until cookingforblockheads does the MC 1.1 flattening
+        // Doubt this next one will work until cookingforblockheads does the MC 1.13 flattening
         Preserving.addDefaultPreservingProperty("cookingforblockheads:ice_unit", 100);
         Preserving.addDefaultPreservingProperty("cfm:esky", 50);
         Preserving.addDefaultPreservingProperty("minecraft:cfmesky", 50);

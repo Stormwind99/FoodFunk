@@ -1,4 +1,4 @@
-package com.wumple.misc;
+package com.wumple.util;
 
 import com.wumple.foodfunk.Reference;
 

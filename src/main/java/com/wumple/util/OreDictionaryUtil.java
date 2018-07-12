@@ -1,4 +1,4 @@
-package com.wumple.misc;
+package com.wumple.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;

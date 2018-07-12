@@ -8,27 +8,21 @@ import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezer;
 import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezerRenderer;
 import com.wumple.foodfunk.rotten.ItemRottenFood;
 import com.wumple.foodfunk.rotten.ItemSpoiledMilk;
+import com.wumple.util.RegistrationHelpers;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+
 
 @ObjectHolder("foodfunk")
 public class ObjectHandler
@@ -87,8 +81,8 @@ public class ObjectHandler
         {
             final IForgeRegistry<Block> registry = event.getRegistry();
 
-            regHelper(registry, new BlockEsky());
-            regHelper(registry, new BlockFreezer());
+            RegistrationHelpers.regHelper(registry, new BlockEsky());
+            RegistrationHelpers.regHelper(registry, new BlockFreezer());
         }
 
         @SubscribeEvent
@@ -96,11 +90,11 @@ public class ObjectHandler
         {
             final IForgeRegistry<Item> registry = event.getRegistry();
 
-            rotten_food = regHelper(registry, new ItemRottenFood());
-            spoiled_milk = regHelper(registry, new ItemSpoiledMilk());
+            rotten_food = RegistrationHelpers.regHelper(registry, new ItemRottenFood());
+            spoiled_milk = RegistrationHelpers.regHelper(registry, new ItemSpoiledMilk());
 
-            esky_item = registerItemBlock(registry, esky);
-            freezer_item = registerItemBlock(registry, freezer);
+            esky_item = RegistrationHelpers.registerItemBlock(registry, esky);
+            freezer_item = RegistrationHelpers.registerItemBlock(registry, freezer);
 
             registerTileEntities();
         }
@@ -110,110 +104,29 @@ public class ObjectHandler
         {
             final IForgeRegistry<SoundEvent> registry = event.getRegistry();
 
-            esky_open = registerSound(registry, "foodfunk:esky_open");
-            esky_close = registerSound(registry, "foodfunk:esky_close");
-            freezer_open = registerSound(registry, "foodfunk:freezer_open");
-            freezer_close = registerSound(registry, "foodfunk:freezer_close");
+            esky_open = RegistrationHelpers.registerSound(registry, "foodfunk:esky_open");
+            esky_close = RegistrationHelpers.registerSound(registry, "foodfunk:esky_close");
+            freezer_open = RegistrationHelpers.registerSound(registry, "foodfunk:freezer_open");
+            freezer_close = RegistrationHelpers.registerSound(registry, "foodfunk:freezer_close");
         }
 
         public static void registerTileEntities()
         {
-            registerTileEntity(TileEntityEsky.class, "foodfunk:esky");
-            registerTileEntity(TileEntityFreezer.class, "foodfunk:freezer");
+        	RegistrationHelpers.registerTileEntity(TileEntityEsky.class, "foodfunk:esky");
+        	RegistrationHelpers.registerTileEntity(TileEntityFreezer.class, "foodfunk:freezer");
         }
 
         @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public static void registerRenders(ModelRegistryEvent event)
         {
-            registerRender(rotten_food);
-            registerRender(spoiled_milk);
-            registerRender(esky_item);
-            registerRender(freezer_item);
+        	RegistrationHelpers.registerRender(rotten_food);
+        	RegistrationHelpers.registerRender(spoiled_milk);
+        	RegistrationHelpers.registerRender(esky_item);
+        	RegistrationHelpers.registerRender(freezer_item);
 
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEsky.class, new TileEntityEskyRenderer());
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFreezer.class, new TileEntityFreezerRenderer());
         }
-
-        // ----------------------------------------------------------------------
-        // Utility
-
-        protected static <T extends IForgeRegistryEntry<T>> T regHelper(IForgeRegistry<T> registry, T thing)
-        {
-            registry.register(thing);
-            return thing;
-        }
-
-        protected static <T extends IForgeRegistryEntry<T>> T regHelper(IForgeRegistry<T> registry, T thing,
-                String name)
-        {
-            nameHelper(thing, name);
-
-            return regHelper(registry, thing);
-        }
-
-        protected static <T extends IForgeRegistryEntry<T>> T regHelper(IForgeRegistry<T> registry, T thing,
-                ResourceLocation loc)
-        {
-            nameHelper(thing, loc);
-
-            return regHelper(registry, thing);
-        }
-
-        public static <T extends IForgeRegistryEntry<T>> void nameHelper(T thing, ResourceLocation loc)
-        {
-            thing.setRegistryName(loc);
-            String dotname = loc.getResourceDomain() + "." + loc.getResourcePath();
-
-            if (thing instanceof Block)
-            {
-                ((Block) thing).setUnlocalizedName(dotname);
-            }
-            else if (thing instanceof Item)
-            {
-                ((Item) thing).setUnlocalizedName(dotname);
-            }
-        }
-
-        public static <T extends IForgeRegistryEntry<T>> void nameHelper(T thing, String name)
-        {
-            ResourceLocation loc = GameData.checkPrefix(name);
-            nameHelper(thing, loc);
-        }
-
-        protected static SoundEvent registerSound(IForgeRegistry<SoundEvent> registry, String name)
-        {
-            ResourceLocation loc = GameData.checkPrefix(name);
-
-            SoundEvent event = new SoundEvent(loc);
-
-            regHelper(registry, event, loc);
-
-            return event;
-        }
-
-        @SideOnly(Side.CLIENT)
-        protected static void registerRender(Item item)
-        {
-            ModelResourceLocation loc = new ModelResourceLocation(item.getRegistryName(), "inventory");
-            ModelLoader.setCustomModelResourceLocation(item, 0, loc);
-        }
-
-        protected static ItemBlock registerItemBlock(IForgeRegistry<Item> registry, Block block)
-        {
-            ItemBlock item = new ItemBlock(block);
-            regHelper(registry, item, block.getRegistryName());
-            // regHelper(registry, Item.getItemFromBlock(block), block.getRegistryName());
-
-            return item;
-        }
-
-        protected static void registerTileEntity(Class<? extends TileEntity> tileEntityClass, String key)
-        {
-            ResourceLocation loc = GameData.checkPrefix(key);
-
-            GameRegistry.registerTileEntity(tileEntityClass, loc);
-        }
-
     }
 }

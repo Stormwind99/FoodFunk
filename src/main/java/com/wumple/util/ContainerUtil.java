@@ -1,4 +1,4 @@
-package com.wumple.misc;
+package com.wumple.util;
 
 import choonster.capability.CapabilityUtils;
 import net.minecraft.entity.player.EntityPlayer;

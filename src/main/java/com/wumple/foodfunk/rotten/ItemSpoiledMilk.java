@@ -1,6 +1,6 @@
 package com.wumple.foodfunk.rotten;
 
-import com.wumple.foodfunk.ObjectHandler;
+import com.wumple.util.RegistrationHelpers;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.creativetab.CreativeTabs;
@@ -21,7 +21,7 @@ public class ItemSpoiledMilk extends ItemBucketMilk
         super();
         setCreativeTab(CreativeTabs.MISC);
 
-        ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:spoiled_milk");
+        RegistrationHelpers.nameHelper(this, "foodfunk:spoiled_milk");
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.wumple.misc;
+package com.wumple.util;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

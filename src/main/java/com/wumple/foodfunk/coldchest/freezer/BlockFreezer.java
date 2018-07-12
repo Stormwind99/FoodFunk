@@ -2,8 +2,8 @@ package com.wumple.foodfunk.coldchest.freezer;
 
 import javax.annotation.Nullable;
 
-import com.wumple.foodfunk.ObjectHandler;
 import com.wumple.foodfunk.basechest.BlockBaseChest;
+import com.wumple.util.RegistrationHelpers;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -19,7 +19,7 @@ public class BlockFreezer extends BlockBaseChest implements ITileEntityProvider
         setHardness(3.0F);
         setCreativeTab(CreativeTabs.MISC);
 
-        ObjectHandler.RegistrationHandler.nameHelper(this, "foodfunk:freezer");
+        RegistrationHelpers.nameHelper(this, "foodfunk:freezer");
     }
 
     /**

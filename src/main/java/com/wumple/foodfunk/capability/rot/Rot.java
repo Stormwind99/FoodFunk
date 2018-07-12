@@ -9,8 +9,8 @@ import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.preserving.PreservingHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.misc.ContainerUseTracker;
-import com.wumple.misc.CraftingUtil;
+import com.wumple.util.ContainerUseTracker;
+import com.wumple.util.CraftingUtil;
 
 import choonster.capability.CapabilityContainerListenerManager;
 import net.minecraft.entity.player.EntityPlayer;
