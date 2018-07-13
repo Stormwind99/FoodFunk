@@ -2,13 +2,16 @@ package com.wumple.util.container;
 
 import com.wumple.util.GuiUtil;
 
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -26,12 +29,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class ContainerUseTracker
 {
     public static TileEntity lastUsedTileEntity = null;
+    public static Entity lastUsedEntity = null;
     public static Entity lastUsedBy = null;
     public static Container lastUsedContainer = null;
     
     public static void forget()
     {
         lastUsedTileEntity = null;
+        lastUsedEntity = null;
         lastUsedBy = null;
         lastUsedContainer = null;
     }
@@ -52,16 +57,37 @@ public class ContainerUseTracker
     @SideOnly(Side.CLIENT)
     public static void onInteract(PlayerInteractEvent event)
     {
-        if ((event.getFace() != null) && (event.getSide() == Side.CLIENT))
+        if (event.getSide() == Side.CLIENT)
         {
-            BlockPos pos = event.getPos();
-            TileEntity entity = event.getWorld().getTileEntity(pos);
-            lastUsedTileEntity = entity;
-            if (entity != null)
-            {
-                lastUsedBy = event.getEntity();
-            }
-        }        
+        	if (event.getFace() != null)
+        	{
+        		BlockPos pos = event.getPos();
+        		TileEntity entity = event.getWorld().getTileEntity(pos);
+        		lastUsedTileEntity = entity;
+        		if (entity != null)
+        		{
+        			lastUsedBy = event.getEntity();
+        		}
+        	}
+        }     
+    }
+
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public static void onEntityInteract(EntityInteract event)
+    {
+        if (event.getSide() == Side.CLIENT)
+        {
+        	Entity target = event.getTarget();
+        	if (target != null)
+        	{
+        		lastUsedEntity = target;
+        		if (target != null)
+        		{
+        			lastUsedBy = event.getEntity();
+        		}
+        	}
+        }     
     }
     
     @SubscribeEvent
@@ -72,6 +98,19 @@ public class ContainerUseTracker
         {
             lastUsedContainer = event.getContainer();
         }
+    }
+    
+    @SubscribeEvent
+    @SideOnly(Side.CLIENT)
+    public static void onGuiOpen(GuiOpenEvent event)
+    {
+    	// TODO GuiContainer.inventorySlots ?
+    	
+    	if(event.getGui() instanceof GuiContainer)
+    	{
+    		GuiContainer gui = (GuiContainer)event.getGui();
+            lastUsedContainer = gui.inventorySlots;    		
+    	}
     }
 
     @SubscribeEvent

@@ -1,7 +1,9 @@
 package com.wumple.util.container;
 
-import net.minecraft.entity.player.EntityPlayer;
+import com.wumple.util.capability.CapabilityUtils;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerChest;
 import net.minecraft.inventory.IInventory;
@@ -14,7 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import com.wumple.util.capability.CapabilityUtils;
 
 public class ContainerUtil
 {
@@ -100,6 +101,39 @@ public class ContainerUtil
         return users;
     }
 
+    // horrible hack - find players with container open, by searching nearby and for
+    // a known item in the container
+    public static NonNullList<EntityPlayer> getPlayersWithContainerOpen(Entity container, ItemStack itemToSearchFor)
+    {
+        int i = container.getPosition().getX();
+        int j = container.getPosition().getY();
+        int k = container.getPosition().getZ();
+
+        NonNullList<EntityPlayer> users = NonNullList.create();
+
+        IInventory icontainer = null;
+        if (container instanceof IInventory)
+        {
+            icontainer = (IInventory) container;
+        }
+
+        for (EntityPlayer player : container.world.getEntitiesWithinAABB(EntityPlayer.class,
+                new AxisAlignedBB((double) ((float) i - 5.0F), (double) ((float) j - 5.0F), (double) ((float) k - 5.0F),
+                        (double) ((float) (i + 1) + 5.0F), (double) ((float) (j + 1) + 5.0F),
+                        (double) ((float) (k + 1) + 5.0F))))
+        {
+            boolean add = isPlayerWithContainerOpenBase(player, null, icontainer, itemToSearchFor);
+
+            if (add)
+            {
+                users.add(player);
+            }
+        }
+
+        return users;
+    }
+
+    
     // horrible hack - get the TileEntity corresponding to container
     public static TileEntity getTileEntityForContainer(Container container, ItemStack itemToSearchFor, BlockPos position, World world)
     {        

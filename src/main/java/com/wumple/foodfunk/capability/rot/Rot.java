@@ -195,6 +195,7 @@ public class Rot implements IRot
                 {
                     if (entity.openContainer != null)
                     {
+                    	// TODO what about Entity?
                         TileEntity tecontainer = ContainerUseTracker.getUsedOpenContainer(entity, stack);
                         IPreserving cap = PreservingHelper.getPreserving(tecontainer);
                         if (cap != null)

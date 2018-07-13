@@ -78,8 +78,7 @@ public interface IPreserving
         
         public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
-        	//return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
-        	return NonNullList.create();
+        	return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
         }  
     }
 
