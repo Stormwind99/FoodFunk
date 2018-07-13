@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.wumple.foodfunk.capability.preserving.IPreserving.TileEntityPreservingOwner;
 import com.wumple.util.capability.CapabilityUtils;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -23,6 +24,12 @@ public class PreservingHelper
         return CapabilityUtils.getCapability(it, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
     }
 
+    @Nullable
+    public static IPreserving getPreserving(@Nullable Entity it)
+    {
+        return CapabilityUtils.getCapability(it, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
+    }
+    
     /**
      * Create a provider for the default {@link IPreserving} instance.
      *

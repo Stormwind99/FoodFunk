@@ -48,7 +48,7 @@ public interface IPreserving
     
     public static class TileEntityPreservingOwner extends TileEntityThing implements IPreservingOwner
     {
-    	TileEntityPreservingOwner(TileEntity ownerIn)
+    	public TileEntityPreservingOwner(TileEntity ownerIn)
     	{
     		super(ownerIn);
     	}
@@ -66,7 +66,7 @@ public interface IPreserving
     
     public static class EntityPreservingOwner extends EntityThing implements IPreservingOwner
     {
-    	EntityPreservingOwner(Entity entity)
+    	public EntityPreservingOwner(Entity entity)
     	{
     		super(entity);
     	}

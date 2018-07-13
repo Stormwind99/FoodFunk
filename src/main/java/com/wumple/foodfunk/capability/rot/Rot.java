@@ -10,9 +10,11 @@ import com.wumple.foodfunk.capability.preserving.PreservingHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.CraftingUtil;
+import com.wumple.util.GuiUtil;
 import com.wumple.util.capability.CapabilityContainerListenerManager;
 import com.wumple.util.container.ContainerUseTracker;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -25,6 +27,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Rot implements IRot
 {
@@ -195,9 +199,7 @@ public class Rot implements IRot
                 {
                     if (entity.openContainer != null)
                     {
-                    	// TODO what about Entity?
-                        TileEntity tecontainer = ContainerUseTracker.getUsedOpenContainer(entity, stack);
-                        IPreserving cap = PreservingHelper.getPreserving(tecontainer);
+                        IPreserving cap = getPreservingContainer(entity, stack);
                         if (cap != null)
                         {
                             int ratio = cap.getRatio();
@@ -265,6 +267,34 @@ public class Rot implements IRot
 
     // ----------------------------------------------------------------------
     // Internal
+    
+    IPreserving getPreservingContainer(EntityPlayer entity, ItemStack stack)
+    {
+    	IPreserving cap = null;
+    	
+    	// check Entities, such as for MinecartChest
+        if (ContainerUseTracker.lastUsedBy == entity)
+        {
+        	if (GuiUtil.isSlotUnderMouse(stack))
+        	{
+        		if (ContainerUseTracker.lastUsedEntity != null)
+        		{
+        			// MAYBE check if ContainerUseTracker.lastUsedEntity contains stack
+        			cap = PreservingHelper.getPreserving(ContainerUseTracker.lastUsedEntity);
+        		}
+        	}
+        }
+        
+        // check TileEntities, such as for Chest
+        if (cap == null)
+        {
+        	TileEntity tecontainer = ContainerUseTracker.getUsedOpenContainer(entity, stack);
+        	// MAYBE check if tecontainer contains stack
+        	cap = PreservingHelper.getPreserving(tecontainer);
+        }
+        
+        return cap;
+    }
 
     protected void setDefaults(ItemStack stack)
     {

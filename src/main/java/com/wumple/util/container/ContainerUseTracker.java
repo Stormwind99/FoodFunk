@@ -64,6 +64,7 @@ public class ContainerUseTracker
         		BlockPos pos = event.getPos();
         		TileEntity entity = event.getWorld().getTileEntity(pos);
         		lastUsedTileEntity = entity;
+        		lastUsedEntity = null;
         		if (entity != null)
         		{
         			lastUsedBy = event.getEntity();
@@ -82,6 +83,7 @@ public class ContainerUseTracker
         	if (target != null)
         	{
         		lastUsedEntity = target;
+        		lastUsedTileEntity = null;
         		if (target != null)
         		{
         			lastUsedBy = event.getEntity();
@@ -94,7 +96,7 @@ public class ContainerUseTracker
     @SideOnly(Side.CLIENT)
     public static void onOpen(PlayerContainerEvent.Open event)
     {
-        if ((lastUsedBy == event.getEntity()))
+        if (lastUsedBy == event.getEntity())
         {
             lastUsedContainer = event.getContainer();
         }
