@@ -9,25 +9,22 @@ import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.preserving.PreservingHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.util.container.ContainerUseTracker;
 import com.wumple.util.CraftingUtil;
-
 import com.wumple.util.capability.CapabilityContainerListenerManager;
+import com.wumple.util.container.ContainerUseTracker;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class Rot implements IRot
 {
@@ -175,10 +172,10 @@ public class Rot implements IRot
 
         if (worldTime >= rotTimeStamp)
         {
-            ConfigHandler.Rotting.RotProperty rotProps = ConfigHandler.Rotting.getRotProperty(stack);
+            RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
             // forget owner to eliminate dependency
             owner = null;
-            return forceRot(stack, rotProps);
+            return (rotProps != null) ? rotProps.forceRot(stack) : null;
         }
 
         return stack;
@@ -237,7 +234,7 @@ public class Rot implements IRot
     public void handleCraftedRot(World world, IInventory craftMatrix, ItemStack crafting)
     {
         // TODO remove if can get data from this instead
-        ConfigHandler.Rotting.RotProperty rotProps = ConfigHandler.Rotting.getRotProperty(crafting);
+        RotProperty rotProps = ConfigHandler.rotting.getRotProperty(crafting);
         long worldTime = world.getTotalWorldTime();
         long rotTime = rotProps.getRotTime();
         // end TODO
@@ -268,37 +265,9 @@ public class Rot implements IRot
     // ----------------------------------------------------------------------
     // Internal
 
-    protected static ItemStack forceRot(ItemStack stack, ConfigHandler.Rotting.RotProperty rot)
-    {
-        if (rot.rotID.isEmpty())
-        {
-            return ItemStack.EMPTY;
-        }
-
-        Item item = Item.REGISTRY.getObject(new ResourceLocation(rot.rotID));
-
-        if (item == null)
-        {
-            NonNullList<ItemStack> ores = OreDictionary.getOres(rot.rotID);
-            if (!ores.isEmpty())
-            {
-                ItemStack choice = ores.get(random.nextInt(ores.size()));
-                return choice.copy();
-            }
-        }
-
-        if (item == null)
-        {
-            return ItemStack.EMPTY;
-        }
-
-        return (rot.rotMeta == null) ? new ItemStack(item, stack.getCount())
-                : new ItemStack(item, stack.getCount(), rot.rotMeta.intValue());
-    }
-
     protected void setDefaults(ItemStack stack)
     {
-        ConfigHandler.Rotting.RotProperty rotProps = ConfigHandler.Rotting.getRotProperty(stack);
+        RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
 
         if ((rotProps != null) && rotProps.doesRot())
         {

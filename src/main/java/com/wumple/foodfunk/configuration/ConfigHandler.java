@@ -1,49 +1,53 @@
 package com.wumple.foodfunk.configuration;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.annotation.Nullable;
 
 import com.wumple.foodfunk.ObjectHandler;
 import com.wumple.foodfunk.Reference;
+import com.wumple.foodfunk.capability.rot.RotProperty;
+import com.wumple.util.config.MatchingConfig;
+import com.wumple.util.config.StringMatchingDualConfig;
 
+import akka.japi.Pair;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.oredict.OreDictionary;
-import com.wumple.util.config.MatchingConfig;
 
 public class ConfigHandler
 {
+    // ----------------------------------------------------------------------
+    // Preserving
+    
+    public static final int NO_PRESERVING = 0;
+	public static final String ID_NO_ROT = null;
     public static final int DAYS_NO_ROT = -1;
     public static final long TICKS_PER_DAY = 24000L;
     public static final String FOOD_TAG = "minecraft:food";
 
+    public static MatchingConfig<Integer> preserving = new MatchingConfig<Integer>(ConfigContainer.preserving.ratios, NO_PRESERVING);
+    public static Rotting rotting = new Rotting();
+    		
     public static void init()
     {
         // handle all food with a "default" entry
-        Rotting.addDefaultRotProperty("minecraft:food", ObjectHandler.rotten_food, 7);
-        Rotting.addDefaultRotProperty(Items.ROTTEN_FLESH, "minecraft:rotten_flesh", null, DAYS_NO_ROT);
-        Rotting.addDefaultRotProperty(ObjectHandler.rotten_food, "foodfunk:rotten_food", null, DAYS_NO_ROT);
-        // TODO Rotting.addDefaultRotProperty(ObjectHandler.rotted_item, null, DAYS_NO_ROT);
-        Rotting.addDefaultRotProperty(Items.MILK_BUCKET, "minecraft:milk_bucket", ObjectHandler.spoiled_milk, 7);
-        Rotting.addDefaultRotProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 7);
-        Rotting.addDefaultRotProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:fermented_spider_eye", Items.ROTTEN_FLESH,
-                7);
-        Rotting.addDefaultRotProperty(Items.BEEF, "minecraft:beef", Items.ROTTEN_FLESH, 7);
-        Rotting.addDefaultRotProperty(Items.CHICKEN, "minecraft:chicken", Items.ROTTEN_FLESH, 7);
-        Rotting.addDefaultRotProperty(Items.PORKCHOP, "minecraft:porkchop", Items.ROTTEN_FLESH, 7);
-        Rotting.addDefaultRotProperty(Items.FISH, "minecraft:fish", Items.ROTTEN_FLESH, 7);
-        Rotting.addDefaultRotProperty(Items.COOKED_BEEF, "minecraft:cooked_beef", Items.ROTTEN_FLESH, 7);
-        Rotting.addDefaultRotProperty(Items.COOKED_CHICKEN, "minecraft:cooked_chicken", Items.ROTTEN_FLESH, 7);
-        Rotting.addDefaultRotProperty(Items.COOKED_PORKCHOP, "minecraft:cooked_porkchop", Items.ROTTEN_FLESH, 7);
-        Rotting.addDefaultRotProperty(Items.COOKED_FISH, "minecraft:cooked_fish", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty(FOOD_TAG, ObjectHandler.rotten_food, 7);
+        rotting.addDefaultProperty(Items.ROTTEN_FLESH, "minecraft:rotten_flesh", ID_NO_ROT, DAYS_NO_ROT);
+        rotting.addDefaultProperty(ObjectHandler.rotten_food, "foodfunk:rotten_food", ID_NO_ROT, DAYS_NO_ROT);
+        // TODO Rotting.addDefaultProperty(ObjectHandler.rotted_item, null, DAYS_NO_ROT);
+        rotting.addDefaultProperty(Items.MILK_BUCKET, "minecraft:milk_bucket", ObjectHandler.spoiled_milk, 7);
+        rotting.addDefaultProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 7);
+        rotting.addDefaultProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:fermented_spider_eye", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty(Items.BEEF, "minecraft:beef", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty(Items.CHICKEN, "minecraft:chicken", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty(Items.PORKCHOP, "minecraft:porkchop", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty(Items.FISH, "minecraft:fish", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty(Items.COOKED_BEEF, "minecraft:cooked_beef", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty(Items.COOKED_CHICKEN, "minecraft:cooked_chicken", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty(Items.COOKED_PORKCHOP, "minecraft:cooked_porkchop", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty(Items.COOKED_FISH, "minecraft:cooked_fish", Items.ROTTEN_FLESH, 7);
 
         preserving.addDefaultProperty("foodfunk:esky", 50);
         preserving.addDefaultProperty("foodfunk:freezer", 100);
@@ -61,261 +65,44 @@ public class ConfigHandler
 
     // ----------------------------------------------------------------------
     // Rotting
-
-    public static class Rotting
+    
+    public static class Rotting extends StringMatchingDualConfig<Integer>
     {
-        public static boolean addDefaultRotProperty(String name, String rotID, int days)
-        {
-            if (name == null)
-            {
-                name = "";
-            }
+    	public Rotting()
+    	{
+    		super(ConfigContainer.rotting.rotID, ID_NO_ROT, ConfigContainer.rotting.rotDays, DAYS_NO_ROT);    
+    	}
 
-            if (rotID == null)
-            {
-                rotID = "";
-            }
-
-            ConfigContainer.rotting.rotDays.putIfAbsent(name, days);
-            ConfigContainer.rotting.rotID.putIfAbsent(name, rotID);
-
-            return true;
-        }
-
-        public static boolean addDefaultRotProperty(String name, @Nullable Item rotItem, int days)
-        {
-            String rotID = null;
-
-            if (rotItem != null)
-            {
-                ResourceLocation resLoc = Item.REGISTRY.getNameForObject(rotItem);
-                if (resLoc != null)
-                {
-                    rotID = resLoc.toString();
-                }
-            }
-
-            return addDefaultRotProperty(name, rotID, days);
-        }
-
-        public static boolean addDefaultRotProperty(Item item, @Nullable Item rotItem, int days)
-        {
-            // check for null Item in case another mod removes a vanilla item
-            if (item != null)
-            {
-                ResourceLocation resLoc = Item.REGISTRY.getNameForObject(item);
-                if (resLoc != null)
-                {
-                    String name = resLoc.toString();
-                    return addDefaultRotProperty(name, rotItem, days);
-                }
-            }
-
-            return false;
-        }
-
-        public static boolean addDefaultRotProperty(Item item, String backup, @Nullable Item rotItem, int days)
-        {
-            String name = backup;
-
-            // check for null Item in case another mod removes a vanilla item
-            if (item != null)
-            {
-                ResourceLocation resLoc = Item.REGISTRY.getNameForObject(item);
-                if (resLoc != null)
-                {
-                    name = resLoc.toString();
-                }
-            }
-
-            return addDefaultRotProperty(name, rotItem, days);
-        }
-
-        public static void addDefaultRotProperty(Item[] items, Item rotItem, int _days)
-        {
-            for (Item item : items)
-            {
-                addDefaultRotProperty(item, rotItem, _days);
-            }
-        }
-
-        public static boolean doesRot(ItemStack stack)
+		public boolean doesRot(ItemStack stack)
         {
             RotProperty rotProps = getRotProperty(stack);
             return (rotProps == null) ? false : rotProps.doesRot();
         }
 
-        public static class RotProperty
-        {
-            public String id;
-            public String rotID = null;
-            public int days = ConfigHandler.DAYS_NO_ROT;
-            public Integer rotMeta = null;
-
-            RotProperty()
-            {
-            }
-
-            RotProperty(String _id, int _days)
-            {
-                id = _id;
-                days = _days;
-            }
-
-            RotProperty(String _id, String _rotID)
-            {
-                id = _id;
-                setRotID(_rotID);
-            }
-
-            public long getRotTime()
-            {
-                if (ConfigContainer.zdebugging.debug)
-                {
-                    double ticksPerDay = ConfigContainer.zdebugging.rotMultiplier * ConfigHandler.TICKS_PER_DAY;
-                    return days * (long) ticksPerDay;
-                }
-
-                return days * ConfigHandler.TICKS_PER_DAY;
-            }
-
-            public boolean doesRot()
-            {
-                return (days > DAYS_NO_ROT);
-            }
-
-            public void setRotID(String key)
-            {
-                // metadata support - class:name@metadata
-                int length = (key != null) ? key.length() : 0;
-                if ((length >= 2) && (key.charAt(length - 2) == '@'))
-                {
-                    String metastring = key.substring(length - 1);
-                    rotMeta = Integer.valueOf(metastring);
-                    rotID = key.substring(0, length - 2);
-                }
-                else if ((length >= 3) && (key.charAt(length - 3) == '@'))
-                {
-                    String metastring = key.substring(length - 2);
-                    rotMeta = Integer.valueOf(metastring);
-                    rotID = key.substring(0, length - 3);
-                }
-                else
-                {
-                    rotID = key;
-                    rotMeta = null;
-                }
-            }
-        }
-
         @Nullable
-        protected static RotProperty getRotPropertyBase(String key1)
-        {
-            RotProperty rotProp = null;
-
-            if (ConfigContainer.rotting.rotDays.containsKey(key1))
-            {
-                rotProp = new RotProperty(key1, ConfigContainer.rotting.rotDays.get(key1));
-            }
-
-            if (ConfigContainer.rotting.rotID.containsKey(key1))
-            {
-                String rotID = ConfigContainer.rotting.rotID.get(key1);
-                if (rotProp == null)
-                {
-                    rotProp = new RotProperty(key1, rotID);
-                }
-                else
-                {
-                    rotProp.setRotID(rotID);
-                }
-            }
-
-            return rotProp;
-        }
-
-        @Nullable
-        protected static RotProperty getRotPropertyBase(List<String> keys)
-        {
-            RotProperty rotProp = null;
-
-            for (String key : keys)
-            {
-                rotProp = getRotPropertyBase(key);
-                if (rotProp != null)
-                {
-                    break;
-                }
-            }
-
-            return rotProp;
-        }
-
-        @Nullable
-        protected static RotProperty getRotPropertyBase(Item item)
-        {
-            String key1 = "" + Item.REGISTRY.getNameForObject(item);
-            // WAS : look up a backup key with item meta data?
-            // String key2 = "" + Item.REGISTRY.getNameForObject(item) + "," +
-            // itemStack.getItemDamage();
-
-            return getRotPropertyBase(key1);
-        }
-
-        @Nullable
-        public static RotProperty getRotProperty(Item item)
-        {
-            RotProperty prop = getRotPropertyBase(item);
-
-            // hack-ish: handle default "minecraft:food" since a official tag for food
-            // doesn't exist (at least yet)
-            if ((prop == null) && (item instanceof ItemFood))
-            {
-                prop = getRotPropertyBase(FOOD_TAG);
-            }
-
-            return prop;
-        }
-
-        @Nullable
-        public static RotProperty getRotProperty(ItemStack itemStack)
+        public RotProperty getRotProperty(ItemStack itemStack)
         {
             if (itemStack == null)
             {
                 return null;
             }
 
-            ArrayList<String> nameKeys = new ArrayList<String>();
-
-            Item item = itemStack.getItem();
-
-            String key2 = "" + Item.REGISTRY.getNameForObject(item);
-
-            nameKeys.add(key2 + "@" + itemStack.getMetadata());
-            nameKeys.add(key2);
-
-            if (!itemStack.isEmpty())
+            ArrayList<String> nameKeys = MatchingConfig.getNameKeys(itemStack);
+            
+            RotProperty rotProp = null;
+            
+            for (String key : nameKeys)
             {
-                int oreIds[] = OreDictionary.getOreIDs(itemStack);
-                for (int oreId : oreIds)
+                Pair<String,Integer> pair = this.getProperty(key);
+
+                if ((pair.first() != null) || (pair.second() != null))
                 {
-                    nameKeys.add(OreDictionary.getOreName(oreId));
+                	rotProp = new RotProperty(key, pair.first(), pair.second());
+                	break;
                 }
             }
-
-            if (item instanceof ItemFood)
-            {
-                nameKeys.add(FOOD_TAG);
-            }
-
-            return getRotPropertyBase(nameKeys);
+            
+            return rotProp;
         }
     }
-
-    // ----------------------------------------------------------------------
-    // Preserving
-    
-    static final int NO_PRESERVING = 0;
-    
-    public static MatchingConfig<Integer> preserving = new MatchingConfig<Integer>(ConfigContainer.preserving.ratios, NO_PRESERVING);
 }

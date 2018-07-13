@@ -11,4 +11,12 @@ public class Util
     {
         return value == null ? defaultValue : value;
     }
+    
+    public static boolean checkBoth(boolean one, boolean two)
+    {
+    	boolean ret = true;
+        ret &= one;
+        ret &= two;
+        return ret;
+    }
 }

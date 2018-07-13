@@ -39,7 +39,7 @@ public class EventHandler
     public static void attachCapabilities(AttachCapabilitiesEvent<ItemStack> event)
     {
         ItemStack stack = event.getObject();
-        if (ConfigHandler.Rotting.doesRot(stack))
+        if (ConfigHandler.rotting.doesRot(stack))
         {
             event.addCapability(Rot.ID, RotCapHelper.createProvider(stack));
         }

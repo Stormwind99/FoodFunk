@@ -2,7 +2,6 @@ package com.wumple.foodfunk.capability.preserving;
 
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
