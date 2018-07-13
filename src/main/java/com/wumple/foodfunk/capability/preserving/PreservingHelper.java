@@ -2,10 +2,9 @@ package com.wumple.foodfunk.capability.preserving;
 
 import javax.annotation.Nullable;
 
-import com.wumple.foodfunk.capability.preserving.IPreserving;
-import com.wumple.foodfunk.capability.preserving.PreservingProvider;
-
+import com.wumple.foodfunk.capability.preserving.IPreserving.TileEntityPreservingOwner;
 import com.wumple.util.capability.CapabilityUtils;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -34,7 +33,7 @@ public class PreservingHelper
         // return new SimpleCapabilityProvider<>(Rot.CAPABILITY,
         // Rot.DEFAULT_FACING);
 
-        return new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, owner);
+        return new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, new TileEntityPreservingOwner(owner));
     }
 
     /**
@@ -50,6 +49,6 @@ public class PreservingHelper
         // Preserving.DEFAULT_FACING, capability);
 
         return new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, capability,
-                owner);
+        		new TileEntityPreservingOwner(owner));
     }
 }

@@ -7,7 +7,6 @@ import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotCapHelper;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.util.container.ContainerUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,7 +14,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -50,12 +48,12 @@ public class Preserving implements IPreserving
     // transient data
     // ticks since last rot refresh of contents
     protected int tick = 0;
-    protected TileEntity entity = null;
+    protected IPreservingOwner owner = null;
     protected int preservingRatio = 0;
 
     // persisted data
     long lastCheckTime = ConfigHandler.DAYS_NO_ROT;
-
+        
     // ----------------------------------------------------------------------
     // Init
 
@@ -69,12 +67,12 @@ public class Preserving implements IPreserving
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    Preserving(TileEntity owner)
+    Preserving(IPreservingOwner ownerIn)
     {
-        entity = owner;
-        MinecraftForge.EVENT_BUS.register(this);
+    	this();
+        owner = ownerIn;
     }
-
+    
     // ----------------------------------------------------------------------
     // IPreserving
 
@@ -92,19 +90,19 @@ public class Preserving implements IPreserving
     {
         return preservingRatio;
     }
-
+    
     /*
      * Set the owner of this capability, and init based on that owner
      */
-    public void setOwner(TileEntity ownerIn)
+    public void setOwner(IPreserving.IPreservingOwner ownerIn)
     {
-        if (entity != ownerIn)
+        if (!ownerIn.sameAs(owner))
         {
-            entity = ownerIn;
+            owner = ownerIn;
             lastCheckTime = Rot.getLastWorldTimestamp();
         }
     }
-    
+        
     /**
      * Tick counters, cache data, etc
      * @return boolean should we freshen contents this tick?
@@ -114,7 +112,7 @@ public class Preserving implements IPreserving
         // tick of 0 represents "cache any transient data" like preserving ratio
         if (tick == 0)
         {
-            Integer ratio = ConfigHandler.preserving.getProperty(entity);
+            Integer ratio = owner.getPreservingProperty();
             // at this point ratio should not be null - probably a bug, maybe throw exception
             preservingRatio = (ratio != null) ? ratio.intValue() : ConfigHandler.NO_PRESERVING;
         }
@@ -136,12 +134,12 @@ public class Preserving implements IPreserving
     public void freshenContents()
     {        
         // only freshen on server, and rely on cap data being sent to clients
-        if ((entity.getWorld() == null) || entity.getWorld().isRemote)
+        if ((owner.getWorld() == null) || owner.getWorld().isRemote)
         {
             return;
         }
 
-        long worldTime = entity.getWorld().getTotalWorldTime();
+        long worldTime = owner.getWorld().getTotalWorldTime();
 
         if (lastCheckTime <= ConfigHandler.DAYS_NO_ROT)
         {
@@ -162,14 +160,18 @@ public class Preserving implements IPreserving
      */
     protected void freshenContentsAny(long time, long worldTime)
     {
-        if (entity.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+    	if (owner == null)
+    	{
+    		return;
+    	}
+    	else if (owner.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
         {
-            IItemHandler capability = entity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+            IItemHandler capability = owner.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
             freshenTheseContents(capability, time, worldTime);
         }
-        else if (entity instanceof IInventory)
+        else if (owner.hasIInventory())
         {
-            IInventory inventory = (IInventory) entity;
+            IInventory inventory = owner.getIInventory();
             freshenTheseContents(inventory, time, worldTime);
         }
     }
@@ -197,9 +199,9 @@ public class Preserving implements IPreserving
 
         if (dirty)
         {
-            entity.markDirty();
+            owner.markDirty();
 
-            sendContainerUpdate(entity, itemToSearchFor, syncableItemsList);
+            sendContainerUpdate(owner, itemToSearchFor, syncableItemsList);
         }
     }
 
@@ -228,9 +230,9 @@ public class Preserving implements IPreserving
         // TODO move to Rot, hopefully ContainerListenerRot will eliminate this
         if (dirty)
         {
-            entity.markDirty();
+            owner.markDirty();
 
-            sendContainerUpdate(entity, itemToSearchFor, syncableItemsList);
+            sendContainerUpdate(owner, itemToSearchFor, syncableItemsList);
         }
     }
 
@@ -255,11 +257,11 @@ public class Preserving implements IPreserving
     }
 
     // TODO have Rot or ContainerListenerRot do this instead
-    protected static void sendContainerUpdate(TileEntity entity, ItemStack itemToSearchFor,
+    protected static void sendContainerUpdate(IPreservingOwner entity, ItemStack itemToSearchFor,
             NonNullList<ItemStack> syncableItemsList)
     {
         // update each client/player that has this container open
-        NonNullList<EntityPlayer> users = ContainerUtil.getPlayersWithContainerOpen(entity, itemToSearchFor);
+        NonNullList<EntityPlayer> users = entity.getPlayersWithContainerOpen(itemToSearchFor);
         if (!users.isEmpty())
         {
             for (EntityPlayer player : users)
@@ -291,12 +293,13 @@ public class Preserving implements IPreserving
 
     protected void handleOnTick(World world)
     {
-        if (entity != null)
+        if (owner != null)
         {
-            if (entity.isInvalid())
+            if (owner.isInvalid())
             {
                 MinecraftForge.EVENT_BUS.unregister(this);
-                entity = null;
+                owner.invalidate();
+                owner = null;
             }
             else 
             {

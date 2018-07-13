@@ -1,7 +1,10 @@
 package com.wumple.foodfunk.capability.preserving;
 
+import com.wumple.foodfunk.capability.preserving.IPreserving.EntityPreservingOwner;
+import com.wumple.foodfunk.capability.preserving.IPreserving.TileEntityPreservingOwner;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,12 +26,11 @@ public class EventHandler
 
         if (ConfigHandler.preserving.doesIt(entity))
         {
-            PreservingProvider provider = new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, entity);
+            PreservingProvider provider = new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, new TileEntityPreservingOwner(entity));
             event.addCapability(Preserving.ID, provider);
         }
     }
     
-    /*
     @SubscribeEvent
     public static void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event)
     {
@@ -36,9 +38,8 @@ public class EventHandler
 
         if (ConfigHandler.preserving.doesIt(entity))
         {
-            PreservingProvider provider = new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, entity);
+            PreservingProvider provider = new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, new EntityPreservingOwner(entity));
             event.addCapability(Preserving.ID, provider);
         }
     }
-    */
 }
