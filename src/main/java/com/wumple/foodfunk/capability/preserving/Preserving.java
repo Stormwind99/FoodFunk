@@ -255,7 +255,7 @@ public class Preserving implements IPreserving
     }
 
     // TODO have Rot or ContainerListenerRot do this instead
-    protected void sendContainerUpdate(TileEntity entity, ItemStack itemToSearchFor,
+    protected static void sendContainerUpdate(TileEntity entity, ItemStack itemToSearchFor,
             NonNullList<ItemStack> syncableItemsList)
     {
         // update each client/player that has this container open

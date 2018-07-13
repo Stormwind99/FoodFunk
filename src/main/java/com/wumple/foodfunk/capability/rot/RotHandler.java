@@ -2,12 +2,13 @@ package com.wumple.foodfunk.capability.rot;
 
 import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.configuration.ConfigContainer;
-
 import com.wumple.util.capability.CapabilityUtils;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,17 @@ public class RotHandler
         if (world.isRemote || !ConfigContainer.enabled)
         {
             return false;
+        }
+        
+        if (entity instanceof EntityPlayer)
+        {
+        	EntityPlayer player = (EntityPlayer) entity;
+        	// check open container so user sees updates in open container
+            // container listener would not handle this
+            if ((player.openContainer != null) && !(player.openContainer instanceof ContainerPlayer)) 
+            {
+            	evaluateRotContents(world, player.openContainer);
+            }
         }
 
         IItemHandler capability = CapabilityUtils.getCapability(entity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY,
@@ -46,7 +58,8 @@ public class RotHandler
         }
         else if (entity instanceof EntityPlayer)
         {
-            IInventory invo = ((EntityPlayer) entity).inventory;
+        	EntityPlayer player = (EntityPlayer) entity;
+            IInventory invo = player.inventory;
             return evaluateRotContents(world, invo);
         }
         else if (entity instanceof IInventory)
