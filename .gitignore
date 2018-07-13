@@ -1,53 +1,28 @@
-#eclipse
-/eclipse
-
-## gradle
-/.gradle
-/build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Cache of project
-.gradletasknamecache
-
-# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
-# gradle/wrapper/gradle-wrapper.properties
-
-## Private Stuffs
-/private.properties
-
-# ignore Minecraft and Forge files
+# eclipse
+bin
+*.launch
+.settings
+.metadata
 .classpath
-.gradle
 .project
-.settings/
-banned-ips.json
-banned-players.json
-bin/
-config/
-eula.txt
-gradle/
-gradlew
-gradlew.bat
-logs/
-ops.json
-options.txt
-saves/
-server.properties
-usercache.json
-usernamecache.json
-whitelist.json
-world/
 
-## ForgeGradle
-/run
-/libs
-/*_Client.launch
-/*_Server.launch
+# idea
+out
+*.ipr
+*.iws
+*.iml
+.idea
+
+# gradle
+build
+.gradle
+
+# other
+eclipse
+run
+
+## Private stuffs
+/private.properties
 
 ## scratch space
 /old
@@ -82,4 +57,3 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-
