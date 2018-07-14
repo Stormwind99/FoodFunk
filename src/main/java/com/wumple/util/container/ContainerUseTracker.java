@@ -3,6 +3,7 @@ package com.wumple.util.container;
 import javax.annotation.Nullable;
 
 import com.wumple.util.GuiUtil;
+import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.CapabilityUtils;
 
 import net.minecraft.client.Minecraft;
@@ -138,11 +139,14 @@ public class ContainerUseTracker
     @SideOnly(Side.CLIENT)
     public static void onClose(PlayerContainerEvent.Close event)
     { 
+    	forget();
+    	/*
         if ((lastUsedBy == event.getEntity()) && (lastUsedContainer == event.getContainer()))
         {
             forget();
         }
-        // TODO else probably a bug       
+        // TODO else probably a bug
+        */
     }
     
     @SideOnly(Side.CLIENT)
@@ -150,6 +154,12 @@ public class ContainerUseTracker
     public static <T> T getContainerCapability(EntityPlayer entity, ItemStack stack, Capability<T> capability, @Nullable EnumFacing facing)
     {
     	T cap = null;
+    	
+    	IThing thing = ContainerUtil.getContainedBy(stack, entity, null);
+    	if (thing != null)
+    	{
+    		cap = thing.getCapability(capability, facing);
+    	}
     	
         if (lastUsedBy == entity)
         {

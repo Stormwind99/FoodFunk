@@ -1,6 +1,12 @@
 package com.wumple.util.container;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wumple.util.Util;
+import com.wumple.util.adapter.EntityThing;
+import com.wumple.util.adapter.IThing;
+import com.wumple.util.adapter.TileEntityThing;
 import com.wumple.util.capability.CapabilityUtils;
 
 import net.minecraft.entity.Entity;
@@ -70,14 +76,23 @@ public class ContainerUtil
         return isPlayerWithContainerOpenBase(player, container, icontainer, itemToSearchFor);
     }
     
+    protected static <T extends Entity> List<T> getEntitiesNearby(Class <? extends T > classEntity, BlockPos pos, World world)
+    {
+        int i = pos.getX();
+        int j = pos.getY();
+        int k = pos.getZ();
+        
+        AxisAlignedBB box = new AxisAlignedBB((double) ((float) i - 5.0F), (double) ((float) j - 5.0F), (double) ((float) k - 5.0F),
+                (double) ((float) (i + 1) + 5.0F), (double) ((float) (j + 1) + 5.0F),
+                (double) ((float) (k + 1) + 5.0F));
+
+        return world.getEntitiesWithinAABB(classEntity, box);
+    }
+    
     // horrible hack - find players with container open, by searching nearby and for
     // a known item in the container
     public static NonNullList<EntityPlayer> getPlayersWithContainerOpen(TileEntity container, ItemStack itemToSearchFor)
     {
-        int i = container.getPos().getX();
-        int j = container.getPos().getY();
-        int k = container.getPos().getZ();
-
         NonNullList<EntityPlayer> users = NonNullList.create();
 
         IInventory icontainer = null;
@@ -86,14 +101,9 @@ public class ContainerUtil
             icontainer = (IInventory) container;
         }
 
-        for (EntityPlayer player : container.getWorld().getEntitiesWithinAABB(EntityPlayer.class,
-                new AxisAlignedBB((double) ((float) i - 5.0F), (double) ((float) j - 5.0F), (double) ((float) k - 5.0F),
-                        (double) ((float) (i + 1) + 5.0F), (double) ((float) (j + 1) + 5.0F),
-                        (double) ((float) (k + 1) + 5.0F))))
+        for (EntityPlayer player : getEntitiesNearby(EntityPlayer.class, container.getPos(), container.getWorld()))
         {
-            boolean add = isPlayerWithContainerOpenBase(player, container, icontainer, itemToSearchFor);
-
-            if (add)
+            if (isPlayerWithContainerOpenBase(player, container, icontainer, itemToSearchFor))
             {
                 users.add(player);
             }
@@ -106,10 +116,6 @@ public class ContainerUtil
     // a known item in the container
     public static NonNullList<EntityPlayer> getPlayersWithContainerOpen(Entity container, ItemStack itemToSearchFor)
     {
-        int i = container.getPosition().getX();
-        int j = container.getPosition().getY();
-        int k = container.getPosition().getZ();
-
         NonNullList<EntityPlayer> users = NonNullList.create();
 
         IInventory icontainer = null;
@@ -118,14 +124,9 @@ public class ContainerUtil
             icontainer = (IInventory) container;
         }
 
-        for (EntityPlayer player : container.world.getEntitiesWithinAABB(EntityPlayer.class,
-                new AxisAlignedBB((double) ((float) i - 5.0F), (double) ((float) j - 5.0F), (double) ((float) k - 5.0F),
-                        (double) ((float) (i + 1) + 5.0F), (double) ((float) (j + 1) + 5.0F),
-                        (double) ((float) (k + 1) + 5.0F))))
+        for (EntityPlayer player : getEntitiesNearby(EntityPlayer.class, container.getPosition(), container.world))
         {
-            boolean add = isPlayerWithContainerOpenBase(player, null, icontainer, itemToSearchFor);
-
-            if (add)
+            if (isPlayerWithContainerOpenBase(player, null, icontainer, itemToSearchFor))
             {
                 users.add(player);
             }
@@ -134,9 +135,8 @@ public class ContainerUtil
         return users;
     }
 
-    
     // horrible hack - get the TileEntity corresponding to container
-    public static TileEntity getTileEntityForContainer(Container container, ItemStack itemToSearchFor, BlockPos position, World world)
+    public static List<TileEntity> getTileEntitiesNearby(BlockPos position, World world)
     {        
         // idea #1
         // for each tileentity in range of player
@@ -154,10 +154,32 @@ public class ContainerUtil
         final int y2 = (int) ((float) (j + 1) + 5.0F);
         final int z2 = (int) ((float) (k + 1) + 5.0F);
         
+        ArrayList<TileEntity> list = new ArrayList<TileEntity>();
+        
         // iterate over all tileentities nearby
         for (BlockPos pos : BlockPos.getAllInBoxMutable(x1, y1, z1, x2, y2, z2))
         {
             TileEntity tileentity = world.getTileEntity(pos);
+            if (tileentity != null)
+            {
+            	list.add(tileentity);
+            }
+        }
+        
+        return list;
+    }
+    
+    // horrible hack - get the TileEntity corresponding to container
+    public static TileEntity getTileEntityForContainer(Container container, ItemStack itemToSearchFor, BlockPos position, World world)
+    {        
+        // idea #1
+        // for each tileentity in range of player
+        //   if supports IItemHandler, ask if has item.  If so, done.
+        //   if supports IInventory, ask if has item.  If so, done.
+        
+        // iterate over all tileentities nearby
+        for (TileEntity tileentity : getTileEntitiesNearby(position, world))
+        {
             if (doesContain(tileentity, itemToSearchFor))
             {
                 return tileentity;
@@ -224,5 +246,66 @@ public class ContainerUtil
         IInventory iinventory = Util.as(entity, IInventory.class);
         
         return doesContain(capability, itemToSearchFor) ? true : doesContain(iinventory, itemToSearchFor);
+    }
+    
+    // horrible hack - find the thing containing stack
+    static public IThing getContainedBy(ItemStack stack, Entity entityHint, TileEntity tileEntityHint)
+    {
+    	if (doesContain(entityHint, stack))
+    	{
+    		return new EntityThing(entityHint);
+    	}
+    	
+    	if (doesContain(tileEntityHint, stack))
+    	{
+    		return new TileEntityThing(tileEntityHint);
+    	}
+    	
+    	BlockPos posGuess = null;
+    	World worldGuess = null;
+    	if (entityHint != null)
+    	{
+    		posGuess = entityHint.getPosition();
+    		worldGuess = entityHint.getEntityWorld();
+    	}
+    	else if (tileEntityHint != null)
+    	{
+    		posGuess = tileEntityHint.getPos();
+    		worldGuess = tileEntityHint.getWorld();
+    	}
+    	/*
+    	else
+    	{
+    		posGuess = FoodFunk.proxy.getClientPlayer().getPos();
+    	}
+    	*/
+    	
+    	// TODO open TileEntity container
+    	// TODO open Entity container
+    	
+    	if ((posGuess == null) || (worldGuess == null))
+    	{
+    		return null;
+    	}
+    	
+    	// other Entities nearby
+        for (Entity entity : getEntitiesNearby(Entity.class, posGuess, worldGuess))
+        {
+        	if (doesContain(entity, stack))
+        	{
+        		return new EntityThing(entity);
+        	}
+        }
+
+    	// other TileEntities nearby
+        for (TileEntity entity : getTileEntitiesNearby(posGuess, worldGuess))
+        {
+        	if (doesContain(entity, stack))
+        	{
+        		return new TileEntityThing(entity);
+        	}
+        }
+        
+    	return null;
     }
 }
