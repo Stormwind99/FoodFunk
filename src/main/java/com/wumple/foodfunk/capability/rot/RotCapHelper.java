@@ -33,19 +33,4 @@ public class RotCapHelper
 
         return new RotProvider(Rot.CAPABILITY, Rot.DEFAULT_FACING, stack);
     }
-
-    /**
-     * Create a provider for the specified {@link IRot} instance.
-     *
-     * @param Rot
-     *            The IRot
-     * @return The provider
-     */
-    public static ICapabilityProvider createProvider(IRot capability, ItemStack stack)
-    {
-        // return new SimpleCapabilityProvider<>(Rot.CAPABILITY,
-        // Rot.DEFAULT_FACING, capability);
-
-        return new RotProvider(Rot.CAPABILITY, Rot.DEFAULT_FACING, capability, stack);
-    }
 }

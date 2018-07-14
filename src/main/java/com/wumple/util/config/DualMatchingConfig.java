@@ -60,7 +60,7 @@ public class DualMatchingConfig<T, U>
     
     public Pair<T,U> getProperty(ItemStack itemStack)
     {
-    	ArrayList<String> nameKeys = MatchingConfig.getNameKeys(itemStack);
+    	ArrayList<String> nameKeys = MatchingConfig.getItemStackNameKeys(itemStack);
     	
     	return new Pair<T,U>(config1.getProperty(nameKeys), config2.getProperty(nameKeys));
     }

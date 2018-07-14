@@ -1,5 +1,6 @@
 package com.wumple.util.container;
 
+import com.wumple.util.Util;
 import com.wumple.util.capability.CapabilityUtils;
 
 import net.minecraft.entity.Entity;
@@ -166,13 +167,9 @@ public class ContainerUtil
         return null;
     }
 
-    /*
-     * Does the tileentity (via its IItemHandler cap or IInventory interface) contain itemToSearchFor?
-     */
-    static public boolean doesContain(TileEntity tileentity, ItemStack itemToSearchFor)
+    static public boolean doesContain(IItemHandler capability, ItemStack itemToSearchFor)
     {
         // check TileEntity's IItemHandler capability, if provided
-        IItemHandler capability = CapabilityUtils.getCapability(tileentity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
         if (capability != null)
         {
             for (int slot = 0; slot < capability.getSlots(); ++slot)
@@ -183,21 +180,49 @@ public class ContainerUtil
                 }
             }
         }
-        
-        // check TileEntity's IInventory interface, if provided
-        if (tileentity instanceof IInventory)
-        {
-            IInventory iinventory = (IInventory)tileentity;
-            for (int slot = 0; slot < iinventory.getSizeInventory(); ++slot)
-            {
-                if (iinventory.getStackInSlot(slot) == itemToSearchFor)
-                {
-                    return true;
-                }
-            }
 
-        }
-        
         return false;
+    }
+    
+    static public boolean doesContain(IInventory iinventory, ItemStack itemToSearchFor)
+    {
+    	if (iinventory != null)
+    	{
+    		for (int slot = 0; slot < iinventory.getSizeInventory(); ++slot)
+    		{
+    			if (iinventory.getStackInSlot(slot) == itemToSearchFor)
+    			{
+    				return true;
+    			}
+    		}
+    	}
+    
+    	return false;
+    }
+    
+    /*
+     * Does the tileentity (via its IItemHandler cap or IInventory interface) contain itemToSearchFor?
+     */
+    static public boolean doesContain(TileEntity tileentity, ItemStack itemToSearchFor)
+    {
+        // check TileEntity's IItemHandler capability, if provided
+        IItemHandler capability = CapabilityUtils.getCapability(tileentity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        // check TileEntity's IInventory interface, if provided
+        IInventory iinventory = Util.as(tileentity, IInventory.class);
+        
+        return doesContain(capability, itemToSearchFor) ? true : doesContain(iinventory, itemToSearchFor);
+    }
+    
+    /*
+     * Does the tileentity (via its IItemHandler cap or IInventory interface) contain itemToSearchFor?
+     */
+    static public boolean doesContain(Entity entity, ItemStack itemToSearchFor)
+    {
+        // check TileEntity's IItemHandler capability, if provided
+        IItemHandler capability = CapabilityUtils.getCapability(entity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        // check TileEntity's IInventory interface, if provided
+        IInventory iinventory = Util.as(entity, IInventory.class);
+        
+        return doesContain(capability, itemToSearchFor) ? true : doesContain(iinventory, itemToSearchFor);
     }
 }

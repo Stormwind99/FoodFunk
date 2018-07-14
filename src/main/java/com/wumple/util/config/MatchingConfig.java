@@ -8,8 +8,10 @@ import javax.annotation.Nullable;
 
 import com.wumple.util.Util;
 
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -25,6 +27,7 @@ public class MatchingConfig<T>
 	protected final Map<String, T> config;
 	public final T FALSE_VALUE;
     public static final String FOOD_TAG = "minecraft:food";
+    public static final String PLAYER_TAG = "entity:player";
 
 	public MatchingConfig(Map<String, T> configIn, T falseValueIn)
 	{
@@ -41,7 +44,7 @@ public class MatchingConfig<T>
 	// ----------------------------------------------------------------------
 	// Utility
 	
-    static public ArrayList<String> getNameKeys(ItemStack itemStack)
+    static public ArrayList<String> getItemStackNameKeys(ItemStack itemStack)
     {
         ArrayList<String> nameKeys = new ArrayList<String>();
         
@@ -73,7 +76,31 @@ public class MatchingConfig<T>
         
         return nameKeys;
     }
-		
+
+    static public ArrayList<String> getEntityNameKeys(Entity entity)
+    {
+        ArrayList<String> nameKeys = new ArrayList<String>();
+        
+        if (entity == null)
+        {
+        	return nameKeys;
+        }
+
+    	String name = (entity == null) ? null : EntityList.getEntityString(entity);
+
+    	if (name != null)
+    	{
+    		nameKeys.add(name);
+    	}
+    	
+        if ((entity instanceof EntityPlayerSP) || (entity instanceof EntityPlayerMP))
+        {
+        	nameKeys.add(PLAYER_TAG);
+        }
+        
+        return nameKeys;
+    }
+    
 	// ----------------------------------------------------------------------
 	// Add default properties to config
 	
@@ -178,20 +205,12 @@ public class MatchingConfig<T>
     @Nullable
     public T getProperty(ItemStack itemStack)
     {
-        if (itemStack == null)
-        {
-            return null;
-        }
-
-        ArrayList<String> nameKeys = getNameKeys(itemStack);
-        
-        return getProperty(nameKeys);
+        return getProperty(getItemStackNameKeys(itemStack));
     }
     
     public T getProperty(Entity entity)
     {
-    	String name = (entity == null) ? null : EntityList.getEntityString(entity);
-    	return getProperty(name);
+    	return getProperty(getEntityNameKeys(entity));
     }
     
     public T getProperty(ResourceLocation loc)

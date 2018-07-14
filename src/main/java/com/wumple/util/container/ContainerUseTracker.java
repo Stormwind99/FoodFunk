@@ -1,14 +1,23 @@
 package com.wumple.util.container;
 
-import com.wumple.util.GuiUtil;
+import javax.annotation.Nullable;
 
+import com.wumple.util.GuiUtil;
+import com.wumple.util.capability.CapabilityUtils;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract;
@@ -32,6 +41,8 @@ public class ContainerUseTracker
     public static Entity lastUsedEntity = null;
     public static Entity lastUsedBy = null;
     public static Container lastUsedContainer = null;
+    // MAYBE lastIItemHandler
+    // MAYBE lastIInventory
     
     public static void forget()
     {
@@ -106,12 +117,20 @@ public class ContainerUseTracker
     @SideOnly(Side.CLIENT)
     public static void onGuiOpen(GuiOpenEvent event)
     {
-    	// TODO GuiContainer.inventorySlots ?
-    	
-    	if(event.getGui() instanceof GuiContainer)
+    	GuiScreen screen = event.getGui();
+    	if(screen instanceof GuiContainer)
     	{
     		GuiContainer gui = (GuiContainer)event.getGui();
-            lastUsedContainer = gui.inventorySlots;    		
+            if (gui.inventorySlots instanceof ContainerPlayer)
+            {
+                lastUsedContainer = gui.inventorySlots;  
+                lastUsedBy = Minecraft.getMinecraft().player; // gui.inventorySlots.player is private
+            	lastUsedEntity = lastUsedBy;
+            }
+    	}
+    	else if (screen == null)
+    	{
+    		forget();
     	}
     }
 
@@ -127,23 +146,34 @@ public class ContainerUseTracker
     }
     
     @SideOnly(Side.CLIENT)
-    public static TileEntity getUsedContainer(Entity player)
+    @Nullable
+    public static <T> T getContainerCapability(EntityPlayer entity, ItemStack stack, Capability<T> capability, @Nullable EnumFacing facing)
     {
-        if (lastUsedBy == player)
+    	T cap = null;
+    	
+        if (lastUsedBy == entity)
         {
-            // MAYBE if (lastUsedContainer == player.openContainer)
-            return lastUsedTileEntity;
+        	if (GuiUtil.isOpenContainerSlotUnderMouse(stack))
+        	{
+        		// check Entities, such as for MinecartChest
+        		if (cap == null)
+        		{
+        			// Client doesn't have container contents. so we don't check if 
+        			//    ContainerUtil.doesContain(lastUsedEntity, stack)
+        			cap = CapabilityUtils.getCapability(lastUsedEntity, capability, facing);
+        		}
+        		
+        		// check TileEntities, such as for Chest
+        		if (cap == null)
+    			{
+        			// Client doesn't have container contents. so wwe don't check if 
+        			//    ContainerUtil.doesContain(lastUsedTileEntity, stack)
+    				cap = CapabilityUtils.getCapability(lastUsedTileEntity, capability, facing);
+    			}
+        	}
         }
-        
-        return null;
+           
+        return cap;
     }
-    
-    /*
-     * Get the currently open container just used by the player, with stack as a hint to contents
-     */
-    @SideOnly(Side.CLIENT)
-    public static TileEntity getUsedOpenContainer(Entity player, ItemStack stack)
-    {
-        return GuiUtil.isSlotUnderMouse(stack) ? getUsedContainer(player) : null;
-    }
+
 }

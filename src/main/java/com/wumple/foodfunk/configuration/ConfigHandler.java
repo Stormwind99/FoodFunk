@@ -87,7 +87,7 @@ public class ConfigHandler
                 return null;
             }
 
-            ArrayList<String> nameKeys = MatchingConfig.getNameKeys(itemStack);
+            ArrayList<String> nameKeys = MatchingConfig.getItemStackNameKeys(itemStack);
             
             RotProperty rotProp = null;
             

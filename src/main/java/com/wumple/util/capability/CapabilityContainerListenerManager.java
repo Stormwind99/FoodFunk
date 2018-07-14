@@ -13,6 +13,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Manages the {@link IContainerListener}s that handle syncing of each item capability.
@@ -102,5 +104,21 @@ public class CapabilityContainerListenerManager
                 addListeners(player, event.getContainer());
             }
         }
+        
+        /*
+        // MAYBE remove listeners on container close
+        // but how to know which ones since they were created by iterating over factories?
+        // Oh no - add a capability that handles it.
+        @SubscribeEvent
+        public static void containerClose(PlayerContainerEvent.Close event)
+        { 
+        	   if (event.getEntityPlayer() instanceof EntityPlayerMP)
+               {
+                   final EntityPlayerMP player = (EntityPlayerMP) event.getEntityPlayer();
+                   removeListeners(player, event.getContainer());
+               }
+            }
+        }
+        */
     }
 }
