@@ -2,6 +2,7 @@ language.name=English
 
 item.foodfunk.rotten_food.name=Rotten Food
 item.foodfunk.spoiled_milk.name=Spoiled Milk
+item.foodfunk.rotted_item.name=Rotted Item
 
 tile.foodfunk.esky.name=Esky
 tile.foodfunk.freezer.name=Freezer
@@ -10,7 +11,6 @@ container.foodfunk.esky=Esky
 container.foodfunk.freezer=Freezer
 
 achievement.foodfunk.TenSecondRule=10 Second Rule
-
 achievement.foodfunk.TenSecondRule.desc=Eat rotten food
 
 misc.foodfunk.tooltip.decaying=§4Decaying§r

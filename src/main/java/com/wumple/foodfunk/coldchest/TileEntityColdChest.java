@@ -1,6 +1,6 @@
 package com.wumple.foodfunk.coldchest;
 
-import com.wumple.foodfunk.basechest.TileEntityBaseChest;
+import com.wumple.util.basechest.TileEntityBaseChest;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ITickable;

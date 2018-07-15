@@ -6,6 +6,7 @@ import com.wumple.foodfunk.coldchest.esky.TileEntityEskyRenderer;
 import com.wumple.foodfunk.coldchest.freezer.BlockFreezer;
 import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezer;
 import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezerRenderer;
+import com.wumple.foodfunk.rotten.ItemRottedItem;
 import com.wumple.foodfunk.rotten.ItemRottenFood;
 import com.wumple.foodfunk.rotten.ItemSpoiledMilk;
 import com.wumple.util.RegistrationHelpers;
@@ -44,6 +45,9 @@ public class ObjectHandler
 
     // @ObjectHolder("foodfunk:spoiled_milk")
     public static Item spoiled_milk = null;
+    
+    // @ObjectHolder("foodfunk:rotted_item")
+    public static Item rotted_item = null;
 
     // @ObjectHolder("foodfunk:esky")
     public static Item esky_item = null;
@@ -71,6 +75,13 @@ public class ObjectHandler
     // public static final Item rotted_item = null;
 
     // ----------------------------------------------------------------------
+    // Ore Dictionary
+
+    protected final static String[] preservers = new String[]{"chest", "preserver"};
+    protected final static String[] rottenfoods = new String[]{"food", "rotten"};
+    protected final static String[] rotteditems = new String[]{"rotten"};
+    
+    // ----------------------------------------------------------------------
     // Events
 
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
@@ -90,11 +101,12 @@ public class ObjectHandler
         {
             final IForgeRegistry<Item> registry = event.getRegistry();
 
-            rotten_food = RegistrationHelpers.regHelper(registry, new ItemRottenFood());
-            spoiled_milk = RegistrationHelpers.regHelper(registry, new ItemSpoiledMilk());
+            rotten_food = RegistrationHelpers.regHelperOre(registry, new ItemRottenFood(), rottenfoods);
+            spoiled_milk = RegistrationHelpers.regHelperOre(registry, new ItemSpoiledMilk(), rottenfoods);
+            rotted_item = RegistrationHelpers.regHelperOre(registry, new ItemRottedItem(), rotteditems);
 
-            esky_item = RegistrationHelpers.registerItemBlock(registry, esky);
-            freezer_item = RegistrationHelpers.registerItemBlock(registry, freezer);
+            esky_item = RegistrationHelpers.registerItemBlockOre(registry, esky, preservers);
+            freezer_item = RegistrationHelpers.registerItemBlockOre(registry, freezer, preservers);
 
             registerTileEntities();
         }
@@ -122,6 +134,7 @@ public class ObjectHandler
         {
         	RegistrationHelpers.registerRender(rotten_food);
         	RegistrationHelpers.registerRender(spoiled_milk);
+        	RegistrationHelpers.registerRender(rotted_item);
         	RegistrationHelpers.registerRender(esky_item);
         	RegistrationHelpers.registerRender(freezer_item);
 

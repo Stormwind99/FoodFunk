@@ -2,7 +2,7 @@
   "_comment": [
       "Esky cooler that extends shelf life of food"
    ],
-  "type": "minecraft:crafting_shaped",
+  "type": "forge:ore_shaped",
   "group": "foodfunk",
   "pattern": [
     "xxx",
@@ -13,11 +13,12 @@
         "item": "minecraft:snow"
      },
      "y": {
-        "item": "minecraft:dye",
-        "data": 4
+        "type": "forge:ore_dict",
+        "ore": "dyeBlue"
      },
      "z": {
-        "item": "minecraft:chest"
+        "type": "forge:ore_dict",
+        "ore": "chestWood"
      }
   },
   "experience": 0.0,

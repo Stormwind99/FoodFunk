@@ -2,7 +2,7 @@
   "_comment": [
       "Freezer that preserves food indefinitely"
    ],
-  "type": "minecraft:crafting_shaped",
+  "type": "forge:ore_shaped",
   "group": "foodfunk",
   "pattern": [
     "xyx",
@@ -10,7 +10,8 @@
     "xyx" ],
   "key": {
      "x": {
-        "item": "minecraft:iron_block"
+        "type": "forge:ore_dict",
+        "ore": "blockIron"
      },
      "y": [
         {

@@ -1,4 +1,4 @@
-package com.wumple.foodfunk.basechest;
+package com.wumple.util.basechest;
 
 import javax.annotation.Nullable;
 

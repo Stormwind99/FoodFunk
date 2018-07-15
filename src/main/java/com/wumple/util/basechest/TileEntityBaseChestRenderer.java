@@ -1,4 +1,4 @@
-package com.wumple.foodfunk.basechest;
+package com.wumple.util.basechest;
 
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;

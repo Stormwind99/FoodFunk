@@ -1,6 +1,6 @@
 package com.wumple.foodfunk.coldchest.esky;
 
-import com.wumple.foodfunk.basechest.TileEntityBaseChestRenderer;
+import com.wumple.util.basechest.TileEntityBaseChestRenderer;
 
 import net.minecraft.util.ResourceLocation;
 
