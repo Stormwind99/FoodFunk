@@ -279,7 +279,7 @@ public class Rot implements IRot
     {
         String key = null;
         
-        if (ratio <= 0)
+        if (ratio == 0)
         {
             key = "misc.foodfunk.tooltip.state.cold0";
         }
@@ -294,6 +294,18 @@ public class Rot implements IRot
         else if (ratio >= 100)
         {
             key = "misc.foodfunk.tooltip.state.cold3";
+        }
+        else if ((ratio < 0) && (ratio >= -50))
+        {
+            key = "misc.foodfunk.tooltip.state.warm1";
+        }
+        else if ((ratio < -50) && (ratio > -100))
+        {
+            key = "misc.foodfunk.tooltip.state.warm2";
+        }
+        else if (ratio <= -100)
+        {
+            key = "misc.foodfunk.tooltip.state.warm3";
         }
         
         return key;
