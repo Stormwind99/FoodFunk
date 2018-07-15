@@ -1,18 +1,12 @@
 package com.wumple.foodfunk.capability.preserving;
 
-import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.Reference;
-import com.wumple.foodfunk.capability.MessageBulkUpdateContainerRots;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotCapHelper;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
@@ -169,40 +163,6 @@ public class Preserving implements IPreserving
             IItemHandler capability = owner.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
             freshenTheseContents(capability, time, worldTime);
         }
-        else if (owner.hasIInventory())
-        {
-            IInventory inventory = owner.getIInventory();
-            freshenTheseContents(inventory, time, worldTime);
-        }
-    }
-
-    protected void freshenTheseContents(IInventory inventory, long time, long worldTime)
-    {
-        final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSizeInventory(),
-                ItemStack.EMPTY);
-
-        boolean dirty = false;
-
-        ItemStack itemToSearchFor = null;
-
-        for (int i = 0; i < inventory.getSizeInventory(); i++)
-        {
-            ItemStack stack = inventory.getStackInSlot(i);
-
-            if ((itemToSearchFor == null) && (!stack.isEmpty()))
-            {
-                itemToSearchFor = stack;
-            }
-
-            dirty |= freshenStack(stack, time, worldTime, i, syncableItemsList);
-        }
-
-        if (dirty)
-        {
-            owner.markDirty();
-
-            sendContainerUpdate(owner, itemToSearchFor, syncableItemsList);
-        }
     }
 
     protected void freshenTheseContents(IItemHandler inventory, long time, long worldTime)
@@ -211,28 +171,28 @@ public class Preserving implements IPreserving
 
         boolean dirty = false;
 
-        ItemStack itemToSearchFor = null;
-
         for (int i = 0; i < inventory.getSlots(); i++)
         {
-            // TODO - investigate if IItemHandler.extractItem() needed instead
+            
             ItemStack stack = inventory.getStackInSlot(i);
 
-            if ((itemToSearchFor == null) && (!stack.isEmpty()))
+            IRot cap = RotCapHelper.getRot(stack);
+            if (cap != null)
             {
-                itemToSearchFor = stack;
+            	// TODO - investigate if IItemHandler.extractItem() needed
+            	//ItemStack stack = inventory.extractItem(i, stack.getCount(), false);
+            	
+            	// TODO move to Rot
+            	boolean freshened = freshenStack(stack, time, worldTime, i, syncableItemsList);
+            	dirty |= freshened;
+            	
+            	//inventory.insertItem(i, stack, false);
             }
-
-            // TODO move to Rot
-            dirty |= freshenStack(stack, time, worldTime, i, syncableItemsList);
         }
 
-        // TODO move to Rot, hopefully ContainerListenerRot will eliminate this
         if (dirty)
         {
             owner.markDirty();
-
-            sendContainerUpdate(owner, itemToSearchFor, syncableItemsList);
         }
     }
 
@@ -250,37 +210,10 @@ public class Preserving implements IPreserving
         {
             cap.reschedule(time);
             syncableItemsList.set(index, stack);
+            return true;
         }
 
-        syncableItemsList.set(index, stack);
-        return true;
-    }
-
-    // TODO have Rot or ContainerListenerRot do this instead
-    protected static void sendContainerUpdate(IPreservingOwner entity, ItemStack itemToSearchFor,
-            NonNullList<ItemStack> syncableItemsList)
-    {
-        // update each client/player that has this container open
-        NonNullList<EntityPlayer> users = entity.getPlayersWithContainerOpen(itemToSearchFor);
-        if (!users.isEmpty())
-        {
-            for (EntityPlayer player : users)
-            {
-                if (player instanceof EntityPlayerMP)
-                {
-                    Container containerToSend = player.openContainer;
-                    final MessageBulkUpdateContainerRots message = new MessageBulkUpdateContainerRots(
-                            containerToSend.windowId, syncableItemsList);
-                    // Don't send the message if there's nothing to update
-                    if (message.hasData())
-                    {
-                        FoodFunk.network.sendTo(message, (EntityPlayerMP) player);
-                    }
-                }
-            }
-        }
-
-        // TODO: consider player.inventoryContainer
+        return false;
     }
 
     /**

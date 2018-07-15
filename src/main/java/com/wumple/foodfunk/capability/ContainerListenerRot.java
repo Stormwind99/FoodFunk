@@ -29,6 +29,25 @@ public class ContainerListenerRot extends CapabilityContainerListener<IRot>
     {
     	FoodFunk.network.sendTo(message, player);
     }
+    
+    /*
+    // for debugging
+    @Override
+    public void sendAllContents(final Container containerToSend, final NonNullList<ItemStack> itemsList)
+    {
+    	FoodFunk.logger.info("CLR sending " + containerToSend + " items " + itemsList);
+    	super.sendAllContents(containerToSend, itemsList);
+    }
+    
+    // for debugging
+    @Override
+    public void sendSlotContents(final Container containerToSend, final int slotInd,
+            final ItemStack stack)
+    {
+    	FoodFunk.logger.info("CLR sending " + containerToSend + " slot " + slotInd + " stack " + stack);
+    	super.sendSlotContents(containerToSend, slotInd, stack);
+    }
+    */
 
     /**
      * Create an instance of the bulk update message.

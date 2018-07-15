@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -48,16 +47,6 @@ public class EntityThing implements IThing
     	owner = null;
     }
     
-    public boolean hasIInventory()
-    {
-    	return (owner instanceof IInventory);
-    }
-    
-    public IInventory getIInventory()
-    {
-        return (IInventory) owner;
-    }
-            
     public boolean sameAs(IThing entity)
     {
     	if (entity instanceof EntityThing)

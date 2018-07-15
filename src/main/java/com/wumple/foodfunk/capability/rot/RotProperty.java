@@ -1,20 +1,13 @@
 package com.wumple.foodfunk.capability.rot;
 
-import java.util.Random;
-
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.util.config.MatchingConfig;
+import com.wumple.util.TypeIdentifier;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreDictionary;
 
-public class RotProperty extends MatchingConfig.Identifier
+public class RotProperty extends TypeIdentifier
 {
-	protected static Random random = new Random();
     public String key;
     public int days = ConfigHandler.DAYS_NO_ROT;
 
@@ -48,29 +41,7 @@ public class RotProperty extends MatchingConfig.Identifier
     
     protected ItemStack forceRot(ItemStack stack)
     {
-        if (id.isEmpty())
-        {
-            return ItemStack.EMPTY;
-        }
-
-        Item item = Item.REGISTRY.getObject(new ResourceLocation(id));
-
-        if (item == null)
-        {
-            NonNullList<ItemStack> ores = OreDictionary.getOres(id);
-            if (!ores.isEmpty())
-            {
-                ItemStack choice = ores.get(random.nextInt(ores.size()));
-                return choice.copy();
-            }
-        }
-
-        if (item == null)
-        {
-            return ItemStack.EMPTY;
-        }
-
-        return (meta == null) ? new ItemStack(item, stack.getCount())
-                : new ItemStack(item, stack.getCount(), meta.intValue());
+    	int count = (stack != null) ? stack.getCount() : 1;
+        return create(count);
     }
-}
+ }

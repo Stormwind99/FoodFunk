@@ -140,13 +140,6 @@ public class ContainerUseTracker
     public static void onClose(PlayerContainerEvent.Close event)
     { 
     	forget();
-    	/*
-        if ((lastUsedBy == event.getEntity()) && (lastUsedContainer == event.getContainer()))
-        {
-            forget();
-        }
-        // TODO else probably a bug
-        */
     }
     
     @SideOnly(Side.CLIENT)

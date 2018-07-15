@@ -98,6 +98,9 @@ public class Rot implements IRot
     public void reschedule(long timeIn)
     {
         info.date += timeIn;
+        // HACK to force Container.detectAndSendChanges to detect change and notify ContainerListener
+        NBTTagCompound tag = owner.getOrCreateSubCompound("Rot");
+        info.writeToNBT(tag);
     }
 
     public RotInfo setInfo(RotInfo infoIn)
@@ -329,32 +332,6 @@ public class Rot implements IRot
         return key;
     }
     
-    // ----------------------------------------------------------------------
-    // Possible deprecated
-
-    public static void removeDeprecatedRotData(ItemStack stack)
-    {
-        NBTTagCompound tags = stack.getTagCompound();
-
-        if (tags != null)
-        {
-            if (tags.hasKey("EM_ROT_DATE"))
-            {
-                tags.removeTag("EM_ROT_DATE");
-            }
-            if (tags.hasKey("EM_ROT_TIME"))
-            {
-                tags.removeTag("EM_ROT_TIME");
-            }
-
-            // remove empty NBT tag compound from rotten items so they can be merged - saw this bug once
-            if (tags.hasNoTags())
-            {
-                stack.setTagCompound(null);
-            }
-        }
-    }
-
     // ----------------------------------------------------------------------
     // Possible future
 

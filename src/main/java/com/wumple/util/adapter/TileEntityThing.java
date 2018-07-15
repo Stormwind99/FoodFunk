@@ -3,7 +3,6 @@ package com.wumple.util.adapter;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -49,16 +48,6 @@ public class TileEntityThing implements IThing
     	owner = null;
     }
     
-    public boolean hasIInventory()
-    {
-    	return (owner instanceof IInventory);
-    }
-    
-    public IInventory getIInventory()
-    {
-        return (IInventory) owner;
-    }
-            
     public boolean sameAs(IThing entity)
     {
     	if (entity instanceof TileEntityThing)

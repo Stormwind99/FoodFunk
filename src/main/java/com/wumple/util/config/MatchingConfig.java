@@ -44,6 +44,11 @@ public class MatchingConfig<T>
 	// ----------------------------------------------------------------------
 	// Utility
 	
+	/**
+	 * @see TypeIdentifier for opposite direction but similiar code
+	 * @param itemStack for which to get namekeys for lookup
+	 * @return namekeys to search config for, in order
+	 */
     static public ArrayList<String> getItemStackNameKeys(ItemStack itemStack)
     {
         ArrayList<String> nameKeys = new ArrayList<String>();
@@ -55,10 +60,15 @@ public class MatchingConfig<T>
 
         Item item = itemStack.getItem();
 
-        String key2 = Item.REGISTRY.getNameForObject(item).toString();
+        ResourceLocation loc = Item.REGISTRY.getNameForObject(item);
+        
+        if (loc != null)
+        {
+        	String key2 = loc.toString();
 
-        nameKeys.add(key2 + "@" + itemStack.getMetadata());
-        nameKeys.add(key2);
+        	nameKeys.add(key2 + "@" + itemStack.getMetadata());
+        	nameKeys.add(key2);
+        }
 
         if (!itemStack.isEmpty())
         {
@@ -279,52 +289,5 @@ public class MatchingConfig<T>
     public boolean doesIt(ResourceLocation loc)
     {
         return getValue(loc) != FALSE_VALUE;
-    }
-    
-    // ----------------------------------------------------------------------
-    // Used by other classes
-    
-    public static class Identifier
-    {
-        public String id = null;
-        public Integer meta = null;
-
-        public Identifier()
-        {
-        }
-
-        public Identifier(String idIn)
-        {
-            setID(idIn);
-        }
-        
-        public Identifier(String idIn, Integer metaIn)
-        {
-            setID(idIn);
-            meta = metaIn;
-        }
-
-        public void setID(String key)
-        {
-            // metadata support - class:name@metadata
-            int length = (key != null) ? key.length() : 0;
-            if ((length >= 2) && (key.charAt(length - 2) == '@'))
-            {
-                String metastring = key.substring(length - 1);
-                meta = Integer.valueOf(metastring);
-                id = key.substring(0, length - 2);
-            }
-            else if ((length >= 3) && (key.charAt(length - 3) == '@'))
-            {
-                String metastring = key.substring(length - 2);
-                meta = Integer.valueOf(metastring);
-                id = key.substring(0, length - 3);
-            }
-            else
-            {
-                id = key;
-                meta = null;
-            }
-        }
     }
 }

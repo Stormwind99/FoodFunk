@@ -42,15 +42,15 @@ public class RegistrationHelpers
     public static <T extends IForgeRegistryEntry<T>> void nameHelper(T thing, ResourceLocation loc)
     {
         thing.setRegistryName(loc);
-        String dotname = loc.getResourceDomain() + "." + loc.getResourcePath();
+        String dotname = loc.getNamespace() + "." + loc.getPath();
 
         if (thing instanceof Block)
         {
-            ((Block) thing).setUnlocalizedName(dotname);
+            ((Block) thing).setTranslationKey(dotname);
         }
         else if (thing instanceof Item)
         {
-            ((Item) thing).setUnlocalizedName(dotname);
+            ((Item) thing).setTranslationKey(dotname);
         }
     }
 

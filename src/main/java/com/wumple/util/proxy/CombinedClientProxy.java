@@ -67,7 +67,7 @@ public class CombinedClientProxy implements ISidedProxy
         }
         else
         {
-            return context.getServerHandler().player.mcServer;
+            return context.getServerHandler().player.getServer();
         }
     }
 
