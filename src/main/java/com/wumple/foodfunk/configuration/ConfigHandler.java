@@ -36,7 +36,7 @@ public class ConfigHandler
         rotting.addDefaultProperty(FOOD_TAG, ObjectHandler.rotten_food, 7);
         rotting.addDefaultProperty(Items.ROTTEN_FLESH, "minecraft:rotten_flesh", ID_NO_ROT, DAYS_NO_ROT);
         rotting.addDefaultProperty(ObjectHandler.rotten_food, "foodfunk:rotten_food", ID_NO_ROT, DAYS_NO_ROT);
-        // TODO Rotting.addDefaultProperty(ObjectHandler.rotted_item, null, DAYS_NO_ROT);
+        rotting.addDefaultProperty(ObjectHandler.rotted_item, "foodfunk:rotted_item", ID_NO_ROT, DAYS_NO_ROT);
         rotting.addDefaultProperty(Items.MILK_BUCKET, "minecraft:milk_bucket", ObjectHandler.spoiled_milk, 7);
         rotting.addDefaultProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 7);
         rotting.addDefaultProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:fermented_spider_eye", Items.ROTTEN_FLESH, 7);
