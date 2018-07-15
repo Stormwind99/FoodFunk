@@ -1,7 +1,6 @@
 package com.wumple.foodfunk.capability.rot;
 
 import com.wumple.foodfunk.Reference;
-import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
@@ -89,7 +88,7 @@ public class EventHandler
     {
         EntityLivingBase entity = event.getEntityLiving();
 
-        if (entity.ticksExisted % Preserving.slowInterval == 0)
+        if (entity.ticksExisted % ConfigContainer.evaluationInterval == 0)
         {
             RotHandler.evaluateRot(event.getEntityLiving().world, entity);
         }

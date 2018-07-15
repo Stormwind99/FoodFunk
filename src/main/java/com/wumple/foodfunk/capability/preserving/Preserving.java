@@ -4,6 +4,7 @@ import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotCapHelper;
+import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
 import net.minecraft.client.Minecraft;
@@ -34,10 +35,6 @@ public class Preserving implements IPreserving
     // IDs of the capability
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "preserving");
     
-    // ticks to wait until rot refresh of contents
-    static public final int slowInterval = 90;
-    static public final int fastInterval = 4; // when someone has chest open
-
     // transient data
     // ticks since last rot refresh of contents
     protected int tick = 0;
@@ -110,7 +107,7 @@ public class Preserving implements IPreserving
             preservingRatio = (ratio != null) ? ratio.intValue() : ConfigHandler.NO_PRESERVING;
         }
 
-        if (tick < slowInterval)
+        if (tick < ConfigContainer.evaluationInterval)
         {
             tick++;
             return false;

@@ -20,6 +20,11 @@ public class ConfigContainer
     @Config.Comment("Configured items rot over time.")
     public static boolean enabled = true;
 
+    @Name("Ticks between evaluation")
+    @Config.Comment("Ticks between evaluating for rot and preservation.  Increase to reduce CPU expense, in exchange for longer delays seeing rot and preservation.")
+    @RangeInt(min=1)
+    public static int evaluationInterval = 90;
+    
     @Name("Rotting")
     @Config.Comment("Set rot days and id for items.")
     public static Rotting rotting = new Rotting();
@@ -37,7 +42,7 @@ public class ConfigContainer
         @Config.Comment("Rots into this item.  Set blank to rot into nothing")
         public HashMap<String, String> rotID = new HashMap<String, String>();
     }
-
+    
     @Name("Preserving")
     @Config.Comment("Set preserving rations for container TileEntities.")
     public static Preserving preserving = new Preserving();
