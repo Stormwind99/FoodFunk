@@ -22,7 +22,7 @@ public class ConfigHandler
     // Preserving
     
     public static final int NO_PRESERVING = 0;
-	public static final String ID_NO_ROT = null;
+	public static final String ID_NO_ROT = "";
     public static final int DAYS_NO_ROT = -1;
     public static final long TICKS_PER_DAY = 24000L;
     public static final String FOOD_TAG = "minecraft:food";
