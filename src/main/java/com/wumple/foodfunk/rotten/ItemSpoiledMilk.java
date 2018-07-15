@@ -8,8 +8,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
+import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemBucketMilk;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
 import net.minecraft.world.World;
 
@@ -20,6 +23,7 @@ public class ItemSpoiledMilk extends ItemBucketMilk
     {
         super();
         setCreativeTab(CreativeTabs.MISC);
+        setPotionEffect(new PotionEffect(MobEffects.HUNGER, 600, 0), 0.6F);
 
         RegistrationHelpers.nameHelper(this, "foodfunk:spoiled_milk");
     }
@@ -27,13 +31,12 @@ public class ItemSpoiledMilk extends ItemBucketMilk
     /**
      * Called when the player finishes using this Item (E.g. finishes eating.). Not called when the player stops using the Item before the action is complete.
      */
+    @Override
     public ItemStack onItemUseFinish(ItemStack stack, World worldIn, EntityLivingBase entityLiving)
     {
         if (!worldIn.isRemote)
         {
-            // TODO: player.addPotionEffect(new PotionEffect(Potion.hunger.id, 600, 1)
-            // ItemMilk: entityLiving.curePotionEffects(stack); // FORGE - move up so
-            // stack.shrink does not turn stack into air
+        	onFoodEaten(stack, worldIn, entityLiving);
         }
 
         if (entityLiving instanceof EntityPlayerMP)
@@ -48,9 +51,29 @@ public class ItemSpoiledMilk extends ItemBucketMilk
             stack.shrink(1);
         }
 
-        // TODO achievements
-        // player.addStat(EnviroAchievements.tenSecondRule, 1);
-
         return stack.isEmpty() ? new ItemStack(Items.BUCKET) : stack;
+    }
+    
+    // ----------------------------------------------------------------------
+    // Potion effect support (from ItemFood)
+    
+    /** represents the potion effect that will occurr upon eating this food. Set by setPotionEffect */
+    private PotionEffect potionId;
+    /** probably of the set potion effect occurring */
+    private float potionEffectProbability;
+    
+    public ItemSpoiledMilk setPotionEffect(PotionEffect effect, float probability)
+    {
+        this.potionId = effect;
+        this.potionEffectProbability = probability;
+        return this;
+    }
+    
+    protected void onFoodEaten(ItemStack stack, World worldIn, EntityLivingBase player)
+    {
+        if (!worldIn.isRemote && this.potionId != null && worldIn.rand.nextFloat() < this.potionEffectProbability)
+        {
+            player.addPotionEffect(new PotionEffect(this.potionId));
+        }
     }
 }

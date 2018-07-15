@@ -9,9 +9,8 @@ tile.foodfunk.freezer.name=冰箱
 container.foodfunk.esky=保温箱
 container.foodfunk.freezer=冰箱
 
-achievement.foodfunk.TenSecondRule=10秒准则
-
-achievement.foodfunk.TenSecondRule.desc=食用腐坏食物
+advancements.foodfunk.ten_second_rule.title=10秒准则
+advancements.foodfunk.ten_second_rule.description=食用腐坏食物
 
 misc.foodfunk.tooltip.decaying=腐坏
 misc.foodfunk.tooltip.preserved=新鲜

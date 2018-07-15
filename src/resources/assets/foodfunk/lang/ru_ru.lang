@@ -5,8 +5,7 @@ item.foodfunk.rotten_food.name=Испорченная еда
 tile.foodfunk.esky.name=Портативный холодильник 
 tile.foodfunk.freezer.name=Морозилка
 
-achievement.foodfunk.TenSecondRule=Правило 10 секунд
-
-achievement.foodfunk.TenSecondRule.desc=Съешьте испорченную еду
+advancements.foodfunk.ten_second_rule.title=Правило 10 секунд
+advancements.foodfunk.ten_second_rule.description=Съешьте испорченную еду
 
 misc.foodfunk.tooltip.rot=Испорчено: %s (Day %s/%s)

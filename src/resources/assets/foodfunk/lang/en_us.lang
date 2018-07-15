@@ -11,8 +11,10 @@ tile.foodfunk.freezer.name=Freezer
 container.foodfunk.esky=Esky
 container.foodfunk.freezer=Freezer
 
-achievement.foodfunk.TenSecondRule=10 Second Rule
-achievement.foodfunk.TenSecondRule.desc=Eat rotten food
+advancements.foodfunk.ten_second_rule.title=10 Second Rule
+advancements.foodfunk.ten_second_rule.description=Eat rotten food
+advancements.foodfunk.just_guzzle_it.title=Just Guzzle It
+advancements.foodfunk.just_guzzle_it.description=Drink spoiled milk
 
 misc.foodfunk.tooltip.decaying=§4Decaying§r
 misc.foodfunk.tooltip.preserved=§ePreserved§r

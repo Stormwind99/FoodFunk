@@ -3,7 +3,3 @@ language.name=German
 item.foodfunk.rotten_food.name=Verrottete Nahrung
 
 itemGroup.foodfunk.tab=Food Funk
-
-achievement.foodfunk.TenSecondRule=10 Second Rule
-
-achievement.foodfunk.TenSecondRule.desc=Eat rotten food

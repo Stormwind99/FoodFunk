@@ -8,8 +8,7 @@ tile.foodfunk.freezer.name=Freezer
 container.foodfunk.esky=Esky
 container.foodfunk.freezer=Freezer
 
-achievement.foodfunk.TenSecondRule=Regola dei 10 secondi
-
-achievement.foodfunk.TenSecondRule.desc=Mangia del cibo marcio
+advancements.foodfunk.ten_second_rule.title=Regola dei 10 secondi
+advancements.foodfunk.ten_second_rule.description=Mangia del cibo marcio
 
 misc.foodfunk.tooltip.rot=Marcio: %s (giorni%s/%s)
