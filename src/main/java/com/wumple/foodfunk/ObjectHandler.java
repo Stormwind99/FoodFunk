@@ -70,10 +70,6 @@ public class ObjectHandler
     // @ObjectHolder("foodfunk:freezer_close")
     public static SoundEvent freezer_close = null;
 
-    // TODO
-    // @ObjectHolder("foodfunk:rotted_item")
-    // public static final Item rotted_item = null;
-
     // ----------------------------------------------------------------------
     // Ore Dictionary
 

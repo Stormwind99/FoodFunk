@@ -234,13 +234,7 @@ public class Rot implements IRot
      */
     public void handleCraftedRot(World world, IInventory craftMatrix, ItemStack crafting)
     {
-        // TODO remove if can get data from this instead
-        RotProperty rotProps = ConfigHandler.rotting.getRotProperty(crafting);
-        long worldTime = world.getTotalWorldTime();
-        long rotTime = rotProps.getRotTime();
-        // end TODO
-
-        long lowestDate = worldTime;
+        long lowestDate = world.getTotalWorldTime();
 
         int slots = craftMatrix.getSizeInventory();
         for (int i = 0; i < slots; i++)
@@ -260,7 +254,7 @@ public class Rot implements IRot
             }
         }
 
-        setRot(lowestDate, rotTime);
+        setDate(lowestDate);
     }
 
     // ----------------------------------------------------------------------

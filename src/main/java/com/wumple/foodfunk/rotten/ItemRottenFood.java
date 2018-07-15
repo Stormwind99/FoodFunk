@@ -39,7 +39,7 @@ public class ItemRottenFood extends ItemFood
     }
 
     /*
-     * // TODO support rotten food as bonemeal or disgusting food public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) { ItemStack
+     * // TODO support rotten food disgusting food public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) { ItemStack
      * itemstack = playerIn.getHeldItem(handIn);
      * 
      * if (ItemDye.applyBonemeal(itemstack, worldIn, pos)) { if (!worldIn.isRemote) { worldIn.playAuxSFX(2005, par4, par5, par6, 0); }

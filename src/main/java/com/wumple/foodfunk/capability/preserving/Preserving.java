@@ -167,8 +167,6 @@ public class Preserving implements IPreserving
 
     protected void freshenTheseContents(IItemHandler inventory, long time, long worldTime)
     {
-        final NonNullList<ItemStack> syncableItemsList = NonNullList.withSize(inventory.getSlots(), ItemStack.EMPTY);
-
         boolean dirty = false;
 
         for (int i = 0; i < inventory.getSlots(); i++)
@@ -182,8 +180,7 @@ public class Preserving implements IPreserving
             	// TODO - investigate if IItemHandler.extractItem() needed
             	//ItemStack stack = inventory.extractItem(i, stack.getCount(), false);
             	
-            	// TODO move to Rot
-            	boolean freshened = freshenStack(stack, time, worldTime, i, syncableItemsList);
+            	boolean freshened = freshenStack(stack, time, worldTime);
             	dirty |= freshened;
             	
             	//inventory.insertItem(i, stack, false);
@@ -196,8 +193,7 @@ public class Preserving implements IPreserving
         }
     }
 
-    protected boolean freshenStack(ItemStack stack, long time, long worldTime, int index,
-            NonNullList<ItemStack> syncableItemsList)
+    protected boolean freshenStack(ItemStack stack, long time, long worldTime)
     {
         if ((stack == null) || stack.isEmpty())
         {
@@ -209,7 +205,6 @@ public class Preserving implements IPreserving
         if (cap != null)
         {
             cap.reschedule(time);
-            syncableItemsList.set(index, stack);
             return true;
         }
 
