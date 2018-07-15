@@ -6,12 +6,12 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
+import com.wumple.util.TypeIdentifier;
 import com.wumple.util.Util;
 
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
@@ -103,7 +103,7 @@ public class MatchingConfig<T>
     		nameKeys.add(name);
     	}
     	
-        if ((entity instanceof EntityPlayerSP) || (entity instanceof EntityPlayerMP))
+        if (entity instanceof EntityPlayer)
         {
         	nameKeys.add(PLAYER_TAG);
         }
