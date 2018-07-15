@@ -1,11 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "2.2.0",
-    "1.12.2-recommended": "2.2.0"
+    "1.12.2-latest": "3.0.0",
+    "1.12.2-recommended": "3.0.0"
   },
   "1.12.2": {
-    "2.2.0": "Added support for making Entities like MinecartChest and even entity:player as preserving containers.",
+    "3.0.0": "Added support for making Entities like MinecartChest and even entity:player as preserving containers.  Negative-preserving containers.  Advancements.  Rotted item and biodegradable item for modpack authors.  Preserving containers refresh items withing IItemHandler items.  OreDict usage.  Evaluation interval configurable.",
     "2.1.2": "Removed dependency on trove library since latest Forge snapshots remove it.  Some file re-org.",
     "2.1.1": "Added cold, frozen, etc tooltips in preserving containers.  Added tooltip text colors.",
     "2.1.0": "Refactoring, optimization, and cleanup.",
