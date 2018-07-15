@@ -9,7 +9,6 @@ import com.wumple.foodfunk.configuration.ConfigHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -140,10 +139,12 @@ public class Preserving implements IPreserving
             lastCheckTime = worldTime;
         }
 
-        long time = worldTime - lastCheckTime;
+        long rawTime = worldTime - lastCheckTime;
         lastCheckTime = worldTime;
-
-        freshenContentsAny(time, worldTime);
+        // adjust for preserving ratio
+        long rotTime = getRotTime(rawTime);
+        
+        freshenContentsAny(rotTime, worldTime);
     }
 
     // ----------------------------------------------------------------------
@@ -171,9 +172,16 @@ public class Preserving implements IPreserving
 
         for (int i = 0; i < inventory.getSlots(); i++)
         {
-            
             ItemStack stack = inventory.getStackInSlot(i);
+            
+            // freshen any contents, depth first
+            if (stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+            {
+                IItemHandler capability = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+                freshenTheseContents(capability, time, worldTime);            	
+            }
 
+            // freshen self
             IRot cap = RotCapHelper.getRot(stack);
             if (cap != null)
             {
