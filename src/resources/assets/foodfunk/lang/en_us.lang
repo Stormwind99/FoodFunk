@@ -3,6 +3,7 @@ language.name=English
 item.foodfunk.rotten_food.name=Rotten Food
 item.foodfunk.spoiled_milk.name=Spoiled Milk
 item.foodfunk.rotted_item.name=Rotted Item
+item.foodfunk.biodegradable_item.name=Biodegradable Item
 
 tile.foodfunk.esky.name=Esky
 tile.foodfunk.freezer.name=Freezer
