@@ -9,7 +9,7 @@ import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.util.CraftingUtil;
+import com.wumple.util.misc.CraftingUtil;
 import com.wumple.util.capability.CapabilityContainerListenerManager;
 import com.wumple.util.container.ContainerUseTracker;
 

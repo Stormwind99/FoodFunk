@@ -1,6 +1,6 @@
 package com.wumple.foodfunk.rotten;
 
-import com.wumple.util.RegistrationHelpers;
+import com.wumple.util.misc.RegistrationHelpers;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.creativetab.CreativeTabs;

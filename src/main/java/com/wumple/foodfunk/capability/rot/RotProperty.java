@@ -2,7 +2,7 @@ package com.wumple.foodfunk.capability.rot;
 
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.util.TypeIdentifier;
+import com.wumple.util.misc.TypeIdentifier;
 
 import net.minecraft.item.ItemStack;
 

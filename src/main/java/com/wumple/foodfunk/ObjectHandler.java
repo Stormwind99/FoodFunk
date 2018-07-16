@@ -10,7 +10,7 @@ import com.wumple.foodfunk.rotten.ItemBiodegradableItem;
 import com.wumple.foodfunk.rotten.ItemRottedItem;
 import com.wumple.foodfunk.rotten.ItemRottenFood;
 import com.wumple.foodfunk.rotten.ItemSpoiledMilk;
-import com.wumple.util.RegistrationHelpers;
+import com.wumple.util.misc.RegistrationHelpers;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
