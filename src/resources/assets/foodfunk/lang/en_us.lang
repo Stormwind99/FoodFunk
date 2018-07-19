@@ -22,6 +22,9 @@ misc.foodfunk.tooltip.fresh=§aFresh %3$s days§r
 misc.foodfunk.tooltip.rot=Rotten: %s §6(Day %s/%s)§r
 misc.foodfunk.tooltip.advanced.datetime=Date %s Time %s
 misc.foodfunk.tooltip.advanced.expire=When %s / %s
+misc.foodfunk.tooltip.advanced.datetime.local=LDate %s LTime %s
+misc.foodfunk.tooltip.advanced.expire.local=LWhen %s / %s
+misc.foodfunk.tooltip.advanced.dimratio=DimRatio %s
 
 misc.foodfunk.tooltip.state.cold0=§7Ambient temperature§r
 misc.foodfunk.tooltip.state.cold1=§1Chilled§r

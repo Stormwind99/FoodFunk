@@ -4,11 +4,9 @@ import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -21,7 +19,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBloc
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -106,7 +104,20 @@ public class EventHandler
             rot.doTooltip(stack, event.getEntityPlayer(), event.getFlags().isAdvanced(), event.getToolTip());
         }
     }
-   
+    
+    @SubscribeEvent
+    public static void onItemPickedUp(EntityItemPickupEvent event)
+    {
+        RotHandler.evaluateRot(event.getEntity().getEntityWorld(), event.getItem());
+        //RotHelper.evaluateRot(event.getEntity().getEntityWorld(), event.getItem().getItem());
+    }
+
+    @SubscribeEvent
+    public static void onDimensionChange(PlayerChangedDimensionEvent event)
+    {
+        RotHandler.dimensionShift(event.player, event.fromDim, event.toDim);
+    }
+    
     /**
      *  Prevents exploit of making foods with almost rotten food to prolong total life of food supplies
      */
@@ -120,30 +131,5 @@ public class EventHandler
         }
 
         RotHelper.handleCraftedRot(event.player.world, event.craftMatrix, event.crafting);
-    }
-
-    /**
-     * Update Rot system current timestamp on server
-     */
-    @SubscribeEvent
-    public static void onWorldTick(TickEvent.WorldTickEvent event)
-    {
-        long timestamp = event.world.getTotalWorldTime();
-        Rot.setLastWorldTimestamp(timestamp);
-    }
-    
-    /**
-     * Update Rot system current timestamp on client
-     */
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public static void onClientTick(TickEvent.ClientTickEvent event)
-    {
-        World world = Minecraft.getMinecraft().world;
-        if ((world != null) && (world.isRemote == true))
-        {
-            long timestamp = world.getTotalWorldTime();
-            Rot.setLastWorldTimestamp(timestamp);
-        }
     }
 }

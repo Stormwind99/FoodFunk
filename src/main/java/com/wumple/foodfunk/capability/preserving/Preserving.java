@@ -2,10 +2,10 @@ package com.wumple.foodfunk.capability.preserving;
 
 import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.rot.IRot;
-import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotCapHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.util.misc.TimeUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
@@ -89,7 +89,7 @@ public class Preserving implements IPreserving
         if (!ownerIn.sameAs(owner))
         {
             owner = ownerIn;
-            lastCheckTime = Rot.getLastWorldTimestamp();
+            lastCheckTime = TimeUtil.getLastWorldTimestamp();
         }
     }
         

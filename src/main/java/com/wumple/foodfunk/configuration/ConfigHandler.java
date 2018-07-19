@@ -22,11 +22,13 @@ public class ConfigHandler
     // Preserving
     
     public static final int NO_PRESERVING = 0;
+    public static final int DIMENSIONRATIO_DEFAULT = 100;
 	public static final String ID_NO_ROT = "";
     public static final int DAYS_NO_ROT = -1;
     public static final long TICKS_PER_DAY = 24000L;
 
     public static MatchingConfig<Integer> preserving = new MatchingConfig<Integer>(ConfigContainer.preserving.ratios, NO_PRESERVING);
+    public static MatchingConfig<Integer> dimensions = new MatchingConfig<Integer>(ConfigContainer.preserving.dimensionRatios, DIMENSIONRATIO_DEFAULT);
     public static Rotting rotting = new Rotting();
     		
     public static void init()
@@ -61,6 +63,13 @@ public class ConfigHandler
         preserving.addDefaultProperty("cfm:freezer", 100);
         preserving.addDefaultProperty("minecraft:cfmfridge", 100);
         preserving.addDefaultProperty("minecraft:cfmfreezer", 100);
+        
+        dimensions.addDefaultProperty("-1", 200); // Nether - double rot speed
+        dimensions.addDefaultProperty("0", 100); // Overworld - normal rot speed
+        dimensions.addDefaultProperty("1", 0); // The End - no rot
+        // MAYBE
+        // dimensions.addDefaultProperty("7", 150); // Twilight Forest
+        // dimensions.addDefaultProperty("20", 300); // Betweenlands
 
         ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
     }

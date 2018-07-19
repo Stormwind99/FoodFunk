@@ -51,8 +51,13 @@ public class ConfigContainer
     {
         @Name("Preserving ratio")
         @Config.Comment("Contents will rot normally at 0, half speed at 50, and never at 100")
-        @RangeInt(min = 0, max = 100)
+        @RangeInt(min = -100, max = 100)
         public HashMap<String, Integer> ratios = new HashMap<String, Integer>();
+        
+        @Name("Dimension ratio")
+        @Config.Comment("When in a listed dimension, contents will rot double speed at -100, normally at 0, and never at 100")
+        @RangeInt(min = -100, max = 100)
+        public HashMap<String, Integer> dimensionRatios = new HashMap<String, Integer>();
     }
 
     @Name("Debugging")

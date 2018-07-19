@@ -9,9 +9,9 @@ import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.util.misc.CraftingUtil;
 import com.wumple.util.capability.CapabilityContainerListenerManager;
 import com.wumple.util.container.ContainerUseTracker;
+import com.wumple.util.misc.CraftingUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -34,11 +34,7 @@ public class Rot implements IRot
 
     // IDs of the capability
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "rot");
-    
-    // MAYBE re-init on WorldEvent.Load instead of waiting for first world tick to do so via handler
-    // the last world time/tick count/timestamp received during world tick
-    //    needed since no access to world later
-    protected static long lastWorldTimestamp = 0;
+
     protected static Random random = new Random();
 
     // RotInfo holds the rot data (composition due to cap network serialization classes)
@@ -66,38 +62,42 @@ public class Rot implements IRot
     @Override
     public long getDate()
     {
-        return info.date;
+        return info.getDate();
     }
 
     @Override
     public long getTime()
     {
-        return info.time;
+        return info.getTime();
     }
 
     @Override
     public void setDate(long dateIn)
     {
-        info.date = dateIn;
+        info.setDate(dateIn);
     }
 
     @Override
     public void setTime(long timeIn)
     {
-        info.time = timeIn;
+        info.setTime(timeIn);
     }
 
     @Override
     public void setRot(long dateIn, long timeIn)
     {
-        info.date = dateIn;
-        info.time = timeIn;
+        info.set(dateIn, timeIn);
     }
 
     @Override
     public void reschedule(long timeIn)
     {
         info.date += timeIn;
+        forceUpdate();
+    }
+
+    public void forceUpdate()
+    {
         // HACK to force Container.detectAndSendChanges to detect change and notify ContainerListener
         NBTTagCompound tag = owner.getOrCreateSubCompound("Rot");
         info.writeToNBT(tag);
@@ -122,8 +122,7 @@ public class Rot implements IRot
         if (ownerIn != owner)
         {
             owner = ownerIn;
-            setDefaults(owner);
-            info.date = lastWorldTimestamp;
+            // set defaults waits until later so a World will be present
         }
     }
 
@@ -135,16 +134,6 @@ public class Rot implements IRot
     // ----------------------------------------------------------------------
     // Functionality
 
-    public static void setLastWorldTimestamp(long timestamp)
-    {
-        lastWorldTimestamp = timestamp;
-    }
-
-    public static long getLastWorldTimestamp()
-    {
-        return lastWorldTimestamp;
-    }
-
     /*
      * Evaluate this rot, which belongs to stack
      */
@@ -155,34 +144,25 @@ public class Rot implements IRot
         // freezer)
         // Might allow building a walk-in freezer like in RimWorld
 
-        long rotTime = getTime();
-
-        long UBD = getDate();
-        long worldTime = world.getTotalWorldTime();
-
-        // initialization was missed somehow - so fix it
-        if (UBD == 0)
+        if (!info.checkInitialized(world, stack))
         {
-            // previous calculation:
-            // UBD = (worldTime/ConfigHandler.TICKS_PER_DAY) * ConfigHandler.TICKS_PER_DAY;
-            // UBD = UBD <= 0L? 1L : UBD
-            UBD = worldTime;
-            setRot(UBD, rotTime);
+            forceUpdate();
         }
 
-        long rotTimeStamp = UBD + rotTime;
-
-        if (worldTime >= rotTimeStamp)
+        if (!info.isNoRot())
         {
-            RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
-            // forget owner to eliminate dependency
-            owner = null;
-            return (rotProps != null) ? rotProps.forceRot(stack) : null;
+            if (info.hasExpired())
+            {
+                RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
+                // forget owner to eliminate dependency
+                owner = null;
+                return (rotProps != null) ? rotProps.forceRot(stack) : null;
+            }
         }
 
         return stack;
     }
-    
+
     /*
      * Build tooltip info based on this rot
      */
@@ -201,29 +181,45 @@ public class Rot implements IRot
                         if (cap != null)
                         {
                             int ratio = cap.getRatio();
-                            String key = getTemperatureTooltipKey(ratio);                            
+                            String key = getTemperatureTooltipKey(ratio);
                             tips.add(new TextComponentTranslation(key, ratio).getUnformattedText());
                         }
                     }
                 }
 
                 // Rot state
+                //RotInfo local = info.getRelative(entity.getEntityWorld());
                 boolean beingCrafted = CraftingUtil.isItemBeingCraftedBy(stack, entity);
-                String key = getRotStateTooltipKey(beingCrafted);
+                String key = getRotStateTooltipKey(info, beingCrafted);
 
                 if (key != null)
                 {
                     tips.add(new TextComponentTranslation(key, info.getPercent() + "%", info.getDaysLeft(),
                             info.getDaysTotal()).getUnformattedText());
-                }                
+                }
 
-                //  advanced tooltip debug info
+                // advanced tooltip debug info
                 if (advanced && ConfigContainer.zdebugging.debug)
                 {
+                    /*
+                    // if in a different dimension with different rot rate, then display that info
+                    if (local != info)
+                    {
+                        tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.datetime.local", local.getDate(),
+                                local.getTime()).getUnformattedText());
+                        tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.expire.local", local.getCurTime(),
+                                local.getExpirationTimestamp()).getUnformattedText());
+                    }
+                    */
+
                     tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.datetime", info.getDate(),
                             info.getTime()).getUnformattedText());
                     tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.expire", info.getCurTime(),
                             info.getExpirationTimestamp()).getUnformattedText());
+
+                    int dimension = entity.getEntityWorld().provider.getDimension();
+                    int dimensionRatio = RotInfo.getDimensionRatio(entity.getEntityWorld());
+                    tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.dimratio", dimensionRatio, dimension).getUnformattedText());
                 }
             }
         }
@@ -256,29 +252,26 @@ public class Rot implements IRot
 
         setDate(lowestDate);
     }
+    
+    public void ratioShift(int fromRatio, int toRatio)
+    {
+        info.ratioShift(fromRatio, toRatio, owner);
+        forceUpdate();
+    }
 
     // ----------------------------------------------------------------------
     // Internal
-    
+
+    // only good on client side
     IPreserving getPreservingContainer(EntityPlayer entity, ItemStack stack)
     {
-    	return ContainerUseTracker.getContainerCapability(entity, stack, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
-    }
-
-    protected void setDefaults(ItemStack stack)
-    {
-        RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
-
-        if ((rotProps != null) && rotProps.doesRot())
-        {
-            setTime(rotProps.getRotTime());
-        }
+        return ContainerUseTracker.getContainerCapability(entity, stack, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
     }
 
     protected static String getTemperatureTooltipKey(final int ratio)
     {
         String key = null;
-        
+
         if (ratio == 0)
         {
             key = "misc.foodfunk.tooltip.state.cold0";
@@ -307,17 +300,17 @@ public class Rot implements IRot
         {
             key = "misc.foodfunk.tooltip.state.warm3";
         }
-        
+
         return key;
     }
-    
-    protected String getRotStateTooltipKey(boolean beingCrafted)
+
+    protected String getRotStateTooltipKey(RotInfo local, boolean beingCrafted)
     {
         String key = null;
-        
-        if (info.isSet() && !beingCrafted)
+
+        if (local.isSet() && !beingCrafted)
         {
-            if (info.getPercent() >= 100)
+            if (local.getPercent() >= 100)
             {
                 key = "misc.foodfunk.tooltip.decaying";
             }
@@ -326,18 +319,18 @@ public class Rot implements IRot
                 key = "misc.foodfunk.tooltip.rot";
             }
         }
-        else if (info.isNoRot())
+        else if (local.isNoRot())
         {
             key = "misc.foodfunk.tooltip.preserved";
         }
-        else if (info.time > 0)
+        else if (local.time > 0)
         {
             key = "misc.foodfunk.tooltip.fresh";
         }
 
         return key;
     }
-    
+
     // ----------------------------------------------------------------------
     // Possible future
 

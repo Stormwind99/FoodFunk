@@ -62,4 +62,9 @@ public interface IRot
      * Set rot on crafted items dependent on the ingredients
      */
     public void handleCraftedRot(World world, IInventory craftMatrix, ItemStack crafting);
+    
+    /**
+     * Handle shifting dimensions with possibly different rot rates
+     */
+    public void ratioShift(int fromRatio, int toRatio);
 }
