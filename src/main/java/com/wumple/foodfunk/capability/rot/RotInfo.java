@@ -288,7 +288,7 @@ public final class RotInfo
 
     public static int getDimensionRatio(String dimensionKey)
     {
-        return ConfigContainer.preserving.dimensionRatios.getOrDefault(dimensionKey, ConfigHandler.DIMENSIONRATIO_DEFAULT);
+        return ConfigContainer.modifiers.dimensionRatios.getOrDefault(dimensionKey, ConfigHandler.DIMENSIONRATIO_DEFAULT);
     }
 
     public static int getDimensionRatio(World world)

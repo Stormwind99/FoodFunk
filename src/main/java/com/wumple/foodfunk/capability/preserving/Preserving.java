@@ -37,7 +37,7 @@ public class Preserving implements IPreserving
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "preserving");
 
     // transient data
-    // ticks since last rot refresh of contents
+    // ticks since last rot refresh of contents - special value 0 means need to cache preserving settings
     protected int tick = 0;
     protected IPreservingOwner owner = null;
     protected int preservingRatio = 0;
@@ -143,30 +143,16 @@ public class Preserving implements IPreserving
         // adjust for preserving ratio
         long rotTime = getRotTime(rawTime);
 
-        freshenContentsAny(rotTime, worldTime);
+        IItemHandler capability = owner.fetchCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        freshenTheseContents(capability, rotTime, worldTime);
     }
 
     // ----------------------------------------------------------------------
     // Internal
 
-    /**
-     * Automatically adjust the use-by date on food items stored within to slow or stop rot
-     */
-    protected void freshenContentsAny(long time, long worldTime)
-    {
-        if (owner == null)
-        {
-            return;
-        }
-        
-        IItemHandler capability = owner.fetchCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-        freshenTheseContents(capability, time, worldTime);
-    }
-
     protected void freshenTheseContents(IItemHandler inventory, long time, long worldTime)
     {
         Walker.walkContainer(inventory, (i, handler, stack) -> {
-            // freshen self
             // TODO - investigate if IItemHandler.extractItem() needed
             // ItemStack stack = inventory.extractItem(i, stack.getCount(), false);
             freshenStack(stack, time, worldTime);

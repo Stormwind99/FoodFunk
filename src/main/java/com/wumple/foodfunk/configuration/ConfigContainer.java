@@ -43,20 +43,20 @@ public class ConfigContainer
         public HashMap<String, String> rotID = new HashMap<String, String>();
     }
     
-    @Name("Preserving")
-    @Config.Comment("Set preserving rations for container TileEntities.")
-    public static Preserving preserving = new Preserving();
+    @Name("Modifiers")
+    @Config.Comment("Set values that modify rot speed for preserving containers and dimensions.")
+    public static Modifiers modifiers = new Modifiers();
 
-    public static class Preserving
+    public static class Modifiers
     {
         @Name("Preserving ratio")
-        @Config.Comment("Contents will rot normally at 0, half speed at 50, and never at 100")
+        @Config.Comment("When in listed container, contents will rot normally at 0, half speed at 50, and never at 100")
         @RangeInt(min = -100, max = 100)
         public HashMap<String, Integer> ratios = new HashMap<String, Integer>();
         
         @Name("Dimension ratio")
-        @Config.Comment("When in a listed dimension, contents will rot double speed at -100, normally at 0, and never at 100")
-        @RangeInt(min = -100, max = 100)
+        @Config.Comment("When in listed dimension, contents will rot double speed at 200, normally at 100, never at 0, and half speed at -100")
+        @RangeInt(min = -1600, max = 1600)
         public HashMap<String, Integer> dimensionRatios = new HashMap<String, Integer>();
     }
 

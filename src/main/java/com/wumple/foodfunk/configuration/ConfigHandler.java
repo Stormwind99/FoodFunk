@@ -27,8 +27,8 @@ public class ConfigHandler
     public static final int DAYS_NO_ROT = -1;
     public static final long TICKS_PER_DAY = 24000L;
 
-    public static MatchingConfig<Integer> preserving = new MatchingConfig<Integer>(ConfigContainer.preserving.ratios, NO_PRESERVING);
-    public static MatchingConfig<Integer> dimensions = new MatchingConfig<Integer>(ConfigContainer.preserving.dimensionRatios, DIMENSIONRATIO_DEFAULT);
+    public static MatchingConfig<Integer> preserving = new MatchingConfig<Integer>(ConfigContainer.modifiers.ratios, NO_PRESERVING);
+    public static MatchingConfig<Integer> dimensions = new MatchingConfig<Integer>(ConfigContainer.modifiers.dimensionRatios, DIMENSIONRATIO_DEFAULT);
     public static Rotting rotting = new Rotting();
     		
     public static void init()
