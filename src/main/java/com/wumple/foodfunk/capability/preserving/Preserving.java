@@ -5,6 +5,7 @@ import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.RotCapHelper;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.util.container.Walker;
 import com.wumple.util.misc.TimeUtil;
 
 import net.minecraft.client.Minecraft;
@@ -34,7 +35,7 @@ public class Preserving implements IPreserving
 
     // IDs of the capability
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "preserving");
-    
+
     // transient data
     // ticks since last rot refresh of contents
     protected int tick = 0;
@@ -43,7 +44,7 @@ public class Preserving implements IPreserving
 
     // persisted data
     long lastCheckTime = ConfigHandler.DAYS_NO_ROT;
-        
+
     // ----------------------------------------------------------------------
     // Init
 
@@ -59,10 +60,10 @@ public class Preserving implements IPreserving
 
     Preserving(IPreservingOwner ownerIn)
     {
-    	this();
+        this();
         owner = ownerIn;
     }
-    
+
     // ----------------------------------------------------------------------
     // IPreserving
 
@@ -75,12 +76,12 @@ public class Preserving implements IPreserving
     {
         lastCheckTime = time;
     }
-    
+
     public int getRatio()
     {
         return preservingRatio;
     }
-    
+
     /*
      * Set the owner of this capability, and init based on that owner
      */
@@ -92,9 +93,10 @@ public class Preserving implements IPreserving
             lastCheckTime = TimeUtil.getLastWorldTimestamp();
         }
     }
-        
+
     /**
      * Tick counters, cache data, etc
+     * 
      * @return boolean should we freshen contents this tick?
      */
     protected boolean updateAndCache()
@@ -122,7 +124,7 @@ public class Preserving implements IPreserving
      * Automatically adjust the use-by date on food items stored within to slow or stop rot
      */
     public void freshenContents()
-    {        
+    {
         // only freshen on server, and rely on cap data being sent to clients
         if ((owner.getWorld() == null) || owner.getWorld().isRemote)
         {
@@ -140,7 +142,7 @@ public class Preserving implements IPreserving
         lastCheckTime = worldTime;
         // adjust for preserving ratio
         long rotTime = getRotTime(rawTime);
-        
+
         freshenContentsAny(rotTime, worldTime);
     }
 
@@ -152,50 +154,26 @@ public class Preserving implements IPreserving
      */
     protected void freshenContentsAny(long time, long worldTime)
     {
-    	if (owner == null)
-    	{
-    		return;
-    	}
-    	else if (owner.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
+        if (owner == null)
         {
-            IItemHandler capability = owner.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-            freshenTheseContents(capability, time, worldTime);
+            return;
         }
+        
+        IItemHandler capability = owner.fetchCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        freshenTheseContents(capability, time, worldTime);
     }
 
     protected void freshenTheseContents(IItemHandler inventory, long time, long worldTime)
     {
-        boolean dirty = false;
-
-        for (int i = 0; i < inventory.getSlots(); i++)
-        {
-            ItemStack stack = inventory.getStackInSlot(i);
-            
-            // freshen any contents, depth first
-            if (stack.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null))
-            {
-                IItemHandler capability = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-                freshenTheseContents(capability, time, worldTime);            	
-            }
-
+        Walker.walkContainer(inventory, (i, handler, stack) -> {
             // freshen self
-            IRot cap = RotCapHelper.getRot(stack);
-            if (cap != null)
-            {
-            	// TODO - investigate if IItemHandler.extractItem() needed
-            	//ItemStack stack = inventory.extractItem(i, stack.getCount(), false);
-            	
-            	boolean freshened = freshenStack(stack, time, worldTime);
-            	dirty |= freshened;
-            	
-            	//inventory.insertItem(i, stack, false);
-            }
-        }
+            // TODO - investigate if IItemHandler.extractItem() needed
+            // ItemStack stack = inventory.extractItem(i, stack.getCount(), false);
+            freshenStack(stack, time, worldTime);
+            // inventory.insertItem(i, stack, false);
+        });
 
-        if (dirty)
-        {
-            owner.markDirty();
-        }
+        owner.markDirty();
     }
 
     protected boolean freshenStack(ItemStack stack, long time, long worldTime)
@@ -234,7 +212,7 @@ public class Preserving implements IPreserving
                 owner.invalidate();
                 owner = null;
             }
-            else 
+            else
             {
                 boolean freshen = updateAndCache();
                 if (freshen)
@@ -253,7 +231,7 @@ public class Preserving implements IPreserving
     {
         handleOnTick(event.world);
     }
-    
+
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onClientTick(TickEvent.ClientTickEvent event)

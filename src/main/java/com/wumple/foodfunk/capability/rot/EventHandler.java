@@ -18,6 +18,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteract
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -109,13 +110,24 @@ public class EventHandler
     public static void onItemPickedUp(EntityItemPickupEvent event)
     {
         RotHandler.evaluateRot(event.getEntity().getEntityWorld(), event.getItem());
-        //RotHelper.evaluateRot(event.getEntity().getEntityWorld(), event.getItem().getItem());
     }
 
     @SubscribeEvent
     public static void onDimensionChange(PlayerChangedDimensionEvent event)
     {
         RotHandler.dimensionShift(event.player, event.fromDim, event.toDim);
+    }
+
+    // PlayerChangedDimensionEvent does not fire when traveling from end!
+    @SubscribeEvent
+    public static void onDimensionChange(PlayerEvent.PlayerRespawnEvent event)
+    {
+        if (event.isEndConquered())
+        {
+            int fromDim = 1; // the End
+            int toDim = event.player.world.provider.getDimension();
+            RotHandler.dimensionShift(event.player, fromDim, toDim);
+        }
     }
     
     /**

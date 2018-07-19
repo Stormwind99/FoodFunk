@@ -92,7 +92,7 @@ public class Rot implements IRot
     @Override
     public void reschedule(long timeIn)
     {
-        info.date += timeIn;
+        info.reschedule(timeIn);
         forceUpdate();
     }
 
@@ -122,7 +122,9 @@ public class Rot implements IRot
         if (ownerIn != owner)
         {
             owner = ownerIn;
-            // set defaults waits until later so a World will be present
+
+            // on server, setting default waits until later so a World will be present
+            // on client, tooltip will init with reasonable guess until update is received from server
         }
     }
 
@@ -142,7 +144,7 @@ public class Rot implements IRot
         // TODO integrate with Serene Seasons temperature system
         // If stack in a cold/frozen location, change rot appropriately (as if esky or
         // freezer)
-        // Might allow building a walk-in freezer like in RimWorld
+        // Might allow building a walk-in dofreezer like in RimWorld
 
         if (!info.checkInitialized(world, stack))
         {
@@ -172,6 +174,11 @@ public class Rot implements IRot
         {
             if (info != null)
             {
+                World world = entity.getEntityWorld();
+                        
+                // if not initialized, set with reasonable guess to be overwritten by server update
+                info.checkInitialized(world, owner);
+                
                 // preserving container state aka fake temperature - ambient, chilled, cold, frozen
                 if (info.isSet())
                 {
@@ -188,7 +195,6 @@ public class Rot implements IRot
                 }
 
                 // Rot state
-                //RotInfo local = info.getRelative(entity.getEntityWorld());
                 boolean beingCrafted = CraftingUtil.isItemBeingCraftedBy(stack, entity);
                 String key = getRotStateTooltipKey(info, beingCrafted);
 
@@ -201,24 +207,13 @@ public class Rot implements IRot
                 // advanced tooltip debug info
                 if (advanced && ConfigContainer.zdebugging.debug)
                 {
-                    /*
-                    // if in a different dimension with different rot rate, then display that info
-                    if (local != info)
-                    {
-                        tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.datetime.local", local.getDate(),
-                                local.getTime()).getUnformattedText());
-                        tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.expire.local", local.getCurTime(),
-                                local.getExpirationTimestamp()).getUnformattedText());
-                    }
-                    */
-
                     tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.datetime", info.getDate(),
                             info.getTime()).getUnformattedText());
                     tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.expire", info.getCurTime(),
                             info.getExpirationTimestamp()).getUnformattedText());
 
-                    int dimension = entity.getEntityWorld().provider.getDimension();
-                    int dimensionRatio = RotInfo.getDimensionRatio(entity.getEntityWorld());
+                    int dimension = world.provider.getDimension();
+                    int dimensionRatio = RotInfo.getDimensionRatio(world);
                     tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.dimratio", dimensionRatio, dimension).getUnformattedText());
                 }
             }
@@ -250,7 +245,7 @@ public class Rot implements IRot
             }
         }
 
-        setDate(lowestDate);
+        info.setDateSafe(lowestDate);
     }
     
     public void ratioShift(int fromRatio, int toRatio)
@@ -308,7 +303,11 @@ public class Rot implements IRot
     {
         String key = null;
 
-        if (local.isSet() && !beingCrafted)
+        if (local.isNoRot())
+        {
+            key = "misc.foodfunk.tooltip.preserved";
+        }
+        else if (local.isSet() && !beingCrafted)
         {
             if (local.getPercent() >= 100)
             {
@@ -318,11 +317,7 @@ public class Rot implements IRot
             {
                 key = "misc.foodfunk.tooltip.rot";
             }
-        }
-        else if (local.isNoRot())
-        {
-            key = "misc.foodfunk.tooltip.preserved";
-        }
+        }        
         else if (local.time > 0)
         {
             key = "misc.foodfunk.tooltip.fresh";

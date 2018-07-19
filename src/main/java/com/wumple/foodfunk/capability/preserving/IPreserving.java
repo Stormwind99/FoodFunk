@@ -1,16 +1,22 @@
 package com.wumple.foodfunk.capability.preserving;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.EntityThing;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.adapter.TileEntityThing;
+import com.wumple.util.capability.CapabilityUtils;
 import com.wumple.util.container.ContainerUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
+import net.minecraftforge.common.capabilities.Capability;
 
 public interface IPreserving
 {
@@ -44,6 +50,9 @@ public interface IPreserving
         // Preserving specific
         public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor);
         public Integer getPreservingProperty();
+        
+        @Nullable
+        public <T> T fetchCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing);
     }
     
     public static class TileEntityPreservingOwner extends TileEntityThing implements IPreservingOwner
@@ -62,6 +71,12 @@ public interface IPreserving
         {
         	return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
         }  
+        
+        @Nullable
+        public <T> T fetchCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+        {
+            return CapabilityUtils.getCapability(owner, capability, facing);
+        }
     }
     
     public static class EntityPreservingOwner extends EntityThing implements IPreservingOwner
@@ -79,7 +94,13 @@ public interface IPreserving
         public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
         	return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
-        }  
+        }
+        
+        @Nullable
+        public <T> T fetchCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+        {
+            return CapabilityUtils.getCapability(owner, capability, facing);
+        }
     }
 
 }

@@ -62,14 +62,12 @@ public final class RotInfo
     {
         if (tags != null)
         {
-            setDate( tags.getLong("rotStartTimestamp") );
-            setTime( tags.getLong("rotLengthTime") );
+            setDate(tags.getLong("rotStartTimestamp"));
+            setTime(tags.getLong("rotLengthTime"));
         }
 
         return tags;
     }
-
-    // from old RotTime
 
     public long getDate()
     {
@@ -88,21 +86,36 @@ public final class RotInfo
 
     public void setTime(long timeIn)
     {
-        assert(timeIn >= 0);
         time = timeIn;
     }
 
     public void set(long dateIn, long timeIn)
     {
-        assert(timeIn >= 0);
         date = dateIn;
         time = timeIn;
+    }
+
+    public void setDateSafe(long dateIn)
+    {
+        setDate(dateIn);
+    }
+
+    public void setTimeSafe(long timeIn)
+    {
+        assert (timeIn >= 0);
+        setTime(timeIn);
+    }
+
+    public void setSafe(long dateIn, long timeIn)
+    {
+        setDateSafe(dateIn);
+        setTimeSafe(timeIn);
     }
 
     public long getCurTime()
     {
         return TimeUtil.getLastWorldTimestamp();
-    }
+    }    
 
     public long getExpirationTimestamp()
     {
@@ -140,20 +153,11 @@ public final class RotInfo
         return (time == ConfigHandler.DAYS_NO_ROT);
     }
 
-    public void setRelative(World worldIn, ItemStack owner)
-    {
-        // ratio is misnomer - actually is more like dimension numerator over 50
-        int dimensionRatio = getDimensionRatio(worldIn);
-
-        setRelative(dimensionRatio, owner);
-    }
-    
     public void setRelative(int dimensionRatio, ItemStack owner)
     {
-        // ratio is misnomer - actually is more like dimension numerator over 50
-        ratioShiftBase(dimensionRatio-ConfigHandler.DIMENSIONRATIO_DEFAULT, owner);
+        ratioShiftInternal(ConfigHandler.DIMENSIONRATIO_DEFAULT, dimensionRatio, owner);
     }
-    
+
     protected static long getDefaultTime(ItemStack owner)
     {
         long defaultTime = 0;
@@ -165,7 +169,20 @@ public final class RotInfo
         }
         return defaultTime;
     }
-    
+
+    public static long shiftTime(int dimensionRatioShift, long timeIn)
+    {
+        // skip if no change - better precision
+        if (dimensionRatioShift == 0)
+        {
+            return timeIn;
+        }
+
+        double x = (double) dimensionRatioShift / ConfigHandler.DIMENSIONRATIO_DEFAULT;
+        double y = (double) timeIn * Math.pow(2, x * -1);
+        return (long) y;
+    }
+
     public void ratioShift(int fromRatio, int toRatio, ItemStack owner)
     {
         // if fromRatio is 0 then time value info was lost, so restore from props and apply toRatio
@@ -174,21 +191,33 @@ public final class RotInfo
             initTime(toRatio, owner);
             return;
         }
-               
+
+        ratioShiftInternal(fromRatio, toRatio, owner);
+    }
+
+    protected void ratioShiftInternal(int fromRatio, int toRatio, ItemStack owner)
+    {
         if (toRatio == 0)
         {
             if ((fromRatio != 0) && (time != 0))
             {
-                // this will loose any relative to fresh date rot info
-                // TODO: encode any current non-zero rot time into fresh date before zeroing
+                // this would loose any relative to fresh date rot info
+                // but we encode any current non-zero rot time into fresh date before zeroing
                 // that newdate+defaultTime = oldDate+oldTime
                 long defaultTime = getDefaultTime(owner);
                 long newDate = date + time - defaultTime;
-                set(newDate, 0);
+
+                // set without range checking
+                set(newDate, ConfigHandler.DAYS_NO_ROT);
             }
             return;
         }
-        
+
+        if (isNoRot())
+        {
+            return;
+        }
+
         int dimensionRatioShift = toRatio - fromRatio;
 
         // skip if no change - better precision than integer math
@@ -196,80 +225,61 @@ public final class RotInfo
         {
             return;
         }
-        
+
         ratioShiftBase(dimensionRatioShift, owner);
     }
     
-    public static long getDimensionLocalTime(int dimensionRatio, long timeIn)
-    {
-        return shiftTime(dimensionRatio-ConfigHandler.DIMENSIONRATIO_DEFAULT, timeIn);
-    }
-    
-    public static double log2(double d) {
-        return Math.log(d)/Math.log(2.0);
-     }
-    
-    public static long shiftTime(int dimensionRatioShift, long timeIn)
-    {
-        // skip if no change - better precision
-        if (dimensionRatioShift == 0)
-        {
-            return timeIn;
-        }
-        
-        double x = (double)dimensionRatioShift/ConfigHandler.DIMENSIONRATIO_DEFAULT;
-        double y = (double)timeIn * Math.pow(2, x * -1);
-        return (long)y;
-    }
-    
-    public void ratioShiftBase(int dimensionRatioShift, ItemStack owner)
+    public static long alterTime(int dimensionRatioShift, long now, long date, long time)
     {
         // let's alter time a bit for different dimensions
-        long worldTimestamp = getCurTime();
-        long expirationTimeStamp = getExpirationTimestamp();
-        long left = expirationTimeStamp - worldTimestamp;
-        long relativeLeft = shiftTime(dimensionRatioShift , left);
-        long localTime = (worldTimestamp + relativeLeft) - date;
+        long expirationTimeStamp = date + time;
+        long left = expirationTimeStamp - now;
+        long relativeLeft = shiftTime(dimensionRatioShift, left);
+        long localTime = (now + relativeLeft) - date;
+
+        return localTime;
+    }
+
+    protected void ratioShiftBase(int dimensionRatioShift, ItemStack owner)
+    {
+        long localTime = alterTime(dimensionRatioShift, getCurTime(), date, time);
 
         // debug ratio was already applied to time in checkInitialized() at initialization
-        
-        setTime(localTime);
+
+        // long clampedLocalTime = Longs.constrainToRange(localTime, 0, getDefaultTime(owner));
+        long clampedLocalTime = (localTime < 0) ? 0 : localTime;
+
+        setTimeSafe(clampedLocalTime);
     }
 
-    public void setRelative(World worldIn, ItemStack owner, long date, long time)
-    {   
-        set(date, time);
-        setRelative(worldIn, owner);
-    }
-    
     protected void initTime(int dimensionRatio, ItemStack stack)
     {
         RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
 
         if ((rotProps != null) && rotProps.doesRot())
         {
-            setTime(rotProps.getRotTime());
+            setTimeSafe(rotProps.getRotTime());
             setRelative(dimensionRatio, stack);
         }
-    }  
+    }
 
     public boolean checkInitialized(World world, ItemStack stack)
     {
         // if initialization not yet done (stack just created or was missed somehow), then do/fix it
         if (date == 0)
         {
-            setDate( getCurTime() );
-            
+            setDateSafe(getCurTime());
+
             int ratio = getDimensionRatio(world);
 
             initTime(ratio, stack);
-            
+
             return false;
         }
-        
+
         return true;
     }
-    
+
     public static int getDimensionRatio(int dimensionId)
     {
         String dimensionKey = Integer.toString(dimensionId);
@@ -278,31 +288,39 @@ public final class RotInfo
 
     public static int getDimensionRatio(String dimensionKey)
     {
-        return ConfigContainer.preserving.dimensionRatios.getOrDefault(dimensionKey, 0);
+        return ConfigContainer.preserving.dimensionRatios.getOrDefault(dimensionKey, ConfigHandler.DIMENSIONRATIO_DEFAULT);
     }
-    
+
     public static int getDimensionRatio(World world)
     {
+        if (world == null)
+        {
+            return ConfigHandler.DIMENSIONRATIO_DEFAULT;
+        }
+            
         int dimensionId = world.provider.getDimension();
         return getDimensionRatio(dimensionId);
     }
 
-    /*
-     * Stretch time via dimensionRatio, no change if ratio == ConfigHandler.DIMENSIONRATIO_DEFAULT
-     */
-    public static long getDimensionLocalTime(World world, long timeIn)
-    {
-        // ratio is misnomer - actually is more like dimension numerator over ConfigHandler.DIMENSIONRATIO_DEFAULT
-        int dimensionRatio = getDimensionRatio(world);
-
-        return getDimensionLocalTime(dimensionRatio, timeIn);
-    }
-
     public boolean hasExpired()
     {
+        if (isNoRot())
+        {
+            return false;
+        }
+        
         long worldTimeStamp = getCurTime();
         long relativeExpirationTimeStamp = getExpirationTimestamp();
 
         return (worldTimeStamp >= relativeExpirationTimeStamp);
+    }
+    
+    public void reschedule(long timeIn)
+    {
+        // skip reschedule if in no rot mode - it would effectively double the amount of preservation when in a no-rot dimension
+        if (!isNoRot())
+        {
+            date += timeIn;
+        }
     }
 }
