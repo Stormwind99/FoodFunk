@@ -37,7 +37,7 @@ public class RotHandler
             }
         }
 
-        IItemHandler capability = CapabilityUtils.getCapability(entity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        IItemHandler capability = CapabilityUtils.fetchCapability(entity, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
         if (capability != null)
         {
@@ -77,7 +77,7 @@ public class RotHandler
             return;
         }
 
-        IItemHandler capability = CapabilityUtils.getCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+        IItemHandler capability = CapabilityUtils.fetchCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 
         if (capability != null)
         {

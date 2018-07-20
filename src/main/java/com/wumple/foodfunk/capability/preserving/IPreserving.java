@@ -50,9 +50,6 @@ public interface IPreserving
         // Preserving specific
         public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor);
         public Integer getPreservingProperty();
-        
-        @Nullable
-        public <T> T fetchCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing);
     }
     
     public static class TileEntityPreservingOwner extends TileEntityThing implements IPreservingOwner
@@ -71,12 +68,6 @@ public interface IPreserving
         {
         	return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
         }  
-        
-        @Nullable
-        public <T> T fetchCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
-        {
-            return CapabilityUtils.getCapability(owner, capability, facing);
-        }
     }
     
     public static class EntityPreservingOwner extends EntityThing implements IPreservingOwner
@@ -94,12 +85,6 @@ public interface IPreserving
         public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
         	return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
-        }
-        
-        @Nullable
-        public <T> T fetchCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
-        {
-            return CapabilityUtils.getCapability(owner, capability, facing);
         }
     }
 

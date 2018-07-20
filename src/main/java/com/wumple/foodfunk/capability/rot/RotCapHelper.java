@@ -18,7 +18,7 @@ public class RotCapHelper
     @Nullable
     public static IRot getRot(@Nullable ItemStack itemStack)
     {
-        return CapabilityUtils.getCapability(itemStack, Rot.CAPABILITY, Rot.DEFAULT_FACING);
+        return CapabilityUtils.fetchCapability(itemStack, Rot.CAPABILITY, Rot.DEFAULT_FACING);
     }
 
     /**
