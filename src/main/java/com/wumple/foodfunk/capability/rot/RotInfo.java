@@ -170,19 +170,6 @@ public final class RotInfo
         return defaultTime;
     }
 
-    public static long shiftTime(int dimensionRatioShift, long timeIn)
-    {
-        // skip if no change - better precision
-        if (dimensionRatioShift == 0)
-        {
-            return timeIn;
-        }
-
-        double x = (double) dimensionRatioShift / ConfigHandler.DIMENSIONRATIO_DEFAULT;
-        double y = (double) timeIn * Math.pow(2, x * -1);
-        return (long) y;
-    }
-
     public void ratioShift(int fromRatio, int toRatio, ItemStack owner)
     {
         // if fromRatio is 0 then time value info was lost, so restore from props and apply toRatio
@@ -228,17 +215,6 @@ public final class RotInfo
 
         ratioShiftBase(dimensionRatioShift, owner);
     }
-    
-    public static long alterTime(int dimensionRatioShift, long now, long date, long time)
-    {
-        // let's alter time a bit for different dimensions
-        long expirationTimeStamp = date + time;
-        long left = expirationTimeStamp - now;
-        long relativeLeft = shiftTime(dimensionRatioShift, left);
-        long localTime = (now + relativeLeft) - date;
-
-        return localTime;
-    }
 
     protected void ratioShiftBase(int dimensionRatioShift, ItemStack owner)
     {
@@ -251,7 +227,31 @@ public final class RotInfo
 
         setTimeSafe(clampedLocalTime);
     }
+    
+    public static long alterTime(int dimensionRatioShift, long now, long date, long time)
+    {
+        // let's alter time a bit for different dimensions
+        long expirationTimeStamp = date + time;
+        long left = expirationTimeStamp - now;
+        long relativeLeft = shiftTime(dimensionRatioShift, left);
+        long localTime = (now + relativeLeft) - date;
 
+        return localTime;
+    }
+    
+    public static long shiftTime(int dimensionRatioShift, long timeIn)
+    {
+        // skip if no change - better precision
+        if (dimensionRatioShift == 0)
+        {
+            return timeIn;
+        }
+
+        double x = (double) dimensionRatioShift / ConfigHandler.DIMENSIONRATIO_DEFAULT;
+        double y = (double) timeIn * Math.pow(2, x * -1);
+        return (long) y;
+    }
+    
     protected void initTime(int dimensionRatio, ItemStack stack)
     {
         RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
@@ -321,6 +321,13 @@ public final class RotInfo
         if (!isNoRot())
         {
             date += timeIn;
+            
+            // don't allow items to go into negative rot aka super-fresh aka fresh date in future
+            long worldTimeStamp = getCurTime();
+            if (date > worldTimeStamp)
+            {
+                date = worldTimeStamp;
+            }
         }
     }
 }

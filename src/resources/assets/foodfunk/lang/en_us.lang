@@ -28,6 +28,7 @@ misc.foodfunk.tooltip.state.cold0=§7Ambient temperature§r
 misc.foodfunk.tooltip.state.cold1=§1Chilled§r
 misc.foodfunk.tooltip.state.cold2=§9Cold§r
 misc.foodfunk.tooltip.state.cold3=§bFrozen§r
+misc.foodfunk.tooltip.state.cold4=§bRefreshed§r
 
 misc.foodfunk.tooltip.state.warm1=§dTepid§r
 misc.foodfunk.tooltip.state.warm2=§4Warm§r

@@ -279,9 +279,13 @@ public class Rot implements IRot
         {
             key = "misc.foodfunk.tooltip.state.cold2";
         }
-        else if (ratio >= 100)
+        else if (ratio == 100)
         {
             key = "misc.foodfunk.tooltip.state.cold3";
+        }
+        else if (ratio > 100)
+        {
+            key = "misc.foodfunk.tooltip.state.cold4";
         }
         else if ((ratio < 0) && (ratio >= -50))
         {
