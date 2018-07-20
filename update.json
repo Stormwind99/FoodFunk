@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "4.0.0",
-    "1.12.2-recommended": "4.0.0"
+    "1.12.2-latest": "4.0.1",
+    "1.12.2-recommended": "4.0.1"
   },
   "1.12.2": {
+    "4.0.1": "Fix for strange tooltips on composting items in new worlds with Composter mod",
     "4.0.0": "Dimension modifiers - things rot faster in the Nether, and not at all in the End!",
     "3.0.0": "Added support for making Entities like MinecartChest and even entity:player as preserving containers.  Negative-preserving containers.  Advancements.  Rotted item and biodegradable item for modpack authors.  Preserving containers refresh items within IItemHandler items.  OreDict usage.  Evaluation interval configurable.",
     "2.1.2": "Removed dependency on trove library since latest Forge snapshots remove it.  Some file re-org.",
