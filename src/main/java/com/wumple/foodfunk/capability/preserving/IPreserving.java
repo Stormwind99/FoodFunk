@@ -1,22 +1,16 @@
 package com.wumple.foodfunk.capability.preserving;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.EntityThing;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.adapter.TileEntityThing;
-import com.wumple.util.capability.CapabilityUtils;
 import com.wumple.util.container.ContainerUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.common.capabilities.Capability;
 
 public interface IPreserving
 {
