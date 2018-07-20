@@ -7,6 +7,8 @@ Minecraft mod: What is that funky smell in my backpack? Food spoils over time un
 * Default [configuration](https://github.com/Stormwind99/FoodFunk/wiki/Configuration) entries support vanilla Minecraft and [other food mods](https://github.com/Stormwind99/FoodFunk/wiki/Compatibility). 
 * Any item from any mod can be [specified](https://github.com/Stormwind99/FoodFunk/wiki/Configuration), and specifiers include support for metadata and ore dictionary names.
 
+Requires [Wumple Util Library](https://github.com/Stormwind99/WumpleUtil).
+
 ## Screenshots
 
 ![Rot tooltip](https://raw.githubusercontent.com/Stormwind99/FoodFunk/master/other/screenshots/tooltip.png)
