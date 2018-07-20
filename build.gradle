@@ -2,9 +2,11 @@
  * build gradle for a Minecraft Forge mod
  *
  * - Uses a separate build.properties config file (so build gradle can be upgraded while keeping settings)
+ * - Uses separate dependencies.gradle file (for same reason)
  * - Generates mod data files and constants
  * - Tracks and auto-increments build number
  * - Builds Forge mods
+ * - Signs jar file if keystore info is configured (such as in global .gradle file)
  * - Uploads releases to Curseforge, Github, and Bintray
  *
  * Originally based on build.gradle from Botania by vazkii - https://botaniamod.net/
@@ -63,6 +65,9 @@ minecraft {
     replace '@VERSION@', config.version
     replace '@DEPENDENCIES@', config.dependencies
     replace '@UPDATEJSON@', config.updatejson
+    if (project.hasProperty('keyStore')) {
+        replace '@FINGERPRINT@', project.signSHA1
+    }
 
     replaceIn 'Reference.java'
 }
@@ -79,6 +84,7 @@ sourceSets {
     main {
         // default: src/main/java contains the Java source code
         // default: src/test/java contains the Java tests
+        // default: src/api/java contains the Java mod api
         // custom: src/resources contains mod data (server-required) and assets (client-only)
         resources { srcDirs = ["$projectDir/src/resources"] }
     }
@@ -140,6 +146,7 @@ curseforge {
             return getChangeInfo()
         }
         releaseType = config.curseforge_releasetype
+        relations { doit -> deps.each { dep -> requiredLibrary dep } }
     }
 }
  
@@ -247,14 +254,10 @@ def loadBuildNumber() {
 
 // save the new build number
 task('saveBuildNumber') {
+    outputs.file('version.properties')
     doLast {
        versionFile.withWriter { buildnum.store(it, "Automated build number increase") }
     }
-}
-
-// trigger saving new build number when the build actually starts
-build {
-    dependsOn 'saveBuildNumber'
 }
 
 /// Configuration
@@ -284,6 +287,15 @@ def loadConfig() {
     version = config.version
     group = config.group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
     archivesBaseName = config.mod_id
+
+    // build dep list for cursegradle usage
+    ext.deps = new JsonSlurper().parseText("[ ${config.mod_dependencies} ]") as Map
+    deps.remove( "mod_MinecraftForge")
+
+    // in case fingerprint was just copied-pasted from keytool, transform it into Forge expected form
+    if (project.hasProperty('keyStore')) {
+        project.signSHA1 = project.findProperty('signSHA1').replaceAll(':','').toLowerCase()
+    }
 }
 
 // Merge different configs before passing for expansion which can only take only config
@@ -292,5 +304,35 @@ def getMergedConfig() {
     mergedConfig << project.properties
     mergedConfig << config
     return mergedConfig
+}
+
+/// Signing
+// See https://tutorials.darkhax.net/tutorials/jar_signing/
+
+// Sign the jar file
+task signJar(type: SignJar, dependsOn: reobfJar) {
+
+    // Skips if the keyStore property is missing.
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+
+    // findProperty allows us to reference the property without it existing. 
+    // Using project.propName would cause the script to fail validation if 
+    // the property did not exist. 
+    keyStore = project.findProperty('keyStore')
+    alias = project.findProperty('keyStoreAlias')
+    storePass = project.findProperty('keyStorePass')
+    keyPass = project.findProperty('keyStoreKeyPass')
+    inputFile = jar.archivePath
+    outputFile = jar.archivePath
+}
+
+/// Misc
+
+// triggers for above functionality
+build {
+    dependsOn 'signJar'
+    dependsOn 'saveBuildNumber'
 }
 

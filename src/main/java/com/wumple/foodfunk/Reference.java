@@ -11,6 +11,7 @@ public class Reference
     public static final String MOD_VERSION = "@VERSION@";
     public static final String DEPENDENCIES = "@DEPENDENCIES@";
     public static final String UPDATEJSON = "@UPDATEJSON@";
+    public static final String FINGERPRINT = "@FINGERPRINT@";
     // */
 
     /*
@@ -21,5 +22,6 @@ public class Reference
     public static final String MOD_VERSION = "9.9.9";
     public static final String DEPENDENCIES = "before:quark;before:biomesoplenty;before:erebus;before:aquaculture;before:betterwithmods";
     public static final String UPDATEJSON = "update.json";
+    public static final String FINGERPRINT = "";
     */
 }

@@ -1,10 +1,12 @@
 
+// add repositories for any dependencies
 repositories {
     maven {
         url  "https://dl.bintray.com/stormwind/MinecraftModding" 
     }
 }
 
+// list any dependencies - must be available from repositories above
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
@@ -21,4 +23,3 @@ dependencies {
     //compile "com.wumple:wumpleutil:2.0.0"
     compile 'upload:wumpleutil:2.2.1'
 }
-
