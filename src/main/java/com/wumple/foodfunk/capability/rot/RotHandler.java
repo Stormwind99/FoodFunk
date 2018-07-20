@@ -1,6 +1,5 @@
 package com.wumple.foodfunk.capability.rot;
 
-import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.util.capability.CapabilityUtils;
 import com.wumple.util.container.Walker;
@@ -125,25 +124,34 @@ public class RotHandler
         } );
     }
 
+    public static void evaluateRot(World world, IRot cap, Integer index, IItemHandler itemhandler, ItemStack stack)
+    {
+        int count = stack.getCount();
+        ItemStack newStack = (cap != null) ? cap.evaluateRot(world, stack) : stack;
+        checkUpdateSlot(index, itemhandler, stack, count, newStack);
+    }
+    
     // ----------------------------------------------------------------------
     // Internal
+    
+    protected static void checkUpdateSlot(Integer index, IItemHandler itemhandler, ItemStack stack, int count, ItemStack rotItem)
+    {
+        if (rotItem == null || rotItem.isEmpty() || (rotItem != stack))
+        {
+            if (rotItem == null)
+            {
+                rotItem = ItemStack.EMPTY;
+            }
+            // Equivalent to inventory.setInventorySlotContents(i, rotItem);
+            itemhandler.extractItem(index, count, false);
+            itemhandler.insertItem(index, rotItem, false);
+        }
+    }
     
     protected static void evaluateRotContents(World world, IItemHandler inventory)
     {
         Walker.walkContainer(inventory, (index, itemhandler, stack) -> {
-            int count = stack.getCount();
-            ItemStack rotItem = RotHelper.evaluateRot(world, stack);
-
-            if (rotItem == null || rotItem.isEmpty() || (rotItem != stack))
-            {
-                if (rotItem == null)
-                {
-                    rotItem = ItemStack.EMPTY;
-                }
-                // Equivalent to inventory.setInventorySlotContents(i, rotItem);
-                itemhandler.extractItem(index, count, false);
-                itemhandler.insertItem(index, rotItem, false);
-            }
+            evaluateRot(world, RotCapHelper.getRot(stack), index, itemhandler, stack);
         });
     }
      
@@ -157,11 +165,6 @@ public class RotHandler
                 if (rotItem == null)
                 {
                     rotItem = ItemStack.EMPTY;
-                }
-
-                if (ConfigContainer.zdebugging.debug)
-                {
-                    FoodFunk.logger.info("rotInvo-IInventory 2 sending slot " + index + " " + rotItem);
                 }
 
                 inventory.putStackInSlot(index, rotItem);

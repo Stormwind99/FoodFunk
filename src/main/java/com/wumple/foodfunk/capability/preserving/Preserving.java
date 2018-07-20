@@ -3,9 +3,11 @@ package com.wumple.foodfunk.capability.preserving;
 import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.RotCapHelper;
+import com.wumple.foodfunk.capability.rot.RotHandler;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.container.Walker;
+import com.wumple.util.misc.SUtil;
 import com.wumple.util.misc.TimeUtil;
 
 import net.minecraft.client.Minecraft;
@@ -144,40 +146,36 @@ public class Preserving implements IPreserving
         long rotTime = getRotTime(rawTime);
 
         IItemHandler capability = owner.fetchCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-        freshenTheseContents(capability, rotTime, worldTime);
+        freshenTheseContents(capability, rotTime);
     }
 
     // ----------------------------------------------------------------------
     // Internal
 
-    protected void freshenTheseContents(IItemHandler inventory, long time, long worldTime)
+    protected void freshenTheseContents(IItemHandler inventory, long time)
     {
-        Walker.walkContainer(inventory, (i, handler, stack) -> {
-            // TODO - investigate if IItemHandler.extractItem() needed
-            // ItemStack stack = inventory.extractItem(i, stack.getCount(), false);
-            freshenStack(stack, time, worldTime);
-            // inventory.insertItem(i, stack, false);
+        Walker.walkContainer(inventory, (index, itemhandler, stack) -> {
+            freshenStack(index, itemhandler, stack, time);
         });
 
         owner.markDirty();
     }
 
-    protected boolean freshenStack(ItemStack stack, long time, long worldTime)
+    protected boolean freshenStack(int index, IItemHandler itemhandler, ItemStack stack, long time)
     {
-        if ((stack == null) || stack.isEmpty())
-        {
-            return false;
-        }
+        IRot cap = (!SUtil.isEmpty(stack)) ? RotCapHelper.getRot(stack) : null;
 
-        IRot cap = RotCapHelper.getRot(stack);
-
-        if (cap != null)
-        {
-            cap.reschedule(time);
-            return true;
-        }
-
-        return false;
+        return (cap != null) ? rescheduleAndCheckRot(cap, index, itemhandler, stack, time) : false;
+    }
+    
+    protected boolean rescheduleAndCheckRot(IRot cap, int index, IItemHandler itemhandler, ItemStack stack, long time)
+    {
+        cap.reschedule(time);
+        
+        // we're here, might as well see if reschedule caused rot
+        RotHandler.evaluateRot(owner.getWorld(), cap, index, itemhandler, stack);
+        
+        return true;
     }
 
     /**

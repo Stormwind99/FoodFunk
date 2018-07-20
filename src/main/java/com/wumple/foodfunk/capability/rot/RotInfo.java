@@ -320,14 +320,23 @@ public final class RotInfo
         // skip reschedule if in no rot mode - it would effectively double the amount of preservation when in a no-rot dimension
         if (!isNoRot())
         {
-            date += timeIn;
+            long newDate = (date + timeIn);
             
+            // don't go negative date (or even special value 0) when negative-preserving
+            if (newDate < 1)
+            {
+                // consider reducing time if date would be <= 0?
+                long newTime = newDate - 1 + time;
+                if (newTime < 0) newTime = 0;
+                time = newTime;
+                newDate = 1;
+            }
+                                
             // don't allow items to go into negative rot aka super-fresh aka fresh date in future
             long worldTimeStamp = getCurTime();
-            if (date > worldTimeStamp)
-            {
-                date = worldTimeStamp;
-            }
+            if (newDate > worldTimeStamp) newDate = worldTimeStamp;
+            
+            date = newDate;
         }
     }
 }
