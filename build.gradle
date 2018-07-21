@@ -146,7 +146,9 @@ curseforge {
             return getChangeInfo()
         }
         releaseType = config.curseforge_releasetype
-        relations { doit -> deps.each { dep -> requiredLibrary dep } }
+        if (deps.size() > 0) {
+            relations { doit -> deps.each { dep -> requiredLibrary dep } }
+        }
     }
 }
  
