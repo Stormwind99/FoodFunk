@@ -147,7 +147,7 @@ curseforge {
         }
         releaseType = config.curseforge_releasetype
         if (deps.size() > 0) {
-            relations { doit -> deps.each { dep -> requiredLibrary dep } }
+            relations { doit -> deps.toSet().each { dep -> requiredLibrary dep } }
         }
     }
 }
