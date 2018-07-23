@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "4.0.2",
-    "1.12.2-recommended": "4.0.2"
+    "1.12.2-latest": "4.0.3",
+    "1.12.2-recommended": "4.0.3"
   },
   "1.12.2": {
+    "4.0.3": "Improvements to stacking by chunking creation time.  Libraries updated.",
     "4.0.2": "Signing jar file.",
     "4.0.1": "Fix for strange tooltips on composting items in new worlds with Composter mod",
     "4.0.0": "Dimension modifiers - things rot faster in the Nether, and not at all in the End!",

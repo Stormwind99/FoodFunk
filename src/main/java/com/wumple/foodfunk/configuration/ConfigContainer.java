@@ -41,6 +41,11 @@ public class ConfigContainer
         @Name("Rotten ID")
         @Config.Comment("Rots into this item.  Set blank to rot into nothing")
         public HashMap<String, String> rotID = new HashMap<String, String>();
+        
+        @Name("Chunking percentage")
+        @Config.Comment("Allows stacking of items created around same time.  Higher values will increase stacking at cost of strange initial rot percentage.")
+        @RangeInt(min=0, max=100)
+        public int chunkingPercentage = 1;
     }
     
     @Name("Modifiers")

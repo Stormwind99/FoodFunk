@@ -192,7 +192,7 @@ public final class RotInfo
                 // but we encode any current non-zero rot time into fresh date before zeroing
                 // that newdate+defaultTime = oldDate+oldTime
                 long defaultTime = getDefaultTime(owner);
-                long newDate = date + time - defaultTime;
+                long newDate = Math.max(1, date + time - defaultTime);
 
                 // set without range checking
                 set(newDate, ConfigHandler.DAYS_NO_ROT);
@@ -256,6 +256,11 @@ public final class RotInfo
     {
         RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
 
+        initTime(rotProps, dimensionRatio, stack);
+    }
+    
+    protected void initTime(RotProperty rotProps, int dimensionRatio, ItemStack stack)
+    {
         if ((rotProps != null) && rotProps.doesRot())
         {
             setTimeSafe(rotProps.getRotTime());
@@ -268,11 +273,32 @@ public final class RotInfo
         // if initialization not yet done (stack just created or was missed somehow), then do/fix it
         if (date == 0)
         {
-            setDateSafe(getCurTime());
+            RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
 
             int ratio = getDimensionRatio(world);
+            long curTime = getCurTime();
+            long newTime = curTime;
 
-            initTime(ratio, stack);
+            // chunk the start date of new items to increments of x% of local rot time
+            // that way same items created close in time will usually stack because they have the same rot date and time
+            if (rotProps != null)
+            {
+                long rotTime = rotProps.getRotTimeRaw();
+                int ratioShift = ratio - ConfigHandler.DIMENSIONRATIO_DEFAULT;
+                long shiftedRotTime = shiftTime(ratioShift, rotTime);
+                long xPercentOfRotTime  = (shiftedRotTime * ConfigContainer.rotting.chunkingPercentage) / 100;
+                long chunk = (curTime / xPercentOfRotTime) + 1;
+                
+                newTime = (chunk * xPercentOfRotTime);
+                if (newTime <= 0)
+                {
+                    newTime = 1;
+                }
+            }
+            
+            setDateSafe(newTime);
+           
+            initTime(rotProps, ratio, stack);
 
             return false;
         }
@@ -334,6 +360,7 @@ public final class RotInfo
                                 
             // don't allow items to go into negative rot aka super-fresh aka fresh date in future
             long worldTimeStamp = getCurTime();
+            // TODO factor chunking into comparison since chunking could make newDate in future?
             if (newDate > worldTimeStamp) newDate = worldTimeStamp;
             
             date = newDate;
