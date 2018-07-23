@@ -289,11 +289,7 @@ public final class RotInfo
                 long xPercentOfRotTime  = (shiftedRotTime * ConfigContainer.rotting.chunkingPercentage) / 100;
                 long chunk = (curTime / xPercentOfRotTime) + 1;
                 
-                newTime = (chunk * xPercentOfRotTime);
-                if (newTime <= 0)
-                {
-                    newTime = 1;
-                }
+                newTime = Math.max(1, chunk * xPercentOfRotTime);
             }
             
             setDateSafe(newTime);
@@ -346,22 +342,34 @@ public final class RotInfo
         // skip reschedule if in no rot mode - it would effectively double the amount of preservation when in a no-rot dimension
         if (!isNoRot())
         {
-            long newDate = (date + timeIn);
+            long worldTimeStamp = getCurTime();
+            long newDate = date + timeIn;
+                                
+            // don't allow items to go into negative rot aka super-fresh aka fresh date in future
+            long maxDate = worldTimeStamp;
+            /*
+            // experiment - factor chunking into comparison since chunking could make newDate in future
+            // so if date already in future (from chunking), allow it to continue into future
+            long oldDiff = worldTimeStamp - date;
+            if (oldDiff < 1)
+            {
+                // oldDiff will be negative, so this will increase maxDate
+                maxDate -= oldDiff;
+                maxDate += timeIn;
+                // maxData probably just equals newDate now
+            }
+            */
+            newDate = Math.min(newDate, maxDate);
             
             // don't go negative date (or even special value 0) when negative-preserving
             if (newDate < 1)
             {
-                // consider reducing time if date would be <= 0?
+                // experiment: try reducing time if date would be <= 0
                 long newTime = newDate - 1 + time;
                 if (newTime < 0) newTime = 0;
                 time = newTime;
                 newDate = 1;
             }
-                                
-            // don't allow items to go into negative rot aka super-fresh aka fresh date in future
-            long worldTimeStamp = getCurTime();
-            // TODO factor chunking into comparison since chunking could make newDate in future?
-            if (newDate > worldTimeStamp) newDate = worldTimeStamp;
             
             date = newDate;
         }

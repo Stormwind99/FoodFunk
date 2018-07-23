@@ -40,7 +40,9 @@ public class Rot implements IRot
     // RotInfo holds the rot data (composition due to cap network serialization classes)
     protected RotInfo info = new RotInfo();
     // what itemstack is this cap attached to?
-    ItemStack owner = null;
+    protected ItemStack owner = null;
+    // silly unique id to increment and put into NBT to force an update to client
+    protected byte forceId = 0;
 
     public static void register()
     {
@@ -51,7 +53,6 @@ public class Rot implements IRot
 
     public Rot()
     {
-
     }
 
     public Rot(Rot other)
@@ -70,6 +71,12 @@ public class Rot implements IRot
     {
         return info.getTime();
     }
+    
+    @Override
+    public byte getForceId()
+    {
+        return this.forceId;
+    }
 
     @Override
     public void setDate(long dateIn)
@@ -81,6 +88,12 @@ public class Rot implements IRot
     public void setTime(long timeIn)
     {
         info.setTime(timeIn);
+    }
+    
+    @Override
+    public void setForceId(byte newid)
+    {
+        this.forceId = newid;
     }
 
     @Override
@@ -99,8 +112,17 @@ public class Rot implements IRot
     public void forceUpdate()
     {
         // HACK to force Container.detectAndSendChanges to detect change and notify ContainerListener
+        // In past used to just serialize current cap NBT data, but this seemed to be making client not
+        //   stack all new items if client receives new item before this tag set - making it not match other 
+        //   items it will match after NBT arrives.
+        
+        setForceIdNBT(++this.forceId);
+    }
+    
+    protected void setForceIdNBT(byte sendid)
+    {
         NBTTagCompound tag = owner.getOrCreateSubCompound("Rot");
-        info.writeToNBT(tag);
+        tag.setByte("forceId", sendid);        
     }
 
     public RotInfo setInfo(RotInfo infoIn)
@@ -125,12 +147,20 @@ public class Rot implements IRot
 
             // on server, setting default waits until later so a World will be present
             // on client, tooltip will init with reasonable guess until update is received from server
+            
+            // set to first value so stacking will work on client before first update received
+            setForceIdNBT(forceId);
         }
     }
 
     public ItemStack getOwner()
     {
         return owner;
+    }
+    
+    public boolean checkInitialized(World world)
+    {
+        return info.checkInitialized(world, owner);
     }
 
     // ----------------------------------------------------------------------
@@ -177,7 +207,7 @@ public class Rot implements IRot
                 World world = entity.getEntityWorld();
                         
                 // if not initialized, set with reasonable guess to be overwritten by server update
-                info.checkInitialized(world, owner);
+                checkInitialized(world);
                 
                 // preserving container state aka fake temperature - ambient, chilled, cold, frozen
                 if (info.isSet())

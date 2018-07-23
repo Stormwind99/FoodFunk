@@ -67,4 +67,14 @@ public interface IRot
      * Handle shifting dimensions with possibly different rot rates
      */
     public void ratioShift(int fromRatio, int toRatio);
+    
+    /**
+     * Hack to force sending when Rot changes
+     */
+    public void setForceId(byte newid);
+    
+    /**
+     * Hack to force sending when Rot changes
+     */
+    public byte getForceId();
 }

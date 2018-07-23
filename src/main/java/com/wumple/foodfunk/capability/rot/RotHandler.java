@@ -111,6 +111,11 @@ public class RotHandler
     
     public static void dimensionShift(EntityPlayer player, int fromDim, int toDim)
     {
+        if ((player.getEntityWorld().isRemote) || (!ConfigContainer.enabled))
+        {
+            return;
+        }
+        
         int fromDimensionRatio = RotInfo.getDimensionRatio(fromDim);
         int toDimensionRatio = RotInfo.getDimensionRatio(toDim);
         

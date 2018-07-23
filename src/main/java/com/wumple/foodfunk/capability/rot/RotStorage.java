@@ -18,6 +18,7 @@ public class RotStorage implements IStorage<IRot>
         {
             tags.setLong("rotStartTimestamp", instance.getDate());
             tags.setLong("rotLengthTime", instance.getTime());
+            tags.setByte("rotForceId", instance.getForceId());
         }
 
         return tags;
@@ -41,6 +42,7 @@ public class RotStorage implements IStorage<IRot>
             {
                 instance.setDate(tags.getLong("rotStartTimestamp"));
                 instance.setTime(tags.getLong("rotLengthTime"));
+                instance.setForceId(tags.getByte("rotForceId"));
             }
         }
     }
