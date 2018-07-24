@@ -18,6 +18,7 @@ public final class RotInfo
      * The timestamp at which the stack is considered at 0% rot - creation time at first, but advanced by preserving containers aka the fresh date
      */
     public long date;
+    
     /*
      * The amount of time the item takes to rot. The time at which becomes rotten is date + time
      */
@@ -222,7 +223,6 @@ public final class RotInfo
 
         // debug ratio was already applied to time in checkInitialized() at initialization
 
-        // long clampedLocalTime = Longs.constrainToRange(localTime, 0, getDefaultTime(owner));
         long clampedLocalTime = (localTime < 0) ? 0 : localTime;
 
         setTimeSafe(clampedLocalTime);
@@ -281,7 +281,7 @@ public final class RotInfo
 
             // chunk the start date of new items to increments of x% of local rot time
             // that way same items created close in time will usually stack because they have the same rot date and time
-            if (rotProps != null)
+            if ((rotProps != null) && (ConfigContainer.rotting.chunkingPercentage != 0))
             {
                 long rotTime = rotProps.getRotTimeRaw();
                 int ratioShift = ratio - ConfigHandler.DIMENSIONRATIO_DEFAULT;
@@ -348,15 +348,18 @@ public final class RotInfo
             // don't allow items to go into negative rot aka super-fresh aka fresh date in future
             long maxDate = worldTimeStamp;
             /*
-            // experiment - factor chunking into comparison since chunking could make newDate in future
-            // so if date already in future (from chunking), allow it to continue into future
-            long oldDiff = worldTimeStamp - date;
-            if (oldDiff < 1)
+            if (ConfigContainer.rotting.chunkingPercentage != 0)
             {
-                // oldDiff will be negative, so this will increase maxDate
-                maxDate -= oldDiff;
-                maxDate += timeIn;
-                // maxData probably just equals newDate now
+                // experiment - factor chunking into comparison since chunking could make newDate in future
+                // so if date already in future (from chunking), allow it to continue into future
+                long oldDiff = worldTimeStamp - date;
+                if (oldDiff < 1)
+                {
+                    // oldDiff will be negative, so this will increase maxDate
+                    maxDate -= oldDiff;
+                    maxDate += timeIn;
+                    // maxData probably just equals newDate now
+                }
             }
             */
             newDate = Math.min(newDate, maxDate);
