@@ -51,8 +51,8 @@ public final class RotInfo
     {
         if (tags != null)
         {
-            tags.setLong("rotStartTimestamp", this.date);
-            tags.setLong("rotLengthTime", this.time);
+            tags.setLong("rotStart", this.date);
+            tags.setLong("rotTime", this.time);
         }
 
         return tags;
@@ -62,8 +62,8 @@ public final class RotInfo
     {
         if (tags != null)
         {
-            setDate(tags.getLong("rotStartTimestamp"));
-            setTime(tags.getLong("rotLengthTime"));
+            setDate(tags.getLong("rotStart"));
+            setTime(tags.getLong("rotTime"));
         }
 
         return tags;

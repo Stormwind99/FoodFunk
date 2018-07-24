@@ -122,7 +122,7 @@ public class Rot implements IRot
     protected void setForceIdNBT(byte sendid)
     {
         NBTTagCompound tag = owner.getOrCreateSubCompound("Rot");
-        tag.setByte("forceId", sendid);        
+        tag.setByte("i", sendid);        
     }
 
     public RotInfo setInfo(RotInfo infoIn)

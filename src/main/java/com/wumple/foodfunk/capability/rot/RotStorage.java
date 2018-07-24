@@ -16,9 +16,9 @@ public class RotStorage implements IStorage<IRot>
         // some other mod doing bad things?
         if (instance != null)
         {
-            tags.setLong("rotStartTimestamp", instance.getDate());
-            tags.setLong("rotLengthTime", instance.getTime());
-            tags.setByte("rotForceId", instance.getForceId());
+            tags.setLong("rotStart", instance.getDate());
+            tags.setLong("rotTime", instance.getTime());
+            tags.setByte("i", instance.getForceId());
         }
 
         return tags;
@@ -38,11 +38,17 @@ public class RotStorage implements IStorage<IRot>
                 instance.setDate(tags.getLong("EM_ROT_DATE"));
                 instance.setTime(tags.getLong("EM_ROT_TIME"));
             }
-            else
+            else if (tags.hasKey("rotStartTimestamp"))
             {
                 instance.setDate(tags.getLong("rotStartTimestamp"));
                 instance.setTime(tags.getLong("rotLengthTime"));
-                instance.setForceId(tags.getByte("rotForceId"));
+                instance.setForceId(tags.getByte("i"));
+            }
+            else
+            {
+                instance.setDate(tags.getLong("rotStart"));
+                instance.setTime(tags.getLong("rotTime"));
+                instance.setForceId(tags.getByte("i"));
             }
         }
     }
