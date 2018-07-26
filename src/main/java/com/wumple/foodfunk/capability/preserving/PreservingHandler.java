@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber
-public class EventHandler
+public class PreservingHandler
 {
     /**
      * Attach the {@link IPreserving} capability to relevant items.
@@ -26,7 +26,7 @@ public class EventHandler
 
         if (ConfigHandler.preserving.doesIt(entity))
         {
-            PreservingProvider provider = new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, new TileEntityPreservingOwner(entity));
+            PreservingProvider provider = PreservingProvider.createProvider(new TileEntityPreservingOwner(entity));
             event.addCapability(Preserving.ID, provider);
         }
     }
@@ -38,7 +38,7 @@ public class EventHandler
 
         if (ConfigHandler.preserving.doesIt(entity))
         {
-            PreservingProvider provider = new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, new EntityPreservingOwner(entity));
+            PreservingProvider provider = PreservingProvider.createProvider(new EntityPreservingOwner(entity));
             event.addCapability(Preserving.ID, provider);
         }
     }

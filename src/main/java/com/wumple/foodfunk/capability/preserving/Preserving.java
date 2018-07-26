@@ -1,34 +1,22 @@
 package com.wumple.foodfunk.capability.preserving;
 
 import com.wumple.foodfunk.Reference;
+import com.wumple.foodfunk.capability.preserving.IPreserving.IPreservingOwner;
 import com.wumple.foodfunk.capability.rot.IRot;
-import com.wumple.foodfunk.capability.rot.RotCapHelper;
-import com.wumple.foodfunk.capability.rot.RotHandler;
+import com.wumple.foodfunk.capability.rot.RotInfo;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.util.container.Walker;
-import com.wumple.util.misc.SUtil;
-import com.wumple.util.misc.TimeUtil;
+import com.wumple.util.capability.eventtimed.IEventTimedItemStackCap;
+import com.wumple.util.capability.timerrefreshing.TimerRefreshingCap;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
-@Mod.EventBusSubscriber
-public class Preserving implements IPreserving
+public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo> implements IPreserving
 {
     // The {@link Capability} instance
     @CapabilityInject(IPreserving.class)
@@ -37,15 +25,6 @@ public class Preserving implements IPreserving
 
     // IDs of the capability
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "preserving");
-
-    // transient data
-    // ticks since last rot refresh of contents - special value 0 means need to cache preserving settings
-    protected int tick = 0;
-    protected IPreservingOwner owner = null;
-    protected int preservingRatio = 0;
-
-    // persisted data
-    long lastCheckTime = ConfigHandler.DAYS_NO_ROT;
 
     // ----------------------------------------------------------------------
     // Init
@@ -57,7 +36,7 @@ public class Preserving implements IPreserving
 
     Preserving()
     {
-        MinecraftForge.EVENT_BUS.register(this);
+        super();
     }
 
     Preserving(IPreservingOwner ownerIn)
@@ -69,161 +48,26 @@ public class Preserving implements IPreserving
     // ----------------------------------------------------------------------
     // IPreserving
 
-    public long getLastCheckTime()
+    @Override
+    protected void cache()
     {
-        return lastCheckTime;
+        Integer ratio = owner.getPreservingProperty();
+        // at this point ratio should not be null - probably a bug, maybe throw exception
+        refreshingRatio = (ratio != null) ? ratio.intValue() : ConfigHandler.NO_PRESERVING;
     }
-
-    public void setLastCheckTime(long time)
+    
+    @Override
+    protected long getEvaluationInterval()
     {
-        lastCheckTime = time;
+        return ConfigContainer.evaluationInterval;
     }
-
-    public int getRatio()
-    {
-        return preservingRatio;
-    }
-
-    /*
-     * Set the owner of this capability, and init based on that owner
-     */
-    public void setOwner(IPreserving.IPreservingOwner ownerIn)
-    {
-        if (!ownerIn.sameAs(owner))
-        {
-            owner = ownerIn;
-            lastCheckTime = TimeUtil.getLastWorldTimestamp();
-        }
-    }
-
-    /**
-     * Tick counters, cache data, etc
-     * 
-     * @return boolean should we freshen contents this tick?
-     */
-    protected boolean updateAndCache()
-    {
-        // tick of 0 represents "cache any transient data" like preserving ratio
-        if (tick == 0)
-        {
-            Integer ratio = owner.getPreservingProperty();
-            // at this point ratio should not be null - probably a bug, maybe throw exception
-            preservingRatio = (ratio != null) ? ratio.intValue() : ConfigHandler.NO_PRESERVING;
-        }
-
-        if (tick < ConfigContainer.evaluationInterval)
-        {
-            tick++;
-            return false;
-        }
-
-        // reset to 1 since 0 is special "cache any transient data" state
-        tick = 1;
-        return true;
-    }
-
-    /**
-     * Automatically adjust the use-by date on food items stored within to slow or stop rot
-     */
-    public void freshenContents()
-    {
-        // only freshen on server, and rely on cap data being sent to clients
-        if ((owner.getWorld() == null) || owner.getWorld().isRemote)
-        {
-            return;
-        }
-
-        long worldTime = owner.getWorld().getTotalWorldTime();
-
-        if (lastCheckTime <= ConfigHandler.DAYS_NO_ROT)
-        {
-            lastCheckTime = worldTime;
-        }
-
-        long rawTime = worldTime - lastCheckTime;
-        lastCheckTime = worldTime;
-        // adjust for preserving ratio
-        long rotTime = getRotTime(rawTime);
-
-        IItemHandler capability = owner.fetchCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
-        freshenTheseContents(capability, rotTime);
-    }
-
+    
     // ----------------------------------------------------------------------
     // Internal
 
-    protected void freshenTheseContents(IItemHandler inventory, long time)
+    @Override
+    protected IEventTimedItemStackCap<RotInfo> getCap(ItemStack stack)
     {
-        Walker.walkContainer(inventory, (index, itemhandler, stack) -> {
-            freshenStack(index, itemhandler, stack, time);
-        });
-
-        owner.markDirty();
-    }
-
-    protected boolean freshenStack(int index, IItemHandler itemhandler, ItemStack stack, long time)
-    {
-        IRot cap = (!SUtil.isEmpty(stack)) ? RotCapHelper.getRot(stack) : null;
-
-        return (cap != null) ? rescheduleAndCheckRot(cap, index, itemhandler, stack, time) : false;
-    }
-    
-    protected boolean rescheduleAndCheckRot(IRot cap, int index, IItemHandler itemhandler, ItemStack stack, long time)
-    {
-        cap.reschedule(time);
-        
-        // we're here, might as well see if reschedule caused rot
-        RotHandler.evaluateRot(owner.getWorld(), cap, index, itemhandler, stack);
-        
-        return true;
-    }
-
-    /**
-     * Automatically adjust the use-by date on food items stored within the chest so don't rot
-     */
-    protected long getRotTime(long time)
-    {
-        return (time * preservingRatio) / 100;
-    }
-
-    protected void handleOnTick(World world)
-    {
-        if (owner != null)
-        {
-            if (owner.isInvalid())
-            {
-                MinecraftForge.EVENT_BUS.unregister(this);
-                owner.invalidate();
-                owner = null;
-            }
-            else
-            {
-                boolean freshen = updateAndCache();
-                if (freshen)
-                {
-                    freshenContents();
-                }
-            }
-        }
-    }
-
-    // ----------------------------------------------------------------------
-    // Event Handlers
-
-    @SubscribeEvent
-    public void onTick(TickEvent.WorldTickEvent event)
-    {
-        handleOnTick(event.world);
-    }
-
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public void onClientTick(TickEvent.ClientTickEvent event)
-    {
-        World world = Minecraft.getMinecraft().world;
-        if ((world != null) && (world.isRemote == true))
-        {
-            handleOnTick(world);
-        }
+        return IRot.getRot(stack);
     }
 }

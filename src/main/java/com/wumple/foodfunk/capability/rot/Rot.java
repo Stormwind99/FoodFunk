@@ -1,7 +1,6 @@
 package com.wumple.foodfunk.capability.rot;
 
 import java.util.List;
-import java.util.Random;
 
 import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.ContainerListenerRot;
@@ -10,13 +9,12 @@ import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.capability.CapabilityContainerListenerManager;
+import com.wumple.util.capability.eventtimed.EventTimedItemStackCap;
 import com.wumple.util.container.ContainerUseTracker;
 import com.wumple.util.misc.CraftingUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -25,7 +23,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 
-public class Rot implements IRot
+public class Rot extends EventTimedItemStackCap<RotInfo> implements IRot
 {
     // The {@link Capability} instance
     @CapabilityInject(IRot.class)
@@ -34,15 +32,6 @@ public class Rot implements IRot
 
     // IDs of the capability
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "rot");
-
-    protected static Random random = new Random();
-
-    // RotInfo holds the rot data (composition due to cap network serialization classes)
-    protected RotInfo info = new RotInfo();
-    // what itemstack is this cap attached to?
-    protected ItemStack owner = null;
-    // silly unique id to increment and put into NBT to force an update to client
-    protected byte forceId = 0;
 
     public static void register()
     {
@@ -53,154 +42,52 @@ public class Rot implements IRot
 
     public Rot()
     {
+        super();
     }
 
     public Rot(Rot other)
     {
+        super(other);
         info = other.info;
     }
-
-    @Override
-    public long getDate()
-    {
-        return info.getDate();
-    }
-
-    @Override
-    public long getTime()
-    {
-        return info.getTime();
-    }
     
     @Override
-    public byte getForceId()
+    public RotInfo newT()
     {
-        return this.forceId;
-    }
-
-    @Override
-    public void setDate(long dateIn)
-    {
-        info.setDate(dateIn);
-    }
-
-    @Override
-    public void setTime(long timeIn)
-    {
-        info.setTime(timeIn);
-    }
-    
-    @Override
-    public void setForceId(byte newid)
-    {
-        this.forceId = newid;
-    }
-
-    @Override
-    public void setRot(long dateIn, long timeIn)
-    {
-        info.set(dateIn, timeIn);
-    }
-
-    @Override
-    public void reschedule(long timeIn)
-    {
-        info.reschedule(timeIn);
-        forceUpdate();
-    }
-
-    public void forceUpdate()
-    {
-        // HACK to force Container.detectAndSendChanges to detect change and notify ContainerListener
-        // In past used to just serialize current cap NBT data, but this seemed to be making client not
-        //   stack all new items if client receives new item before this tag set - making it not match other 
-        //   items it will match after NBT arrives.
-        
-        setForceIdNBT(++this.forceId);
-    }
-    
-    protected void setForceIdNBT(byte sendid)
-    {
-        NBTTagCompound tag = owner.getOrCreateSubCompound("Rot");
-        tag.setByte("i", sendid);        
-    }
-
-    public RotInfo setInfo(RotInfo infoIn)
-    {
-        info = infoIn;
-        return info;
-    }
-
-    public RotInfo getInfo()
-    {
-        return info;
-    }
-
-    /*
-     * Set the owner of this capability, and init based on that owner
-     */
-    public void setOwner(ItemStack ownerIn)
-    {
-        if (ownerIn != owner)
-        {
-            owner = ownerIn;
-
-            // on server, setting default waits until later so a World will be present
-            // on client, tooltip will init with reasonable guess until update is received from server
-            
-            // set to first value so stacking will work on client before first update received
-            setForceIdNBT(forceId);
-        }
-    }
-
-    public ItemStack getOwner()
-    {
-        return owner;
-    }
-    
-    public boolean checkInitialized(World world)
-    {
-        return info.checkInitialized(world, owner);
+        return new RotInfo();
     }
 
     // ----------------------------------------------------------------------
     // Functionality
 
-    /*
-     * Evaluate this rot, which belongs to stack
-     */
-    public ItemStack evaluateRot(World world, ItemStack stack)
+    @Override
+    public ItemStack expired(World world, ItemStack stack)
     {
-        // TODO integrate with Serene Seasons temperature system
-        // If stack in a cold/frozen location, change rot appropriately (as if esky or
-        // freezer)
-        // Might allow building a walk-in dofreezer like in RimWorld
+        RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
+        // forget owner to eliminate dependency
+        owner = null;
+        return (rotProps != null) ? rotProps.forceRot(stack) : null;
+    }
 
-        if (!info.checkInitialized(world, stack))
-        {
-            forceUpdate();
-        }
-
-        if (!info.isNoRot())
-        {
-            if (info.hasExpired())
-            {
-                RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
-                // forget owner to eliminate dependency
-                owner = null;
-                return (rotProps != null) ? rotProps.forceRot(stack) : null;
-            }
-        }
-
-        return stack;
+    @Override
+    public boolean isEnabled()
+    {
+        return ConfigContainer.enabled;
+    }
+    
+    @Override
+    public boolean isDebugging()
+    {
+        return ConfigContainer.zdebugging.debug;
     }
 
     /*
      * Build tooltip info based on this rot
      */
+    @Override
     public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
     {
-        if (ConfigContainer.enabled && (stack != null) && !stack.isEmpty() && (entity != null))
+        if (isEnabled() && (stack != null) && !stack.isEmpty() && (entity != null))
         {
             if (info != null)
             {
@@ -226,7 +113,7 @@ public class Rot implements IRot
 
                 // Rot state
                 boolean beingCrafted = CraftingUtil.isItemBeingCraftedBy(stack, entity);
-                String key = getRotStateTooltipKey(info, beingCrafted);
+                String key = getStateTooltipKey(info, beingCrafted);
 
                 if (key != null)
                 {
@@ -235,7 +122,7 @@ public class Rot implements IRot
                 }
 
                 // advanced tooltip debug info
-                if (advanced && ConfigContainer.zdebugging.debug)
+                if (advanced && isDebugging())
                 {
                     tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.datetime", info.getDate(),
                             info.getTime()).getUnformattedText());
@@ -243,50 +130,21 @@ public class Rot implements IRot
                             info.getExpirationTimestamp()).getUnformattedText());
 
                     int dimension = world.provider.getDimension();
-                    int dimensionRatio = RotInfo.getDimensionRatio(world);
+                    int dimensionRatio = info.getDimensionRatio(world);
                     tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.dimratio", dimensionRatio, dimension).getUnformattedText());
                 }
             }
         }
     }
-
-    /*
-     * Set rot on crafted items dependent on the ingredients
-     */
-    public void handleCraftedRot(World world, IInventory craftMatrix, ItemStack crafting)
-    {
-        long lowestDate = world.getTotalWorldTime();
-
-        int slots = craftMatrix.getSizeInventory();
-        for (int i = 0; i < slots; i++)
-        {
-            ItemStack stack = craftMatrix.getStackInSlot(i);
-
-            if (stack == null || stack.isEmpty() || stack.getItem() == null)
-            {
-                continue;
-            }
-
-            IRot cap = RotCapHelper.getRot(stack);
-
-            if ((cap != null) && (cap.getDate() < lowestDate))
-            {
-                lowestDate = cap.getDate();
-            }
-        }
-
-        info.setDateSafe(lowestDate);
-    }
     
-    public void ratioShift(int fromRatio, int toRatio)
-    {
-        info.ratioShift(fromRatio, toRatio, owner);
-        forceUpdate();
-    }
-
     // ----------------------------------------------------------------------
     // Internal
 
+    public IRot getCap(ItemStack stack)
+    {
+        return IRot.getRot(stack);
+    }
+    
     // only good on client side
     IPreserving getPreservingContainer(EntityPlayer entity, ItemStack stack)
     {
@@ -333,11 +191,12 @@ public class Rot implements IRot
         return key;
     }
 
-    protected String getRotStateTooltipKey(RotInfo local, boolean beingCrafted)
+    @Override
+    protected String getStateTooltipKey(RotInfo local, boolean beingCrafted)
     {
         String key = null;
 
-        if (local.isNoRot())
+        if (local.isNonExpiring())
         {
             key = "misc.foodfunk.tooltip.preserved";
         }

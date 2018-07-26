@@ -2,8 +2,8 @@ package com.wumple.foodfunk.coldchest.freezer;
 
 import javax.annotation.Nullable;
 
-import com.wumple.util.misc.RegistrationHelpers;
 import com.wumple.util.basechest.BlockBaseChest;
+import com.wumple.util.misc.RegistrationHelpers;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;

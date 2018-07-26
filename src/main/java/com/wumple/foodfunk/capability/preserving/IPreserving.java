@@ -1,9 +1,12 @@
 package com.wumple.foodfunk.capability.preserving;
 
+import com.wumple.foodfunk.capability.preserving.IPreserving.IPreservingOwner;
+import com.wumple.foodfunk.capability.rot.RotInfo;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.EntityThing;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.adapter.TileEntityThing;
+import com.wumple.util.capability.timerrefreshing.ITimerRefreshingCap;
 import com.wumple.util.container.ContainerUtil;
 
 import net.minecraft.entity.Entity;
@@ -12,33 +15,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 
-public interface IPreserving
+public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotInfo>
 {
-    /**
-     * Get the timestamp of the last check of this preserving cap owner's items
-     */
-    long getLastCheckTime();
-
-    /**
-     * Set the timestamp of the last check of this preserving cap owner's items
-     */
-    void setLastCheckTime(long time);
-
-    /**
-     * Set the owner of this capability, and init based on that owner
-     */
-    void setOwner(IPreservingOwner ownerIn);
-
-    /**
-     * Automatically adjust the use-by date on food items stored within to slow or stop rot
-     */
-    void freshenContents();
-    
-    /**
-     * @return the preserving ratio (100 means no rot, 50 means half speed rot)
-     */
-    int getRatio();
-    
     public static interface IPreservingOwner extends IThing
     {
         // Preserving specific
@@ -81,5 +59,4 @@ public interface IPreserving
         	return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
         }
     }
-
 }
