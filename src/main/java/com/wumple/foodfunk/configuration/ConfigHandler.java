@@ -41,6 +41,10 @@ public class ConfigHandler
         rotting.addDefaultProperty(ObjectHandler.biodegradable_item, "foodfunk:biodegradable_item", ID_NO_ROT, DAYS_NO_ROT);
         rotting.addDefaultProperty(Items.MILK_BUCKET, "minecraft:milk_bucket", ObjectHandler.spoiled_milk, 7);
         rotting.addDefaultProperty(Items.CAKE, "minecraft:cake", ObjectHandler.rotten_food, 10);
+        rotting.addDefaultProperty("minecraft:melon_block", ObjectHandler.rotten_food, 7);
+        rotting.addDefaultProperty("minecraft:pumpkin", ObjectHandler.rotten_food, 7);
+        rotting.addDefaultProperty(Items.SPECKLED_MELON, "minecraft:speckled_melon", ObjectHandler.rotten_food, 14);
+        rotting.addDefaultProperty(Items.GOLDEN_APPLE, "minecraft:golden_apple", ObjectHandler.rotten_food, 14);
         rotting.addDefaultProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 5);
         rotting.addDefaultProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:fermented_spider_eye", Items.ROTTEN_FLESH, 10);
         rotting.addDefaultProperty(Items.BEEF, "minecraft:beef", Items.ROTTEN_FLESH, 7);
