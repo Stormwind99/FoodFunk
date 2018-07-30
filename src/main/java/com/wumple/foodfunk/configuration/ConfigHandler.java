@@ -106,9 +106,12 @@ public class ConfigHandler
             {
                 Pair<String,Integer> pair = this.getProperty(key);
 
-                if ((pair.first() != null) || (pair.second() != null))
+		// beware NPE when unboxing null Integer!
+                int value = (pair.second() != null) ? pair.second().intValue() : 0;
+
+                if ((pair != null) && ((pair.first() != null) || (pair.second() != null)))
                 {
-                	rotProp = new RotProperty(key, pair.first(), pair.second());
+                	rotProp = new RotProperty(key, pair.first(), value);
                 	break;
                 }
             }
