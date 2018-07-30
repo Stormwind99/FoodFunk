@@ -118,8 +118,10 @@ public class ConfigHandler
             for (String key : nameKeys)
             {
                 Pair<String,Integer> pair = this.getProperty(key);
+                
                 // beware NPE when unboxing null Integer!
-                int value = (pair.second() != null) ? pair.second().intValue() : 0;
+                Integer second = (pair != null) ? pair.second() : 0;
+                int value = (second != null) ? second.intValue() : 0;
 
                 if ((pair != null) && ((pair.first() != null) || (pair.second() != null)))
                 {
