@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.wumple.foodfunk.ObjectHandler;
 import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.rot.RotProperty;
@@ -11,7 +13,6 @@ import com.wumple.util.adapter.IThing;
 import com.wumple.util.config.MatchingConfig;
 import com.wumple.util.config.StringMatchingDualConfig;
 
-import akka.japi.Pair;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Config;
@@ -120,12 +121,13 @@ public class ConfigHandler
                 Pair<String,Integer> pair = this.getProperty(key);
                 
                 // beware NPE when unboxing null Integer!
-                Integer second = (pair != null) ? pair.second() : 0;
+                String first = (pair != null) ? pair.getLeft() : null;
+                Integer second = (pair != null) ? pair.getRight() : null;
                 int value = (second != null) ? second.intValue() : 0;
 
-                if ((pair != null) && ((pair.first() != null) || (pair.second() != null)))
+                if ((first != null) || (second != null))
                 {
-                	rotProp = new RotProperty(key, pair.first(), value);
+                	rotProp = new RotProperty(key, first, value);
                 	break;
                 }
             }
