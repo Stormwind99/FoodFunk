@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "4.0.4",
-    "1.12.2-recommended": "4.0.4"
+    "1.12.2-latest": "4.0.5",
+    "1.12.2-recommended": "4.0.5"
   },
   "1.12.2": {
+    "4.0.5": "Another getRotProperty NPE fix",
     "4.0.4": "getRotProperty NPE fix",
     "4.0.3": "Improvements to stacking by chunking creation time.  Libraries updated.",
     "4.0.2": "Signing jar file.",
