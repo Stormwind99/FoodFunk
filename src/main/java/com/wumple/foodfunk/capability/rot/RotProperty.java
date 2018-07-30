@@ -2,9 +2,8 @@ package com.wumple.foodfunk.capability.rot;
 
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.util.adapter.IThing;
 import com.wumple.util.misc.TypeIdentifier;
-
-import net.minecraft.item.ItemStack;
 
 public class RotProperty extends TypeIdentifier
 {
@@ -57,9 +56,9 @@ public class RotProperty extends TypeIdentifier
         return (days > ConfigHandler.DAYS_NO_ROT);
     }
     
-    protected ItemStack forceRot(ItemStack stack)
+    protected IThing forceRot(IThing stack)
     {
     	int count = (stack != null) ? stack.getCount() : 1;
-        return create(count);
+        return createThing(count);
     }
  }

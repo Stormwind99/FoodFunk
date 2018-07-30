@@ -2,9 +2,9 @@ package com.wumple.foodfunk.capability.rot;
 
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.eventtimed.Expiration;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
 /**
@@ -43,7 +43,7 @@ public final class RotInfo extends Expiration
         return ConfigContainer.rotting.chunkingPercentage;
     }
 
-    protected long getTimerLength(ItemStack owner)
+    protected long getTimerLength(IThing owner)
     {
         long defaultTime = NO_EXPIRATION;
         RotProperty rotProps = ConfigHandler.rotting.getRotProperty(owner);

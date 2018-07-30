@@ -11,6 +11,9 @@ import com.wumple.foodfunk.rotten.ItemRottedItem;
 import com.wumple.foodfunk.rotten.ItemRottenFood;
 import com.wumple.foodfunk.rotten.ItemSpoiledMilk;
 import com.wumple.util.misc.RegistrationHelpers;
+import com.wumple.util.tileentity.placeholder.BlockMelonTE;
+import com.wumple.util.tileentity.placeholder.BlockPumpkinTE;
+import com.wumple.util.tileentity.placeholder.TileEntityPlaceholder;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -95,6 +98,8 @@ public class ObjectHandler
 
             RegistrationHelpers.regHelper(registry, new BlockEsky());
             RegistrationHelpers.regHelper(registry, new BlockFreezer());
+            RegistrationHelpers.regHelper(registry, new BlockMelonTE(), "minecraft:melon_block");
+            RegistrationHelpers.regHelper(registry, new BlockPumpkinTE(), "minecraft:pumpkin");
         }
 
         @SubscribeEvent
@@ -128,6 +133,7 @@ public class ObjectHandler
         {
         	RegistrationHelpers.registerTileEntity(TileEntityEsky.class, "foodfunk:esky");
         	RegistrationHelpers.registerTileEntity(TileEntityFreezer.class, "foodfunk:freezer");
+        	RegistrationHelpers.registerTileEntity(TileEntityPlaceholder.class, "foodfunk:placeholder");
         }
 
         @SideOnly(Side.CLIENT)

@@ -6,17 +6,18 @@ import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.RotInfo;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.util.capability.eventtimed.IEventTimedItemStackCap;
+import com.wumple.util.adapter.IThing;
+import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
 import com.wumple.util.capability.timerrefreshing.TimerRefreshingCap;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo> implements IPreserving
+public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IThing> implements IPreserving
 {
     // The {@link Capability} instance
     @CapabilityInject(IPreserving.class)
@@ -61,13 +62,21 @@ public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo> im
     {
         return ConfigContainer.evaluationInterval;
     }
+
+    @Override
+    protected IEventTimedThingCap<IThing, RotInfo> getCap(ICapabilityProvider provider)
+    {
+        return IRot.getRot(provider);
+    }
     
     // ----------------------------------------------------------------------
     // Internal
 
+    /*
     @Override
-    protected IEventTimedItemStackCap<RotInfo> getCap(ItemStack stack)
+    protected IRot getCap(ICapabilityProvider stack)
     {
         return IRot.getRot(stack);
     }
+    */
 }

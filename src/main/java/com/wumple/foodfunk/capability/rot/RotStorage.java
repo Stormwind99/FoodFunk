@@ -1,7 +1,7 @@
 package com.wumple.foodfunk.capability.rot;
 
-import com.wumple.util.capability.eventtimed.EventTimedItemStackStorage;
+import com.wumple.util.capability.eventtimed.EventTimedThingStorage;
 
-public class RotStorage extends EventTimedItemStackStorage<IRot>
+public class RotStorage extends EventTimedThingStorage<IRot>
 {
 }

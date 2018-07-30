@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.wumple.foodfunk.ObjectHandler;
 import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.rot.RotProperty;
+import com.wumple.util.adapter.IThing;
 import com.wumple.util.config.MatchingConfig;
 import com.wumple.util.config.StringMatchingDualConfig;
 
@@ -41,10 +42,10 @@ public class ConfigHandler
         rotting.addDefaultProperty(ObjectHandler.biodegradable_item, "foodfunk:biodegradable_item", ID_NO_ROT, DAYS_NO_ROT);
         rotting.addDefaultProperty(Items.MILK_BUCKET, "minecraft:milk_bucket", ObjectHandler.spoiled_milk, 7);
         rotting.addDefaultProperty(Items.CAKE, "minecraft:cake", ObjectHandler.rotten_food, 10);
-        rotting.addDefaultProperty("minecraft:melon_block", ObjectHandler.rotten_food, 7);
-        rotting.addDefaultProperty("minecraft:pumpkin", ObjectHandler.rotten_food, 7);
-        rotting.addDefaultProperty(Items.SPECKLED_MELON, "minecraft:speckled_melon", ObjectHandler.rotten_food, 14);
-        rotting.addDefaultProperty(Items.GOLDEN_APPLE, "minecraft:golden_apple", ObjectHandler.rotten_food, 14);
+        rotting.addDefaultProperty("minecraft:melon_block", ObjectHandler.rotten_food, 14);
+        rotting.addDefaultProperty("minecraft:pumpkin", ObjectHandler.rotten_food, 14);
+        rotting.addDefaultProperty(Items.SPECKLED_MELON, "minecraft:speckled_melon", ObjectHandler.rotten_food, 28);
+        rotting.addDefaultProperty(Items.GOLDEN_APPLE, "minecraft:golden_apple", ObjectHandler.rotten_food, 28);
         rotting.addDefaultProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 5);
         rotting.addDefaultProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:fermented_spider_eye", Items.ROTTEN_FLESH, 10);
         rotting.addDefaultProperty(Items.BEEF, "minecraft:beef", Items.ROTTEN_FLESH, 7);
@@ -93,6 +94,14 @@ public class ConfigHandler
             RotProperty rotProps = getRotProperty(stack);
             return (rotProps == null) ? false : rotProps.doesRot();
         }
+		
+		// TODO move to MatchingConfig
+        @Nullable
+        public RotProperty getRotProperty(IThing thing)
+        {
+            // TODO support Entity and TileEntity
+            return getRotProperty(thing.as(ItemStack.class));
+        }
 
         @Nullable
         public RotProperty getRotProperty(ItemStack itemStack)
@@ -109,10 +118,12 @@ public class ConfigHandler
             for (String key : nameKeys)
             {
                 Pair<String,Integer> pair = this.getProperty(key);
+                // beware NPE when unboxing null Integer!
+                int value = (pair.second() != null) ? pair.second().intValue() : 0;
 
-                if ((pair.first() != null) || (pair.second() != null))
+                if ((pair != null) && ((pair.first() != null) || (pair.second() != null)))
                 {
-                	rotProp = new RotProperty(key, pair.first(), pair.second());
+                	rotProp = new RotProperty(key, pair.first(), value);
                 	break;
                 }
             }

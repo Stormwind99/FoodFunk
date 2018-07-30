@@ -8,8 +8,10 @@ import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.CapabilityContainerListenerManager;
-import com.wumple.util.capability.eventtimed.EventTimedItemStackCap;
+import com.wumple.util.capability.eventtimed.EventTimedThingCap;
+import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
 import com.wumple.util.container.ContainerUseTracker;
 import com.wumple.util.misc.CraftingUtil;
 
@@ -22,8 +24,9 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
-public class Rot extends EventTimedItemStackCap<RotInfo> implements IRot
+public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
 {
     // The {@link Capability} instance
     @CapabilityInject(IRot.class)
@@ -38,6 +41,17 @@ public class Rot extends EventTimedItemStackCap<RotInfo> implements IRot
         CapabilityManager.INSTANCE.register(IRot.class, new RotStorage(), () -> new Rot());
 
         CapabilityContainerListenerManager.registerListenerFactory(ContainerListenerRot::new);
+    }
+    
+    @Override
+    public void copyFrom(IEventTimedThingCap<IThing, RotInfo> other)
+    {
+        // WAS: info = other.getInfo();
+        // Keep the oldest values of the two rots
+        // For example: Melon 14 days -> Slices 7 days -> Melon 7 days
+        long date = Math.min(getDate(), other.getDate());
+        long time = Math.min(getTime(), other.getTime());
+        info.set(date, time);        
     }
 
     public Rot()
@@ -61,12 +75,12 @@ public class Rot extends EventTimedItemStackCap<RotInfo> implements IRot
     // Functionality
 
     @Override
-    public ItemStack expired(World world, ItemStack stack)
+    public IThing expired(World world, IThing thing)
     {
-        RotProperty rotProps = ConfigHandler.rotting.getRotProperty(stack);
+        RotProperty rotProps = ConfigHandler.rotting.getRotProperty(thing);
         // forget owner to eliminate dependency
         owner = null;
-        return (rotProps != null) ? rotProps.forceRot(stack) : null;
+        return (rotProps != null) ? rotProps.forceRot(thing) : null;
     }
 
     @Override
@@ -140,9 +154,10 @@ public class Rot extends EventTimedItemStackCap<RotInfo> implements IRot
     // ----------------------------------------------------------------------
     // Internal
 
-    public IRot getCap(ItemStack stack)
+    @Override
+    public IRot getCap(ICapabilityProvider thing)
     {
-        return IRot.getRot(stack);
+        return IRot.getRot(thing);
     }
     
     // only good on client side

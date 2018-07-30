@@ -2,26 +2,26 @@ package com.wumple.foodfunk.capability.rot;
 
 import javax.annotation.Nullable;
 
+import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.CapabilityUtils;
-import com.wumple.util.capability.eventtimed.IEventTimedItemStackCap;
+import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
 
-import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
  * Rot capability 
  */
-public interface IRot extends IEventTimedItemStackCap<RotInfo>
+public interface IRot extends IEventTimedThingCap<IThing, RotInfo>
 {
     /**
-     * Get the {@link IRot} from the specified {@link ItemStack}'s capabilities, if any.
+     * Get the {@link IRot} from the specified provider's capabilities, if any.
      *
-     * @param itemStack
-     *            The ItemStack
+     * @param provider
      * @return The IRot, or null if there isn't one
      */
     @Nullable
-    static IRot getRot(@Nullable ItemStack itemStack)
+    static IRot getRot(@Nullable ICapabilityProvider provider)
     {
-        return CapabilityUtils.fetchCapability(itemStack, Rot.CAPABILITY, Rot.DEFAULT_FACING);
+        return CapabilityUtils.fetchCapability(provider, Rot.CAPABILITY, Rot.DEFAULT_FACING);
     }
 }
