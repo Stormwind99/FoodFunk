@@ -30,9 +30,6 @@ public class RotProvider extends ThingCapProvider<IThing, IRot>
      */
     public static ICapabilityProvider createProvider(IThing thing)
     {
-        // return new SimpleCapabilityProvider<>(Rot.CAPABILITY,
-        // Rot.DEFAULT_FACING);
-    
         return new RotProvider(Rot.CAPABILITY, Rot.DEFAULT_FACING, thing);
     }
 }

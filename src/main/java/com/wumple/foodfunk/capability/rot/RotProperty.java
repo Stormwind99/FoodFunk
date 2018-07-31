@@ -33,24 +33,6 @@ public class RotProperty extends TypeIdentifier
 
     public long getRotTime()
     {
-       return getRotTimeRaw();
-       
-       /*
-       if (ConfigContainer.rotting.chunkingPercentage != 0)
-       {
-           long rotTime = getRotTimeRaw();
-           
-           // we add x% to sortof make up for the x% chunking of date in RotInfo.checkInitialized for stacking
-           long add = (rotTime * ConfigContainer.rotting.chunkingPercentage) / 100;
-           long modRotTime = rotTime + add;
-           
-           return modRotTime;
-       }
-       */
-    }
-    
-    public long getRotTimeRaw()
-    {
         if (ConfigContainer.zdebugging.debug)
         {
             double ticksPerDay = ConfigContainer.zdebugging.rotMultiplier * ConfigHandler.TICKS_PER_DAY;
