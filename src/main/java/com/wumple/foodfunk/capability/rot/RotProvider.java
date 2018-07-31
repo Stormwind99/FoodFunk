@@ -3,10 +3,8 @@ package com.wumple.foodfunk.capability.rot;
 import javax.annotation.Nullable;
 
 import com.wumple.util.adapter.IThing;
-import com.wumple.util.adapter.ItemStackThing;
 import com.wumple.util.capability.thing.ThingCapProvider;
 
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -15,28 +13,26 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class RotProvider extends ThingCapProvider<IThing, IRot>
 {
-    public RotProvider(Capability<IRot> capability, @Nullable EnumFacing facing, ItemStack stack)
+    public RotProvider(Capability<IRot> capability, @Nullable EnumFacing facing, IThing thing)
     {
-        super(capability, facing, new ItemStackThing(stack));
+        super(capability, facing, thing);
     }
 
-    public RotProvider(Capability<IRot> capability, @Nullable EnumFacing facing, IRot instance, ItemStack stack)
+    public RotProvider(Capability<IRot> capability, @Nullable EnumFacing facing, IRot instance, IThing thing)
     {
-        super(capability, facing, instance, new ItemStackThing(stack));
+        super(capability, facing, instance, thing);
     }
     
-    // TODO support IThing - Entity and TileEntity
-
     /**
      * Create a provider for the default {@link IRot} instance.
      *
      * @return The provider
      */
-    public static ICapabilityProvider createProvider(ItemStack stack)
+    public static ICapabilityProvider createProvider(IThing thing)
     {
         // return new SimpleCapabilityProvider<>(Rot.CAPABILITY,
         // Rot.DEFAULT_FACING);
     
-        return new RotProvider(Rot.CAPABILITY, Rot.DEFAULT_FACING, stack);
+        return new RotProvider(Rot.CAPABILITY, Rot.DEFAULT_FACING, thing);
     }
 }

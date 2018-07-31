@@ -14,7 +14,6 @@ import com.wumple.util.config.MatchingConfig;
 import com.wumple.util.config.StringMatchingDualConfig;
 
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 
@@ -45,6 +44,7 @@ public class ConfigHandler
         rotting.addDefaultProperty(Items.CAKE, "minecraft:cake", ObjectHandler.rotten_food, 10);
         rotting.addDefaultProperty("minecraft:melon_block", ObjectHandler.rotten_food, 14);
         rotting.addDefaultProperty("minecraft:pumpkin", ObjectHandler.rotten_food, 14);
+        rotting.addDefaultProperty("foodfunk:rottable", ObjectHandler.rotten_food, 7);
         rotting.addDefaultProperty(Items.SPECKLED_MELON, "minecraft:speckled_melon", ObjectHandler.rotten_food, 28);
         rotting.addDefaultProperty(Items.GOLDEN_APPLE, "minecraft:golden_apple", ObjectHandler.rotten_food, 28);
         rotting.addDefaultProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 5);
@@ -90,20 +90,28 @@ public class ConfigHandler
     		super(ConfigContainer.rotting.rotID, ID_NO_ROT, ConfigContainer.rotting.rotDays, DAYS_NO_ROT);    
     	}
 
+    	/*
 		public boolean doesRot(ItemStack stack)
         {
             RotProperty rotProps = getRotProperty(stack);
             return (rotProps == null) ? false : rotProps.doesRot();
         }
+        */
 		
-		// TODO move to MatchingConfig
+        public boolean doesRot(IThing thing)
+        {
+            RotProperty rotProps = getRotProperty(thing);
+            return (rotProps == null) ? false : rotProps.doesRot();
+        }
+
         @Nullable
         public RotProperty getRotProperty(IThing thing)
         {
-            // TODO support Entity and TileEntity
-            return getRotProperty(thing.as(ItemStack.class));
+            ArrayList<String> nameKeys = thing.getNameKeys();
+            return getRotProperty(nameKeys);
         }
 
+        /*
         @Nullable
         public RotProperty getRotProperty(ItemStack itemStack)
         {
@@ -112,23 +120,33 @@ public class ConfigHandler
                 return null;
             }
 
-            ArrayList<String> nameKeys = MatchingConfig.getItemStackNameKeys(itemStack);
+            ArrayList<String> nameKeys = MatchingConfig.getNameKeys(itemStack);
             
+            return getRotProperty(nameKeys);
+        }
+        */
+
+        @Nullable
+        public RotProperty getRotProperty(ArrayList<String> nameKeys)
+        {     
             RotProperty rotProp = null;
             
-            for (String key : nameKeys)
-            {
-                Pair<String,Integer> pair = this.getProperty(key);
-                
-                // beware NPE when unboxing null Integer!
-                String first = (pair != null) ? pair.getLeft() : null;
-                Integer second = (pair != null) ? pair.getRight() : null;
-                int value = (second != null) ? second.intValue() : 0;
-
-                if ((first != null) || (second != null))
+            if (nameKeys != null)
+            {                
+                for (String key : nameKeys)
                 {
-                	rotProp = new RotProperty(key, first, value);
-                	break;
+                    Pair<String,Integer> pair = this.getProperty(key);
+                    
+                    // beware NPE when unboxing null Integer!
+                    String first = (pair != null) ? pair.getLeft() : null;
+                    Integer second = (pair != null) ? pair.getRight() : null;
+                    int value = (second != null) ? second.intValue() : 0;
+    
+                    if ((first != null) || (second != null))
+                    {
+                    	rotProp = new RotProperty(key, first, value);
+                    	break;
+                    }
                 }
             }
             

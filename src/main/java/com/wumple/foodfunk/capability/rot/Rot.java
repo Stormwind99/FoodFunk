@@ -101,7 +101,9 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
     @Override
     public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
     {
-        if (isEnabled() && (stack != null) && !stack.isEmpty() && (entity != null))
+        boolean usableStack = (stack != null) && (!stack.isEmpty());
+        
+        if (isEnabled() && (entity != null))
         {
             if (info != null)
             {
@@ -113,7 +115,7 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
                 // preserving container state aka fake temperature - ambient, chilled, cold, frozen
                 if (info.isSet())
                 {
-                    if (entity.openContainer != null)
+                    if (usableStack && (entity.openContainer != null))
                     {
                         IPreserving cap = getPreservingContainer(entity, stack);
                         if (cap != null)
@@ -126,7 +128,7 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
                 }
 
                 // Rot state
-                boolean beingCrafted = CraftingUtil.isItemBeingCraftedBy(stack, entity);
+                boolean beingCrafted = (stack != null) ? CraftingUtil.isItemBeingCraftedBy(stack, entity) : false;
                 String key = getStateTooltipKey(info, beingCrafted);
 
                 if (key != null)
