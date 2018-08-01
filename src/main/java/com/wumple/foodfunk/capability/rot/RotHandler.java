@@ -74,17 +74,7 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     {
         checkAttachCapability(event, TUtil.to(event.getObject()) );
     }
-    
-    /// Experiments
-    
-    static public void checkAttachCapability(AttachCapabilitiesEvent<?> event, IThing thing)
-    {
-        if (ConfigHandler.rotting.doesRot(thing))
-        {
-            event.addCapability(Rot.ID, RotProvider.createProvider(thing));
-        }
-    }
-    
+        
     @SubscribeEvent
     public static void attachCapabilities2(AttachCapabilitiesEvent<TileEntity> event)
     {
@@ -96,8 +86,17 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     {
         checkAttachCapability(event, TUtil.to(event.getObject()) );
     }
+    
+    static public void checkAttachCapability(AttachCapabilitiesEvent<?> event, IThing thing)
+    {
+        if (ConfigHandler.rotting.doesRot(thing))
+        {
+            event.addCapability(Rot.ID, RotProvider.createProvider(thing));
+        }
+    }
 
-    TileEntity lastTileEntity = null;
+    // horrible hack for lack of tileentity in some block related events
+    protected TileEntity lastTileEntity = null;
 
     public TileEntity setLastTileEntity(TileEntity other)
     {

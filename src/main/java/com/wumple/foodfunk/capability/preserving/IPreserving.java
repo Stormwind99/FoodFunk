@@ -5,6 +5,7 @@ import com.wumple.foodfunk.capability.rot.RotInfo;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.EntityThing;
 import com.wumple.util.adapter.IThing;
+import com.wumple.util.adapter.ItemStackThing;
 import com.wumple.util.adapter.TileEntityThing;
 import com.wumple.util.capability.timerrefreshing.ITimerRefreshingCap;
 import com.wumple.util.container.ContainerUtil;
@@ -57,6 +58,24 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
         public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
         	return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
+        }
+    }
+    
+    public static class ItemStackPreservingOwner extends ItemStackThing implements IPreservingOwner
+    {
+        public ItemStackPreservingOwner(ItemStack it)
+        {
+            super(it);
+        }
+        
+        public Integer getPreservingProperty()
+        {
+            return ConfigHandler.preserving.getProperty(owner);
+        }
+        
+        public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
+        {
+            return null; 
         }
     }
 }
