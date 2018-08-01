@@ -69,6 +69,12 @@ public class ObjectHandler
     // @ObjectHolder("foodfunk:freezer")
     public static Item freezer_item = null;
 
+    // @ObjectHolder("minecraft:melon_seeds")
+    public static Item melon_seeds_item = null;
+
+    // @ObjectHolder("minecraft:pumpkin_seeds")
+    public static Item pumpkin_seeds_item = null;
+    
     // ----------------------------------------------------------------------
     // SoundEvents
 
@@ -143,10 +149,10 @@ public class ObjectHandler
             {
                 ItemSeeds s1 = new ItemSeeds(melon_stem, Blocks.FARMLAND);
                 s1.setTranslationKey("seeds_melon");
-                RegistrationHelpers.regHelper(registry, s1, "minecraft:melon_seeds");
+                melon_seeds_item = RegistrationHelpers.regHelper(registry, s1, "minecraft:melon_seeds");
                 ItemSeeds s2 = new ItemSeeds(pumpkin_stem, Blocks.FARMLAND);
                 s2.setTranslationKey("seeds_pumpkin");
-                RegistrationHelpers.regHelper(registry, s2, "minecraft:pumpkin_seeds");
+                pumpkin_seeds_item = RegistrationHelpers.regHelper(registry, s2, "minecraft:pumpkin_seeds");
             }
             
             registerTileEntities();
