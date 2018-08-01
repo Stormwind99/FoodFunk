@@ -6,8 +6,10 @@ import com.wumple.foodfunk.coldchest.esky.TileEntityEskyRenderer;
 import com.wumple.foodfunk.coldchest.freezer.BlockFreezer;
 import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezer;
 import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezerRenderer;
+import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.rottables.BlockMelonRottable;
 import com.wumple.foodfunk.rottables.BlockPumpkinRottable;
+import com.wumple.foodfunk.rottables.BlockStemCustom;
 import com.wumple.foodfunk.rottables.RotTickingTileEntity;
 import com.wumple.foodfunk.rottables.TileEntityMelonRottable;
 import com.wumple.foodfunk.rottables.TileEntityPumpkinRottable;
@@ -18,7 +20,10 @@ import com.wumple.foodfunk.rotten.ItemSpoiledMilk;
 import com.wumple.util.misc.RegistrationHelpers;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemSeeds;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
@@ -78,7 +83,13 @@ public class ObjectHandler
 
     // @ObjectHolder("foodfunk:freezer_close")
     public static SoundEvent freezer_close = null;
-
+    
+    // Blocks
+    public static Block melon_block = null;
+    public static Block pumpkin = null;
+    public static Block melon_stem = null;
+    public static Block pumpkin_stem = null;
+    
     // ----------------------------------------------------------------------
     // Ore Dictionary
 
@@ -100,8 +111,19 @@ public class ObjectHandler
 
             RegistrationHelpers.regHelper(registry, new BlockEsky());
             RegistrationHelpers.regHelper(registry, new BlockFreezer());
-            RegistrationHelpers.regHelper(registry, new BlockMelonRottable(), "minecraft:melon_block");
-            RegistrationHelpers.regHelper(registry, new BlockPumpkinRottable(), "minecraft:pumpkin");
+
+            if (ConfigContainer.rotting.replaceMelons)
+            {
+                // to make melons have a TileEntity to attach cap to, must replace vanilla MC block :-(
+                melon_block = RegistrationHelpers.regHelper(registry, new BlockMelonRottable(), "minecraft:melon_block");
+                pumpkin = RegistrationHelpers.regHelper(registry, new BlockPumpkinRottable(), "minecraft:pumpkin");
+                BlockStemCustom t1 = new BlockStemCustom(melon_block);
+                t1.setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
+                melon_stem = RegistrationHelpers.regHelper(registry, t1, "minecraft:melon_stem");
+                BlockStemCustom t2 = new BlockStemCustom(pumpkin);
+                t2.setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
+                pumpkin_stem = RegistrationHelpers.regHelper(registry, t2, "minecraft:pumpkin_stem");
+            }
         }
 
         @SubscribeEvent
@@ -117,6 +139,16 @@ public class ObjectHandler
             esky_item = RegistrationHelpers.registerItemBlockOre(registry, esky, preservers);
             freezer_item = RegistrationHelpers.registerItemBlockOre(registry, freezer, preservers);
 
+            if (ConfigContainer.rotting.replaceMelons)
+            {
+                ItemSeeds s1 = new ItemSeeds(melon_stem, Blocks.FARMLAND);
+                s1.setTranslationKey("seeds_melon");
+                RegistrationHelpers.regHelper(registry, s1, "minecraft:melon_seeds");
+                ItemSeeds s2 = new ItemSeeds(pumpkin_stem, Blocks.FARMLAND);
+                s2.setTranslationKey("seeds_pumpkin");
+                RegistrationHelpers.regHelper(registry, s2, "minecraft:pumpkin_seeds");
+            }
+            
             registerTileEntities();
         }
 
@@ -136,8 +168,13 @@ public class ObjectHandler
         	RegistrationHelpers.registerTileEntity(TileEntityEsky.class, "foodfunk:esky");
         	RegistrationHelpers.registerTileEntity(TileEntityFreezer.class, "foodfunk:freezer");
         	RegistrationHelpers.registerTileEntity(RotTickingTileEntity.class, "foodfunk:rottable");
-        	RegistrationHelpers.registerTileEntity(TileEntityMelonRottable.class, "minecraft:melon_block");
-        	RegistrationHelpers.registerTileEntity(TileEntityPumpkinRottable.class, "minecraft:pumpkin");
+        	
+            if (ConfigContainer.rotting.replaceMelons)
+            {
+            	// to make melons have a TileEntity to attach cap to, must create since none in vanilla MC :-(
+            	RegistrationHelpers.registerTileEntity(TileEntityMelonRottable.class, "minecraft:melon_block");
+            	RegistrationHelpers.registerTileEntity(TileEntityPumpkinRottable.class, "minecraft:pumpkin");
+            }
         }
 
         @SideOnly(Side.CLIENT)

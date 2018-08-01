@@ -37,6 +37,10 @@ public class ConfigContainer
         @RangeInt(min = -1)
         public HashMap<String, Integer> rotDays = new HashMap<String, Integer>();
 
+        @Name("Replace melons")
+        @Config.Comment("Allows melons (and pumpkins) to rot by replacing them with custom versions.")
+        public boolean replaceMelons = true;
+        
         // default ""
         @Name("Rotten ID")
         @Config.Comment("Rots into this item.  Set blank to rot into nothing")
