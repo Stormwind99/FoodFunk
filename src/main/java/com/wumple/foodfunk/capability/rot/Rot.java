@@ -11,7 +11,6 @@ import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.CapabilityContainerListenerManager;
 import com.wumple.util.capability.eventtimed.EventTimedThingCap;
-import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
 import com.wumple.util.container.ContainerUseTracker;
 import com.wumple.util.misc.CraftingUtil;
 
@@ -43,16 +42,6 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
         CapabilityContainerListenerManager.registerListenerFactory(ContainerListenerRot::new);
     }
     
-    @Override
-    public void copyFrom(IEventTimedThingCap<IThing, RotInfo> other)
-    {
-        // WAS: info = other.getInfo();
-        // Keep the oldest values of the two rots
-        // For example: Melon 14 days -> Slices 7 days -> Melon 7 days
-        long date = Math.min(getDate(), other.getDate());
-        long time = Math.min(getTime(), other.getTime());
-        info.set(date, time);        
-    }
 
     public Rot()
     {
@@ -209,7 +198,7 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
     }
 
     @Override
-    protected String getStateTooltipKey(RotInfo local, boolean beingCrafted)
+    public String getStateTooltipKey(RotInfo local, boolean beingCrafted)
     {
         String key = null;
 

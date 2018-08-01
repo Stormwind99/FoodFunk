@@ -23,6 +23,13 @@ public class RotTickingTileEntity extends TickingTileEntityPlaceholder
     }
 
     @Override
+    public void ensureInitialized(World world)
+    {
+        doIt(world);
+    }
+
+
+    @Override
     @Nullable
     public SPacketUpdateTileEntity getUpdatePacket()
     {
