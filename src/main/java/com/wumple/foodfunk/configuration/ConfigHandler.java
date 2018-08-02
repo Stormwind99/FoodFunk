@@ -90,14 +90,6 @@ public class ConfigHandler
     		super(ConfigContainer.rotting.rotID, ID_NO_ROT, ConfigContainer.rotting.rotDays, DAYS_NO_ROT);    
     	}
 
-    	/*
-		public boolean doesRot(ItemStack stack)
-        {
-            RotProperty rotProps = getRotProperty(stack);
-            return (rotProps == null) ? false : rotProps.doesRot();
-        }
-        */
-		
         public boolean doesRot(IThing thing)
         {
             RotProperty rotProps = getRotProperty(thing);
@@ -110,21 +102,6 @@ public class ConfigHandler
             ArrayList<String> nameKeys = thing.getNameKeys();
             return getRotProperty(nameKeys);
         }
-
-        /*
-        @Nullable
-        public RotProperty getRotProperty(ItemStack itemStack)
-        {
-            if (itemStack == null)
-            {
-                return null;
-            }
-
-            ArrayList<String> nameKeys = MatchingConfig.getNameKeys(itemStack);
-            
-            return getRotProperty(nameKeys);
-        }
-        */
 
         @Nullable
         public RotProperty getRotProperty(ArrayList<String> nameKeys)

@@ -121,14 +121,16 @@ public class ObjectHandler
             if (ConfigContainer.rotting.replaceMelons)
             {
                 // to make melons have a TileEntity to attach cap to, must replace vanilla MC block :-(
-                melon_block = RegistrationHelpers.regHelper(registry, new BlockMelonRottable(), "minecraft:melon_block");
-                pumpkin = RegistrationHelpers.regHelper(registry, new BlockPumpkinRottable(), "minecraft:pumpkin");
+                melon_block = RegistrationHelpers.regHelper(registry, new BlockMelonRottable(), "minecraft:melon_block", false, true);
+                pumpkin = RegistrationHelpers.regHelper(registry, new BlockPumpkinRottable(), "minecraft:pumpkin", false, true);
+
                 BlockStemCustom t1 = new BlockStemCustom(melon_block);
                 t1.setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
-                melon_stem = RegistrationHelpers.regHelper(registry, t1, "minecraft:melon_stem");
+                melon_stem = RegistrationHelpers.regHelper(registry, t1, "minecraft:melon_stem", false, true);
+
                 BlockStemCustom t2 = new BlockStemCustom(pumpkin);
                 t2.setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
-                pumpkin_stem = RegistrationHelpers.regHelper(registry, t2, "minecraft:pumpkin_stem");
+                pumpkin_stem = RegistrationHelpers.regHelper(registry, t2, "minecraft:pumpkin_stem", false, true);
             }
         }
 
@@ -149,10 +151,10 @@ public class ObjectHandler
             {
                 ItemSeeds s1 = new ItemSeeds(melon_stem, Blocks.FARMLAND);
                 s1.setTranslationKey("seeds_melon");
-                melon_seeds_item = RegistrationHelpers.regHelper(registry, s1, "minecraft:melon_seeds");
+                melon_seeds_item = RegistrationHelpers.regHelper(registry, s1, "minecraft:melon_seeds", false, true);
                 ItemSeeds s2 = new ItemSeeds(pumpkin_stem, Blocks.FARMLAND);
                 s2.setTranslationKey("seeds_pumpkin");
-                pumpkin_seeds_item = RegistrationHelpers.regHelper(registry, s2, "minecraft:pumpkin_seeds");
+                pumpkin_seeds_item = RegistrationHelpers.regHelper(registry, s2, "minecraft:pumpkin_seeds", false, true);
             }
             
             registerTileEntities();
@@ -177,9 +179,12 @@ public class ObjectHandler
         	
             if (ConfigContainer.rotting.replaceMelons)
             {
-            	// to make melons have a TileEntity to attach cap to, must create since none in vanilla MC :-(
-            	RegistrationHelpers.registerTileEntity(TileEntityMelonRottable.class, "minecraft:melon_block");
-            	RegistrationHelpers.registerTileEntity(TileEntityPumpkinRottable.class, "minecraft:pumpkin");
+                RegistrationHelpers.cheat( () ->
+                    {
+                	// to make melons have a TileEntity to attach cap to, must create since none in vanilla MC :-(
+                	RegistrationHelpers.registerTileEntity(TileEntityMelonRottable.class, "minecraft:melon_block");
+                	RegistrationHelpers.registerTileEntity(TileEntityPumpkinRottable.class, "minecraft:pumpkin");
+                    } );
             }
         }
 

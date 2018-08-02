@@ -20,7 +20,7 @@ public class Reference
     public static final String MOD_NAME = "Food Funk";
     public static final String BUILD = "99";
     public static final String MOD_VERSION = "9.9.9";
-    public static final String DEPENDENCIES = "before:quark;before:biomesoplenty;before:erebus;before:aquaculture;before:betterwithmods";
+    public static final String DEPENDENCIES = "required-after:wumpleutil@[2.8,);before:quark;before:biomesoplenty;before:erebus;before:aquaculture;before:betterwithmods";
     public static final String UPDATEJSON = "update.json";
     public static final String FINGERPRINT = "";
     */

@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "4.0.5",
-    "1.12.2-recommended": "4.0.5"
+    "1.12.2-latest": "4.2.0",
+    "1.12.2-recommended": "4.2.0"
   },
   "1.12.2": {
+    "4.2.0": "Melons rot! Crafted melons inherit rot of ingredients. Support for TileEntities/Blocks and Entities.",
     "4.1.0": "Abstracted base capabilities into WumpleUtil and switched to using them.",
     "4.0.5": "Another getRotProperty NPE fix",
     "4.0.4": "getRotProperty NPE fix",
