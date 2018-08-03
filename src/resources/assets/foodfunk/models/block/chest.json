@@ -1,7 +1,7 @@
 {
     "parent": "block/block",
     "textures": {
-        "texture": "foodfunk:model/esky"
+        "texture": "foodfunk:model/chest"
     },
     "elements": [
         {   "from": [ 1, 0, 1 ],
