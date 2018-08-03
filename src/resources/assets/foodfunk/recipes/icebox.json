@@ -1,19 +1,19 @@
 {
   "_comment": [
-      "Freezer that preserves food indefinitely"
+      "Ice box that extends shelf life of food"
    ],
   "type": "forge:ore_shaped",
   "group": "foodfunk",
   "pattern": [
-    "xyx",
-    "yzy",
-    "xyx" ],
+    "xbx",
+    "yiy",
+    "xzx" ],
   "key": {
-     "x": {
+     "b": {
         "type": "forge:ore_dict",
         "ore": "listAllmetalblocks"
      },
-     "y": [
+     "i": [
         {
            "item": "minecraft:ice"
         },
@@ -21,13 +21,21 @@
            "item": "minecraft:packed_ice"
         }
      ],
+     "x": {
+        "type": "forge:ore_dict",
+        "ore": "listAllmetalingots"
+     },
+     "y": {
+        "type": "forge:ore_dict",
+        "ore": "slabWood"
+     },
      "z": {
-        "item": "foodfunk:esky"
+        "item": "foodfunk:icebox"
      }
   },
   "experience": 0.0,
   "result": {
-    "item": "foodfunk:freezer",
+    "item": "foodfunk:icebox",
 	 "data": 0
   }
 }

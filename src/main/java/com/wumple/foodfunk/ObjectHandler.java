@@ -6,6 +6,9 @@ import com.wumple.foodfunk.coldchest.esky.TileEntityEskyRenderer;
 import com.wumple.foodfunk.coldchest.freezer.BlockFreezer;
 import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezer;
 import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezerRenderer;
+import com.wumple.foodfunk.coldchest.icebox.BlockIcebox;
+import com.wumple.foodfunk.coldchest.icebox.TileEntityIcebox;
+import com.wumple.foodfunk.coldchest.icebox.TileEntityIceboxRenderer;
 import com.wumple.foodfunk.coldchest.larder.BlockLarder;
 import com.wumple.foodfunk.coldchest.larder.TileEntityLarder;
 import com.wumple.foodfunk.coldchest.larder.TileEntityLarderRenderer;
@@ -56,6 +59,9 @@ public class ObjectHandler
     @ObjectHolder("foodfunk:larder")
     public static final Block larder = null;
     
+    @ObjectHolder("foodfunk:icebox")
+    public static final Block icebox = null;
+    
     // ----------------------------------------------------------------------
     // Items
 
@@ -79,6 +85,9 @@ public class ObjectHandler
 
     // @ObjectHolder("foodfunk:larder")
     public static Item larder_item = null;
+
+    // @ObjectHolder("foodfunk:icebox")
+    public static Item icebox_item = null;
     
     // @ObjectHolder("minecraft:melon_seeds")
     public static Item melon_seeds_item = null;
@@ -106,6 +115,12 @@ public class ObjectHandler
 
     // @ObjectHolder("foodfunk:larder_close")
     public static SoundEvent larder_close = null;
+    
+    // @ObjectHolder("foodfunk:icebox_open")
+    public static SoundEvent icebox_open = null;
+
+    // @ObjectHolder("foodfunk:icebox_close")
+    public static SoundEvent icebox_close = null;
 
     
     // Blocks
@@ -136,6 +151,7 @@ public class ObjectHandler
             RegistrationHelpers.regHelper(registry, new BlockEsky());
             RegistrationHelpers.regHelper(registry, new BlockFreezer());
             RegistrationHelpers.regHelper(registry, new BlockLarder());
+            RegistrationHelpers.regHelper(registry, new BlockIcebox());
 
             if (ConfigContainer.rotting.replaceMelons)
             {
@@ -166,6 +182,7 @@ public class ObjectHandler
             esky_item = RegistrationHelpers.registerItemBlockOre(registry, esky, preservers);
             freezer_item = RegistrationHelpers.registerItemBlockOre(registry, freezer, preservers);
             larder_item = RegistrationHelpers.registerItemBlockOre(registry, larder, preservers);
+            icebox_item = RegistrationHelpers.registerItemBlockOre(registry, icebox, preservers);
 
             if (ConfigContainer.rotting.replaceMelons)
             {
@@ -193,6 +210,8 @@ public class ObjectHandler
             freezer_close = RegistrationHelpers.registerSound(registry, "foodfunk:freezer_close");
             larder_open = RegistrationHelpers.registerSound(registry, "foodfunk:larder_open");
             larder_close = RegistrationHelpers.registerSound(registry, "foodfunk:larder_close");
+            icebox_open = RegistrationHelpers.registerSound(registry, "foodfunk:icebox_open");
+            icebox_close = RegistrationHelpers.registerSound(registry, "foodfunk:icebox_close");
         }
 
         public static void registerTileEntities()
@@ -200,6 +219,7 @@ public class ObjectHandler
         	RegistrationHelpers.registerTileEntity(TileEntityEsky.class, "foodfunk:esky");
         	RegistrationHelpers.registerTileEntity(TileEntityFreezer.class, "foodfunk:freezer");
             RegistrationHelpers.registerTileEntity(TileEntityLarder.class, "foodfunk:larder");
+            RegistrationHelpers.registerTileEntity(TileEntityIcebox.class, "foodfunk:icebox");
         	RegistrationHelpers.registerTileEntity(RotTickingTileEntity.class, "foodfunk:rottable");
         	
             if (ConfigContainer.rotting.replaceMelons)
@@ -224,10 +244,12 @@ public class ObjectHandler
         	RegistrationHelpers.registerRender(esky_item);
         	RegistrationHelpers.registerRender(freezer_item);
         	RegistrationHelpers.registerRender(larder_item);
+        	RegistrationHelpers.registerRender(icebox_item);
 
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEsky.class, new TileEntityEskyRenderer());
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFreezer.class, new TileEntityFreezerRenderer());
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLarder.class, new TileEntityLarderRenderer());
+            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityIcebox.class, new TileEntityIceboxRenderer());
         }
         
         // ----------------------------------------------------------------------
@@ -236,6 +258,7 @@ public class ObjectHandler
         public static class Ids
         {
             public static final String listAllMetalIngots = "listAllmetalingots";
+            public static final String listAllMetalBlocks = "listAllmetalblocks";
         }
         
         public static void registerMoreOreNames()
@@ -243,6 +266,9 @@ public class ObjectHandler
             OreDictionary.registerOre(Ids.listAllMetalIngots, Items.IRON_INGOT);
             OreDictionary.registerOre(Ids.listAllMetalIngots, Items.GOLD_INGOT);
             // TODO: ingotCopper, other metal ingots
+            OreDictionary.registerOre(Ids.listAllMetalBlocks, Blocks.IRON_BLOCK);
+            OreDictionary.registerOre(Ids.listAllMetalBlocks, Blocks.GOLD_BLOCK);
+         // TODO: blockCopper, other metal ingots
         }
     }
 }

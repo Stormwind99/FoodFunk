@@ -45,6 +45,22 @@
     "sounds": [
       "foodfunk:larder_close"
     ]
+  },
+
+  "icebox_open": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.icebox_open",
+    "sounds": [
+      "foodfunk:icebox_open"
+    ]
+  },
+  
+  "icebox_close": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.icebox_close",
+    "sounds": [
+      "foodfunk:icebox_close"
+    ]
   }
   
 }

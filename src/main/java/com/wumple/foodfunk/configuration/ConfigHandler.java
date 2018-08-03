@@ -36,15 +36,18 @@ public class ConfigHandler
     {
         // handle all food with a "default" entry
         rotting.addDefaultProperty(MatchingConfig.FOOD_TAG, ObjectHandler.rotten_food, 7);
-        rotting.addDefaultProperty(Items.ROTTEN_FLESH, "minecraft:rotten_flesh", ID_NO_ROT, DAYS_NO_ROT);
+ 
         rotting.addDefaultProperty(ObjectHandler.rotten_food, "foodfunk:rotten_food", ID_NO_ROT, DAYS_NO_ROT);
         rotting.addDefaultProperty(ObjectHandler.rotted_item, "foodfunk:rotted_item", ID_NO_ROT, DAYS_NO_ROT);
         rotting.addDefaultProperty(ObjectHandler.biodegradable_item, "foodfunk:biodegradable_item", ID_NO_ROT, DAYS_NO_ROT);
+        rotting.addDefaultProperty("foodfunk:rottable", ObjectHandler.rotten_food, 7);
+        
+        rotting.addDefaultProperty(Items.ROTTEN_FLESH, "minecraft:rotten_flesh", ID_NO_ROT, DAYS_NO_ROT);
         rotting.addDefaultProperty(Items.MILK_BUCKET, "minecraft:milk_bucket", ObjectHandler.spoiled_milk, 7);
         rotting.addDefaultProperty(Items.CAKE, "minecraft:cake", ObjectHandler.rotten_food, 10);
         rotting.addDefaultProperty("minecraft:melon_block", ObjectHandler.rotten_food, 14);
         rotting.addDefaultProperty("minecraft:pumpkin", ObjectHandler.rotten_food, 14);
-        rotting.addDefaultProperty("foodfunk:rottable", ObjectHandler.rotten_food, 7);
+        
         rotting.addDefaultProperty(Items.SPECKLED_MELON, "minecraft:speckled_melon", ObjectHandler.rotten_food, 28);
         rotting.addDefaultProperty(Items.GOLDEN_APPLE, "minecraft:golden_apple", ObjectHandler.rotten_food, 28);
         rotting.addDefaultProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 5);
@@ -61,6 +64,8 @@ public class ConfigHandler
         preserving.addDefaultProperty("foodfunk:esky", 50);
         preserving.addDefaultProperty("foodfunk:freezer", 100);
         preserving.addDefaultProperty("foodfunk:larder", 50);
+        preserving.addDefaultProperty("foodfunk:icebox", 100);
+        
         preserving.addDefaultProperty("composter:compost_bin", -5000);
         preserving.addDefaultProperty("cookingforblockheads:fridge", 50);
         // Doubt this next one will work until cookingforblockheads does the MC 1.13 flattening
