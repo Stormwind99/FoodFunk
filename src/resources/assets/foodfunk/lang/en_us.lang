@@ -7,9 +7,13 @@ item.foodfunk.biodegradable_item.name=Biodegradable Item
 
 tile.foodfunk.esky.name=Esky
 tile.foodfunk.freezer.name=Freezer
+tile.foodfunk.larder.name=Larder Box
+tile.foodfunk.icebox.name=Ice Box
 
 container.foodfunk.esky=Esky
 container.foodfunk.freezer=Freezer
+container.foodfunk.larder=Larder Box
+container.foodfunk.icebox=Ice Box
 
 advancements.foodfunk.ten_second_rule.title=10 Second Rule
 advancements.foodfunk.ten_second_rule.description=Eat rotten food

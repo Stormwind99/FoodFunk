@@ -6,6 +6,9 @@ import com.wumple.foodfunk.coldchest.esky.TileEntityEskyRenderer;
 import com.wumple.foodfunk.coldchest.freezer.BlockFreezer;
 import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezer;
 import com.wumple.foodfunk.coldchest.freezer.TileEntityFreezerRenderer;
+import com.wumple.foodfunk.coldchest.larder.BlockLarder;
+import com.wumple.foodfunk.coldchest.larder.TileEntityLarder;
+import com.wumple.foodfunk.coldchest.larder.TileEntityLarderRenderer;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.rottables.BlockMelonRottable;
 import com.wumple.foodfunk.rottables.BlockPumpkinRottable;
@@ -22,6 +25,7 @@ import com.wumple.util.misc.RegistrationHelpers;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemSeeds;
 import net.minecraft.util.SoundEvent;
@@ -33,6 +37,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.registries.IForgeRegistry;
 
 
@@ -48,6 +53,9 @@ public class ObjectHandler
     @ObjectHolder("foodfunk:freezer")
     public static final Block freezer = null;
 
+    @ObjectHolder("foodfunk:larder")
+    public static final Block larder = null;
+    
     // ----------------------------------------------------------------------
     // Items
 
@@ -69,6 +77,9 @@ public class ObjectHandler
     // @ObjectHolder("foodfunk:freezer")
     public static Item freezer_item = null;
 
+    // @ObjectHolder("foodfunk:larder")
+    public static Item larder_item = null;
+    
     // @ObjectHolder("minecraft:melon_seeds")
     public static Item melon_seeds_item = null;
 
@@ -89,6 +100,13 @@ public class ObjectHandler
 
     // @ObjectHolder("foodfunk:freezer_close")
     public static SoundEvent freezer_close = null;
+
+    // @ObjectHolder("foodfunk:larder_open")
+    public static SoundEvent larder_open = null;
+
+    // @ObjectHolder("foodfunk:larder_close")
+    public static SoundEvent larder_close = null;
+
     
     // Blocks
     public static Block melon_block = null;
@@ -117,6 +135,7 @@ public class ObjectHandler
 
             RegistrationHelpers.regHelper(registry, new BlockEsky());
             RegistrationHelpers.regHelper(registry, new BlockFreezer());
+            RegistrationHelpers.regHelper(registry, new BlockLarder());
 
             if (ConfigContainer.rotting.replaceMelons)
             {
@@ -146,6 +165,7 @@ public class ObjectHandler
             
             esky_item = RegistrationHelpers.registerItemBlockOre(registry, esky, preservers);
             freezer_item = RegistrationHelpers.registerItemBlockOre(registry, freezer, preservers);
+            larder_item = RegistrationHelpers.registerItemBlockOre(registry, larder, preservers);
 
             if (ConfigContainer.rotting.replaceMelons)
             {
@@ -156,6 +176,8 @@ public class ObjectHandler
                 s2.setTranslationKey("seeds_pumpkin");
                 pumpkin_seeds_item = RegistrationHelpers.regHelper(registry, s2, "minecraft:pumpkin_seeds", false, true);
             }
+            
+            registerMoreOreNames();
             
             registerTileEntities();
         }
@@ -169,12 +191,15 @@ public class ObjectHandler
             esky_close = RegistrationHelpers.registerSound(registry, "foodfunk:esky_close");
             freezer_open = RegistrationHelpers.registerSound(registry, "foodfunk:freezer_open");
             freezer_close = RegistrationHelpers.registerSound(registry, "foodfunk:freezer_close");
+            larder_open = RegistrationHelpers.registerSound(registry, "foodfunk:larder_open");
+            larder_close = RegistrationHelpers.registerSound(registry, "foodfunk:larder_close");
         }
 
         public static void registerTileEntities()
         {
         	RegistrationHelpers.registerTileEntity(TileEntityEsky.class, "foodfunk:esky");
         	RegistrationHelpers.registerTileEntity(TileEntityFreezer.class, "foodfunk:freezer");
+            RegistrationHelpers.registerTileEntity(TileEntityLarder.class, "foodfunk:larder");
         	RegistrationHelpers.registerTileEntity(RotTickingTileEntity.class, "foodfunk:rottable");
         	
             if (ConfigContainer.rotting.replaceMelons)
@@ -198,9 +223,26 @@ public class ObjectHandler
         	RegistrationHelpers.registerRender(biodegradable_item);
         	RegistrationHelpers.registerRender(esky_item);
         	RegistrationHelpers.registerRender(freezer_item);
+        	RegistrationHelpers.registerRender(larder_item);
 
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityEsky.class, new TileEntityEskyRenderer());
             ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFreezer.class, new TileEntityFreezerRenderer());
+            ClientRegistry.bindTileEntitySpecialRenderer(TileEntityLarder.class, new TileEntityLarderRenderer());
+        }
+        
+        // ----------------------------------------------------------------------
+        // Ore Dictionary
+
+        public static class Ids
+        {
+            public static final String listAllMetalIngots = "listAllmetalingots";
+        }
+        
+        public static void registerMoreOreNames()
+        {
+            OreDictionary.registerOre(Ids.listAllMetalIngots, Items.IRON_INGOT);
+            OreDictionary.registerOre(Ids.listAllMetalIngots, Items.GOLD_INGOT);
+            // TODO: ingotCopper, other metal ingots
         }
     }
 }

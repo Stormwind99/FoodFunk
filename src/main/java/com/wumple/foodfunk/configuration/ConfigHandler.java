@@ -60,6 +60,7 @@ public class ConfigHandler
 
         preserving.addDefaultProperty("foodfunk:esky", 50);
         preserving.addDefaultProperty("foodfunk:freezer", 100);
+        preserving.addDefaultProperty("foodfunk:larder", 50);
         preserving.addDefaultProperty("composter:compost_bin", -5000);
         preserving.addDefaultProperty("cookingforblockheads:fridge", 50);
         // Doubt this next one will work until cookingforblockheads does the MC 1.13 flattening
