@@ -5,6 +5,7 @@
     "1.12.2-recommended": "4.2.0"
   },
   "1.12.2": {
+    "4.3.0": "Basic versions of Larder Box and Icebox. Eliminated ItemStack forceUpdate hack to improve stacking.",
     "4.2.0": "Melons rot! Crafted melons inherit rot of ingredients. Support for TileEntities/Blocks and Entities.",
     "4.1.0": "Abstracted base capabilities into WumpleUtil and switched to using them.",
     "4.0.5": "Another getRotProperty NPE fix",

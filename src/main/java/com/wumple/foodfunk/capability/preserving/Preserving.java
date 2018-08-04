@@ -7,15 +7,18 @@ import com.wumple.foodfunk.capability.rot.RotInfo;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
+import com.wumple.util.adapter.TUtil;
 import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
 import com.wumple.util.capability.timerrefreshing.TimerRefreshingCap;
 
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.items.IItemHandler;
 
 public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IThing> implements IPreserving
 {
@@ -79,4 +82,17 @@ public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IT
         return IRot.getRot(stack);
     }
     */
+
+    @Override
+    protected boolean rescheduleAndCheck(IEventTimedThingCap<IThing,RotInfo> cap, int index, IItemHandler itemhandler, ItemStack stack, long time)
+    {
+        assert (cap != null);
+        
+        cap.reschedule(time);
+        
+        // we're here, might as well see if reschedule caused expiration
+        cap.evaluate(owner.getWorld(), index, itemhandler, (IThing)TUtil.to(stack));
+        
+        return true;
+    }
 }

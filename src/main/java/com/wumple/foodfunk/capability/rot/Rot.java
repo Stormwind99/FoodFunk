@@ -16,6 +16,7 @@ import com.wumple.util.misc.CraftingUtil;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -223,6 +224,25 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
         }
 
         return key;
+    }
+    
+    @Override
+    public void forceUpdate()
+    {
+        ItemStack stack = owner.as(ItemStack.class);
+        if (stack != null)
+        {
+            NBTTagCompound tag = stack.getOrCreateSubCompound("Rot");
+            RotStorage storage = new RotStorage();
+            NBTTagCompound nbt = (NBTTagCompound)storage.writeNBT(Rot.CAPABILITY, this, null);
+            tag.merge(nbt);
+        }
+        
+        //int count = stack.getCount();
+        //ItemStack newStack = itemhandler.extractItem(index, count, false);
+        //itemhandler.insertItem(index, newStack, false);
+
+        super.forceUpdate();
     }
 
     // ----------------------------------------------------------------------
