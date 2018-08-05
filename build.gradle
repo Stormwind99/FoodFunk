@@ -257,6 +257,7 @@ def loadBuildNumber() {
 // save the new build number
 task('saveBuildNumber') {
     outputs.file('version.properties')
+    outputs.upToDateWhen { false }
     doLast {
        versionFile.withWriter { buildnum.store(it, "Automated build number increase") }
     }
@@ -338,3 +339,6 @@ build {
     dependsOn 'saveBuildNumber'
 }
 
+runClient {
+    outputs.upToDateWhen { false }
+}
