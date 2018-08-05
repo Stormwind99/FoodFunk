@@ -3,8 +3,8 @@ package com.wumple.foodfunk.capability.rot;
 import javax.annotation.Nullable;
 
 import com.wumple.util.adapter.IThing;
-import com.wumple.util.capability.CapabilityUtils;
 import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
+import com.wumple.util.container.capabilitylistener.CapabilityUtils;
 
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 

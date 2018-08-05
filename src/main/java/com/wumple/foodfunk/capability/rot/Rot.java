@@ -9,9 +9,9 @@ import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
-import com.wumple.util.capability.CapabilityContainerListenerManager;
 import com.wumple.util.capability.eventtimed.EventTimedThingCap;
-import com.wumple.util.container.ContainerUseTracker;
+import com.wumple.util.container.capabilitylistener.CapabilityContainerListenerManager;
+import com.wumple.util.container.misc.ContainerUseTracker;
 import com.wumple.util.misc.CraftingUtil;
 
 import net.minecraft.entity.player.EntityPlayer;

@@ -4,7 +4,9 @@ import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.configuration.ConfigContainer;
-import com.wumple.util.capability.CapabilityContainerListener;
+import com.wumple.util.container.capabilitylistener.CapabilityContainerListener;
+import com.wumple.util.container.capabilitylistener.MessageBulkUpdateContainerCapability;
+import com.wumple.util.container.capabilitylistener.MessageUpdateContainerCapability;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Container;
@@ -66,7 +68,7 @@ public class ContainerListenerRot extends CapabilityContainerListener<IRot>
      * @return The bulk update message
      */
     @Override
-    protected MessageBulkUpdateContainerRots createBulkUpdateMessage(final int windowID,
+    protected MessageBulkUpdateContainerCapability<IRot, ?> createBulkUpdateMessage(final int windowID,
             final NonNullList<ItemStack> items)
     {
         return new MessageBulkUpdateContainerRots(windowID, items);
@@ -84,7 +86,7 @@ public class ContainerListenerRot extends CapabilityContainerListener<IRot>
      * @return The single update message
      */
     @Override
-    protected MessageUpdateContainerRot createSingleUpdateMessage(final int windowID, final int slotNumber,
+    protected MessageUpdateContainerCapability<IRot, ?> createSingleUpdateMessage(final int windowID, final int slotNumber,
             final IRot icap)
     {
         return new MessageUpdateContainerRot(windowID, slotNumber, icap);

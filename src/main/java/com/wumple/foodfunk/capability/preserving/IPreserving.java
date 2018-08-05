@@ -8,7 +8,7 @@ import com.wumple.util.adapter.IThing;
 import com.wumple.util.adapter.ItemStackThing;
 import com.wumple.util.adapter.TileEntityThing;
 import com.wumple.util.capability.timerrefreshing.ITimerRefreshingCap;
-import com.wumple.util.container.ContainerUtil;
+import com.wumple.util.container.misc.ContainerUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;

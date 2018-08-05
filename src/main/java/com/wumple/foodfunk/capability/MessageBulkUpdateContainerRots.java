@@ -6,7 +6,7 @@ import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotInfo;
-import com.wumple.util.capability.MessageBulkUpdateContainerCapability;
+import com.wumple.util.container.capabilitylistener.MessageBulkUpdateContainerCapability;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
