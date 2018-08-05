@@ -3,7 +3,6 @@
       "Larder box that extends shelf life of food"
    ],
   "type": "forge:ore_shaped",
-  "group": "foodfunk",
   "pattern": [
     "xyx",
     "yzy",

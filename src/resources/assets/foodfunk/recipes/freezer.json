@@ -3,7 +3,6 @@
       "Freezer that preserves food indefinitely"
    ],
   "type": "forge:ore_shaped",
-  "group": "foodfunk",
   "pattern": [
     "xyx",
     "yzy",
