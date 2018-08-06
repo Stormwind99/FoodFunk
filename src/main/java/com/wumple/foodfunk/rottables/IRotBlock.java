@@ -1,6 +1,6 @@
 package com.wumple.foodfunk.rottables;
 
-import com.wumple.util.tileentity.placeholder.IBlockPlaceholder;
+import com.wumple.util.placeholder.IBlockPlaceholder;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;

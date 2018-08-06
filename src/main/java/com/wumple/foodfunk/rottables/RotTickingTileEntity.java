@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.util.adapter.TUtil;
-import com.wumple.util.tileentity.placeholder.TickingTileEntityPlaceholder;
+import com.wumple.util.placeholder.TickingTileEntityPlaceholder;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
