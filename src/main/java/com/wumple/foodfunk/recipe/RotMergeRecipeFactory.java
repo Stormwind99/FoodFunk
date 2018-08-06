@@ -57,10 +57,6 @@ public class RotMergeRecipeFactory implements IRecipeFactory
         public RotMergeRecipe(ResourceLocation group, @Nonnull ItemStack result, Object... recipe)
         {
             super(group, result, recipe);
-            /*
-            // register for events so received onCrafting event can handle map transcription
-            MinecraftForge.EVENT_BUS.register(this);
-            */
         } 
         
         public class CraftingSearchResults
@@ -81,21 +77,27 @@ public class RotMergeRecipeFactory implements IRecipeFactory
             
             public ItemStack create()
             {   
-                /*
-                if (results.destItemStack().hasDisplayName())
-                {
-                    itemstack2.setStackDisplayName(results.destItemStack().getDisplayName());
-                }
-
-                if (results.destItemStack().hasTagCompound())
-                {
-                    itemstack2.setTagCompound(results.destItemStack().getTagCompound());
-                }
-                */
-                
-                //int newCount = Math.min(count, exampleItem.getItemStackLimit(exampleStack));
                 int newCount = Math.min(stacks.size(), exampleItem.getItemStackLimit(exampleStack));
+                
                 ItemStack newStack = new ItemStack(exampleItem, newCount, exampleStack.getMetadata());
+
+                // TODO move to re-usable function
+                
+                // ccap may not be initialized, but first copyFrom() will copy rot data
+                IRot ccap = IRot.getRot(newStack);
+
+                for (int i = 0; i < stacks.size(); i++)
+                {
+                    ItemStack ingredient = stacks.get(i);
+                    
+                    IRot cap = IRot.getRot(ingredient);
+
+                    if ((ccap != null) && (cap != null))
+                    {
+                        ccap.copyFrom(cap);
+                    }
+                }
+                
                 return newStack;
             }
         }
@@ -197,33 +199,6 @@ public class RotMergeRecipeFactory implements IRecipeFactory
             return ItemStack.EMPTY;
         }
 
-        /*
-        @Override
-        public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-        {
-            NonNullList<ItemStack> nonnulllist = NonNullList.<ItemStack> withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-
-            // return all unused items
-            for (int i = 0; i < nonnulllist.size(); ++i)
-            {
-                ItemStack itemstack = inv.getStackInSlot(i);
-                ItemStack newStack = net.minecraftforge.common.ForgeHooks.getContainerItem(itemstack);
-                
-                IRot srcCap = RotHandler.getInstance().getCap(itemstack);
-                IRot destCap = RotHandler.getInstance().getCap(newStack);
-                
-                if ((destCap != null) && (srcCap != null))
-                {
-                    destCap.copyFrom(srcCap);
-                }
-                
-                nonnulllist.set(i, newStack);
-            }
-
-            return nonnulllist;
-        }
-        */
-
         @Override
         public boolean isDynamic()
         {
@@ -238,46 +213,5 @@ public class RotMergeRecipeFactory implements IRecipeFactory
         {
             return (width * height) >= 2;
         }
-
-        /*
-        @SubscribeEvent
-        public void onCrafting(final ItemCraftedEvent event)
-        {
-            final IInventory craftMatrix = event.craftMatrix;
-            if (!(craftMatrix instanceof InventoryCrafting)
-                    || !craftMatrix.getName().equals("container.crafting"))
-            {
-                return;
-            }
-
-            final InventoryCrafting inv = (InventoryCrafting) craftMatrix;
-
-            final CraftingSearchResults results = this.getStuff(inv);
-
-            if (this.matches(inv, event.player.world))
-            {
-                // only transcribe on server, and let it send updated map data to client
-                if (!event.player.world.isRemote)
-                {
-                    MapTranscription.transcribeMap(event.crafting, results.srcItemStack(), event.player.world);
-                }
-
-                for (int i = craftMatrix.getSizeInventory() - 1; i >= 0; i--)
-                {
-                    final ItemStack slot = craftMatrix.getStackInSlot(i);
-
-                    if ((slot == null) || slot.isEmpty())
-                    {
-                        continue;
-                    }
-                    else if (slot == results.srcItemStack())
-                    {
-                        // increment stack size by 1 so when decreased automatically by 1 there is still 1 there
-                        slot.grow(1);
-                    }
-                }
-            }
-        }
-        */
     }
 }
