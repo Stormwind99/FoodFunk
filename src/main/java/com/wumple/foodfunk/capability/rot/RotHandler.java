@@ -1,5 +1,6 @@
 package com.wumple.foodfunk.capability.rot;
 
+import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
@@ -7,6 +8,7 @@ import com.wumple.util.adapter.TUtil;
 import com.wumple.util.capability.eventtimed.ThingTimerEventHandler;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -16,6 +18,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.ItemCraftedEvent;
 
 @Mod.EventBusSubscriber
 public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements RotCapCopier
@@ -130,5 +133,42 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     {
         super.onPlaceBlock(event);
         RotCapCopier.super.onPlaceBlock(event);
+    }
+    
+    public void log(String msg)
+    {
+        if (ConfigContainer.zdebugging.debug)
+        {
+            FoodFunk.logger.info(msg);
+        }
+    }
+    
+    /**
+     *  Prevents exploit of making foods with almost rotten food to prolong total life of food supplies
+     */
+    @SubscribeEvent
+    public void onCrafted(ItemCraftedEvent event) 
+    {
+        log("RotHandler.onCrafted begin on " + event.crafting);
+        if (!isEnabled() || event.player.world.isRemote || event.crafting == null
+                || event.crafting.isEmpty() || event.crafting.getItem() == null)
+        {
+            log("RotHandler.onCrafted skipped, remote " + event.player.world.isRemote);
+            return;
+        }
+        
+        ItemStack crafting = event.crafting;
+        IInventory craftMatrix = event.craftMatrix;
+        World world = event.player.world;
+
+        IRot ccap = getCap(crafting);
+
+        if (ccap != null)
+        {
+            log("RotHandler.onCrafted handleCraftedTimers");
+            ccap.handleCraftedTimers(world, craftMatrix, crafting);
+        } // else crafted item doesn't rot
+        
+        log("RotHandler.onCrafted end on " + crafting);
     }
 }
