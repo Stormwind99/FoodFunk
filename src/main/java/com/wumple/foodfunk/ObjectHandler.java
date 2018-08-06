@@ -24,6 +24,8 @@ import com.wumple.foodfunk.rotten.ItemRottedItem;
 import com.wumple.foodfunk.rotten.ItemRottenFood;
 import com.wumple.foodfunk.rotten.ItemSpoiledMilk;
 import com.wumple.util.misc.RegistrationHelpers;
+import com.wumple.util.placeholder.BlockPlaceholder;
+import com.wumple.util.placeholder.TileEntityPlaceholder;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
@@ -152,6 +154,8 @@ public class ObjectHandler
             RegistrationHelpers.regHelper(registry, new BlockFreezer());
             RegistrationHelpers.regHelper(registry, new BlockLarder());
             RegistrationHelpers.regHelper(registry, new BlockIcebox());
+            
+            BlockPlaceholder.register(registry);
 
             if (ConfigContainer.rotting.replaceMelons)
             {
@@ -221,6 +225,8 @@ public class ObjectHandler
             RegistrationHelpers.registerTileEntity(TileEntityLarder.class, "foodfunk:larder");
             RegistrationHelpers.registerTileEntity(TileEntityIcebox.class, "foodfunk:icebox");
         	RegistrationHelpers.registerTileEntity(RotTickingTileEntity.class, "foodfunk:rottable");
+        
+        	TileEntityPlaceholder.register();
         	
             if (ConfigContainer.rotting.replaceMelons)
             {
