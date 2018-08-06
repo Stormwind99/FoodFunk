@@ -22,6 +22,9 @@ Attach the Minecraft latest.log from a session where you duplicate the bug.  If 
 
 The log is critical - it contains the versions of the mod, Forge, and Minecraft being used in addition to other needed information.
 
+**Config files**
+Attach the configuration files related to this issue, usually foodfunk.cfg and wumpleutil.cfg at minimum.
+
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
