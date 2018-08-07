@@ -25,11 +25,13 @@ buildscript {
 }
 
 plugins {
-  id "com.matthewprenger.cursegradle" version "1.0.10"
+  id "com.matthewprenger.cursegradle" version "1.0.11"
   id "co.riiid.gradle" version "0.4.2"
-  id "com.jfrog.bintray" version "1.7"
+  id "com.jfrog.bintray" version "1.8.4"
   id "maven"
   id "maven-publish"
+  id "com.dorongold.task-tree" version "1.3"
+  id "com.github.ben-manes.versions" version "0.20.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -49,8 +51,6 @@ loadBuildNumber()
 loadConfig()
 
 /// Build
-
-defaultTasks 'build'
 
 minecraft {
     version = "${config.mc_version}-${config.forge_version}"
@@ -73,13 +73,6 @@ minecraft {
     replaceIn 'Reference.java'
 }
 
-allprojects {
-    repositories {
-        jcenter()
-    }
-    apply plugin: 'java'
-}
-
 sourceSets {
     // for default layout, see https://docs.gradle.org/current/userguide/java_plugin.html
     main {
@@ -94,6 +87,26 @@ sourceSets {
 apply from: 'dependencies.gradle'
 
 // --------------------------------------------------------------------------
+// Default repositories and publishing
+
+repositories {
+    // see https://authors.curseforge.com/docs/api
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
+    }
+   //maven {
+   //    name = "mc"
+   //    url = "https://libraries.minecraft.net/"
+   //}
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+    apply plugin: 'java'
+}
 
 /// Local Maven
 // See https://docs.gradle.org/current/userguide/publishing_maven.html
@@ -104,14 +117,20 @@ publishing {
             artifactId = config.mod_id
             version = config.version
 
-            from components.java
+            //from components.java
         }
     }
 }
 
+// bug workarounds with bad uploads, unsigned jars uploaded
+// see https://github.com/matthewprenger/CurseGradle/issues/14
+publishToMavenLocal {
+    dependsOn build
+    dependsOn publish
+}
+
 /// CurseGradle
 // See https://github.com/matthewprenger/CurseGradle
-
 curseforge {
     group 'upload'
     description 'Upload release to Curseforge'
@@ -125,7 +144,24 @@ curseforge {
         if (deps.size() > 0) {
             relations { doit -> deps.toSet().each { dep -> requiredLibrary dep } }
         }
+
+        //mainArtifact(jar) {
+        //   displayName = jar.archiveName
+        //}
+
+        // TODO see https://github.com/HyCraftHD/Worldgeneration-Profiler/blob/master/build.gradle#L141
+        //addArtifact(deobfJar) {
+        //    //displayName = deobfJar.archiveName
+        //    displayName = "${baseName}-${minecraft.version}-${version}-dev.${extension}"
+        //    changelog = "Mappings: " + config.forge.mapping
+   	//}
+
     }
+
+    // bug workarounds with bad uploads, unsigned jars uploaded
+    // see https://github.com/matthewprenger/CurseGradle/issues/14
+    tasks.curseforge.dependsOn build
+    tasks.curseforge.dependsOn publish
 }
  
 /// Github
@@ -176,8 +212,6 @@ bintray {
     }
 }
 
-/// Uploads
-
 // upload built mod and/or artifacts to all release/artifact locations
 task uploadAll {
     group 'upload'
@@ -223,12 +257,21 @@ processResources {
 }
 
 jar {
+    classifier = ""
     //rename the default output, for some better sanity with scripts
     archiveName = "${baseName}-${minecraft.version}-${version}.${extension}"
 
     exclude "**/*.bat"
     exclude "**/*.psd"
     exclude "**/*.exe"
+
+    from "LICENSE"
+       
+    manifest.mainAttributes(
+       	"Implementation-Title": config.mod.name,
+    	"Implementation-Version": project.version,
+	"Built-On": project.minecraft.version
+	)
 }
 
 // --------------------------------------------------------------------------
@@ -278,6 +321,7 @@ def loadBuildNumber() {
 // save the new build number
 task('saveBuildNumber') {
     outputs.file('version.properties')
+    // force to always run
     outputs.upToDateWhen { false }
     doLast {
        versionFile.withWriter { buildnum.store(it, "Automated build number increase") }
@@ -354,8 +398,30 @@ task signJar(type: SignJar, dependsOn: reobfJar) {
     outputFile = jar.archivePath
 }
 
+// Use jarsigner to manually examine that jar is signed
+task reviewSignJar(type: Exec) {
+    onlyIf {
+        project.hasProperty('keyStore')
+    }
+    outputs.upToDateWhen { false }
+    commandLine "" +  System.getenv('JAVA_HOME') + "/bin/jarsigner", "-verify", "-verbose", "-keystore", project.findProperty('keyStore'), jar.archivePath
+}
+
 // --------------------------------------------------------------------------
 // Misc
+
+// delete lots of directories where bugs cause old dependencies and files to be used
+task superClean(type: Delete) {
+    outputs.upToDateWhen { false }
+    delete ".classpath", ".project", ".settings", "bin", "build"
+    // Prevented by .gradle\4.9\fileContent\fileContent.lock
+    // delete ".gradle"
+}
+
+tasks.superClean.dependsOn clean
+
+// force runClient to always run when requested - never UP-TO-DATE
+runClient.outputs.upToDateWhen { false }
 
 // triggers for above functionality
 build {
@@ -363,7 +429,14 @@ build {
     dependsOn 'saveBuildNumber'
 }
 
-// force runClient to always run when requested - never UP-TO-DATE
-runClient {
-    outputs.upToDateWhen { false }
-}
+// make build tasks run before publish, otherwise could upload MCP mapped jar instead of SRG mapped jar!
+tasks.publish.dependsOn build
+tasks.publishMavenPublicationToMavenLocal.dependsOn build
+tasks.githubRelease.dependsOn build
+tasks.bintrayUpload.dependsOn build
+tasks.curseforge.dependsOn build
+
+/// Uploads
+
+
+defaultTasks 'build'
