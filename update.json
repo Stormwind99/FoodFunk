@@ -1,8 +1,8 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "4.2.0",
-    "1.12.2-recommended": "4.2.0"
+    "1.12.2-latest": "4.3.0",
+    "1.12.2-recommended": "4.3.0"
   },
   "1.12.2": {
     "4.3.0": "Basic versions of Larder Box and Icebox. Eliminated ItemStack forceUpdate hack to improve stacking. Rottable item merge recipe.",
