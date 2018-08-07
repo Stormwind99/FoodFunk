@@ -28,10 +28,11 @@ plugins {
   id "com.matthewprenger.cursegradle" version "1.0.10"
   id "co.riiid.gradle" version "0.4.2"
   id "com.jfrog.bintray" version "1.7"
+  id "maven"
+  id "maven-publish"
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'maven'
 // END do not edit
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
@@ -92,46 +93,21 @@ sourceSets {
 
 apply from: 'dependencies.gradle'
 
-processResources {
-    // ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "minecraft.version", project.minecraft.version
-    inputs.property "modid", config.mod_id
-    inputs.property "name", config.mod_name
-    inputs.property "description", config.mod_description
-    inputs.property "modversion", config.version
-    inputs.property "mcversion", minecraft.version
-    inputs.property "url", config.url
-    inputs.property "updateJSON", config.updatejson
-    inputs.property "authorList", config.mod_authors
-    inputs.property "credits", config.mod_credits
-    inputs.property "logoFile", config.mod_logo
-    inputs.property "dependencies", config.mod_dependencies
-
-    // replace stuff in mcmod.info and pack.mcmeta, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info', 'pack.mcmeta'
-
-        // replace mcmod.info variables with build.properties settings
-	expand(getMergedConfig())
-    }
-
-    // copy everything else, thats not the above listed files
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info', 'pack.mcmeta'
-    }
-}
-
-jar {
-    //rename the default output, for some better sanity with scripts
-    archiveName = "${baseName}-${minecraft.version}-${version}.${extension}"
-
-    exclude "**/*.bat"
-    exclude "**/*.psd"
-    exclude "**/*.exe"
-}
-
 // --------------------------------------------------------------------------
+
+/// Local Maven
+// See https://docs.gradle.org/current/userguide/publishing_maven.html
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = config.group
+            artifactId = config.mod_id
+            version = config.version
+
+            from components.java
+        }
+    }
+}
 
 /// CurseGradle
 // See https://github.com/matthewprenger/CurseGradle
@@ -206,9 +182,53 @@ bintray {
 task uploadAll {
     group 'upload'
     description 'Upload built mod and/or artifacts to all release/artifact locations'
+    dependsOn 'publishToMavenLocal'
     dependsOn 'bintrayUpload'
     dependsOn 'githubRelease'
     dependsOn 'curseforge'
+}
+
+// --------------------------------------------------------------------------
+// Processing resources
+// Must be after Maven publishing block
+
+processResources {
+    // ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "minecraft.version", project.minecraft.version
+    inputs.property "modid", config.mod_id
+    inputs.property "name", config.mod_name
+    inputs.property "description", config.mod_description
+    inputs.property "modversion", config.version
+    inputs.property "mcversion", minecraft.version
+    inputs.property "url", config.url
+    inputs.property "updateJSON", config.updatejson
+    inputs.property "authorList", config.mod_authors
+    inputs.property "credits", config.mod_credits
+    inputs.property "logoFile", config.mod_logo
+    inputs.property "dependencies", config.mod_dependencies
+
+    // replace stuff in mcmod.info and pack.mcmeta, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info', 'pack.mcmeta'
+
+        // replace mcmod.info variables with build.properties settings
+	expand(getMergedConfig())
+    }
+
+    // copy everything else, thats not the above listed files
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info', 'pack.mcmeta'
+    }
+}
+
+jar {
+    //rename the default output, for some better sanity with scripts
+    archiveName = "${baseName}-${minecraft.version}-${version}.${extension}"
+
+    exclude "**/*.bat"
+    exclude "**/*.psd"
+    exclude "**/*.exe"
 }
 
 // --------------------------------------------------------------------------
@@ -241,7 +261,8 @@ def getArchivePath() {
     return new String("build/libs/${jar.archiveName}")
 }
 
-/// Build number tracking
+// --------------------------------------------------------------------------
+// Build number tracking
 
 // load the previous build number, and increment in-memory for this build
 def loadBuildNumber() {
@@ -263,7 +284,8 @@ task('saveBuildNumber') {
     }
 }
 
-/// Configuration
+// --------------------------------------------------------------------------
+// Configuration
 
 // parse the config file (in Groovy format)
 def parseConfig(File config) {
@@ -309,7 +331,8 @@ def getMergedConfig() {
     return mergedConfig
 }
 
-/// Signing
+// --------------------------------------------------------------------------
+// Signing
 // See https://tutorials.darkhax.net/tutorials/jar_signing/
 
 // Sign the jar file
@@ -331,7 +354,8 @@ task signJar(type: SignJar, dependsOn: reobfJar) {
     outputFile = jar.archivePath
 }
 
-/// Misc
+// --------------------------------------------------------------------------
+// Misc
 
 // triggers for above functionality
 build {
@@ -339,6 +363,7 @@ build {
     dependsOn 'saveBuildNumber'
 }
 
+// force runClient to always run when requested - never UP-TO-DATE
 runClient {
     outputs.upToDateWhen { false }
 }
