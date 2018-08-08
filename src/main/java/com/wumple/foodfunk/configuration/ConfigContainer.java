@@ -6,7 +6,9 @@ import com.wumple.foodfunk.Reference;
 
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RangeDouble;
 import net.minecraftforge.common.config.Config.RangeInt;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -68,6 +70,42 @@ public class ConfigContainer
         @RangeInt(min = -1600, max = 1600)
         public HashMap<String, Integer> dimensionRatios = new HashMap<String, Integer>();
     }
+    
+    @Name("Rotten")
+    @Config.Comment("Set values about rotten items.")
+    public static Rotten rotten = new Rotten();
+    
+    public static class Rotten
+    {
+        @Name("Food heal amount")
+        @Config.Comment("Food heal amount for the foodfunk:rotten_food item.")
+        @RangeInt(min = 0)
+        @RequiresMcRestart
+        public int foodHealAmount = 1;
+        
+        @Name("Food saturation amount")
+        @Config.Comment("Food saturation for the foodfunk:rotten_food item.")
+        @RangeDouble(min = 0.0)
+        @RequiresMcRestart
+        public double foodSaturation = 0.1;
+
+        @Name("Food mob effect probability")
+        @Config.Comment("Probability of mob effect being applied when rotten item eaten.")
+        @RangeDouble(min=0.0, max=1.0)
+        @RequiresMcRestart
+        public double mobEffectProbability = 0.6;
+
+        @Name("Food mob effect")
+        @Config.Comment("Mob effect aka potion effect for eating rotten item.")
+        @RequiresMcRestart
+        public String mobEffect = "minecraft:hunger";
+        
+        @Name("Food mob effect duration")
+        @Config.Comment("Duration of mob effect aka potion effect for eating rotten item.")
+        @RangeInt(min = 0)
+        @RequiresMcRestart
+        public int mobEffectDuration = 600;        
+    }
 
     @Name("Debugging")
     @Config.Comment("Debugging options")
@@ -81,7 +119,7 @@ public class ConfigContainer
 
         @Name("Rot time multiplier")
         @Config.Comment("Speed or slow all rot. < 1 faster, > 1 slower.")
-        public double rotMultiplier = 1.0F;
+        public double rotMultiplier = 1.0;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)

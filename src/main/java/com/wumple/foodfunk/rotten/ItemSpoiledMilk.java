@@ -1,5 +1,6 @@
 package com.wumple.foodfunk.rotten;
 
+import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.util.misc.RegistrationHelpers;
 
 import net.minecraft.advancements.CriteriaTriggers;
@@ -8,9 +9,9 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
-import net.minecraft.init.MobEffects;
 import net.minecraft.item.ItemBucketMilk;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.stats.StatList;
 import net.minecraft.world.World;
@@ -22,8 +23,14 @@ public class ItemSpoiledMilk extends ItemBucketMilk
     {
         super();
         setCreativeTab(CreativeTabs.MISC);
-        setPotionEffect(new PotionEffect(MobEffects.HUNGER, 600, 0), 0.6F);
-
+        
+        Potion potion =  Potion.getPotionFromResourceLocation(ConfigContainer.rotten.mobEffect);
+        
+        if (potion != null)
+        {
+            setPotionEffect(new PotionEffect(potion, ConfigContainer.rotten.mobEffectDuration), (float)ConfigContainer.rotten.mobEffectProbability);
+        }
+        
         RegistrationHelpers.nameHelper(this, "foodfunk:spoiled_milk");
     }
 
