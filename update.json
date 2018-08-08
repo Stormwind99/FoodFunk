@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "4.3.1",
-    "1.12.2-recommended": "4.3.1"
+    "1.12.2-latest": "4.4.0",
+    "1.12.2-recommended": "4.4.0"
   },
   "1.12.2": {
+    "4.4.0": "Rotten food heal amount, saturation, mob effect, duration, and probability configurable.",
     "4.3.1": "Workaround to fix jar signing",
     "4.3.0": "Basic versions of Larder Box and Icebox. Eliminated ItemStack forceUpdate hack to improve stacking. Rottable item merge recipe.",
     "4.2.0": "Melons rot! Crafted melons inherit rot of ingredients. Support for TileEntities/Blocks and Entities.",
