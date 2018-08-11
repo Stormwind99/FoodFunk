@@ -1,7 +1,5 @@
 package com.wumple.foodfunk.capability.preserving;
 
-import java.util.List;
-
 import javax.annotation.Nullable;
 
 import com.wumple.foodfunk.capability.preserving.IPreserving.IPreservingOwner;
@@ -25,9 +23,6 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotInfo>
 {
-    default void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips) { }
-    default void doTooltipAddon(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips) { }
-    
     /**
      * Get the {@link IRot} from the specified provider's capabilities, if any.
      *

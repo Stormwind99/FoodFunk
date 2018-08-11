@@ -71,7 +71,7 @@ public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IT
     }
 
     @Override
-    protected IEventTimedThingCap<IThing, RotInfo> getCap(ICapabilityProvider provider)
+    protected IEventTimedThingCap<IThing, RotInfo> getTimedCap(ICapabilityProvider provider)
     {
         return IRot.getMyCap(provider);
     }
@@ -79,15 +79,10 @@ public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IT
     @Override
     public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
     {
-        doTooltipAddon(stack, entity, advanced, tips);
-    }
-
-    @Override
-    public void doTooltipAddon(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
-    {
         int ratio = getRatio();
         String key = getTemperatureTooltipKey();
-        tips.add(new TextComponentTranslation(key, ratio).getUnformattedText());        
+        tips.add(new TextComponentTranslation(key, ratio).getUnformattedText());
+        super.doTooltip(stack, entity, advanced, tips);
     }
     
     public String getTemperatureTooltipKey()
@@ -137,14 +132,6 @@ public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IT
     
     // ----------------------------------------------------------------------
     // Internal
-
-    /*
-    @Override
-    protected IRot getCap(ICapabilityProvider stack)
-    {
-        return IRot.getRot(stack);
-    }
-    */
 
     @Override
     protected boolean rescheduleAndCheck(IEventTimedThingCap<IThing,RotInfo> cap, int index, IItemHandler itemhandler, ItemStack stack, long time)

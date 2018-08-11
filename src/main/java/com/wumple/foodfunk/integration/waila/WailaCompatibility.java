@@ -8,6 +8,8 @@ import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.coldchest.TileEntityColdChest;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.util.placeholder.TileEntityPlaceholder;
+import com.wumple.util.tooltip.ITooltipProvider;
+import com.wumple.util.tooltip.TooltipUtils;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -42,11 +44,6 @@ public class WailaCompatibility implements IWailaDataProvider
         }
         if (!loaded)
         {
-            /*
-             * registrar.registerHeadProvider(INSTANCE, DataBlock.class);
-             * registrar.registerBodyProvider(INSTANCE, DataBlock.class);
-             * registrar.registerTailProvider(INSTANCE, DataBlock.class);
-             */
             registrar.registerBodyProvider(INSTANCE, TileEntityPlaceholder.class);
             registrar.registerBodyProvider(INSTANCE, TileEntityColdChest.class);
             loaded = true;
@@ -82,23 +79,8 @@ public class WailaCompatibility implements IWailaDataProvider
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
     {
         TileEntity te = accessor.getWorld().getTileEntity(accessor.getPosition());
-        IRot rot = IRot.getMyCap(te);
-        if (rot != null)
-        {
-            rot.doTooltipAddon(null, accessor.getPlayer(), ConfigContainer.zdebugging.debug, currenttip);
-        }    
-        IPreserving preserving = IPreserving.getMyCap(te);
-        if (preserving != null)
-        {
-            preserving.doTooltipAddon(null, accessor.getPlayer(), ConfigContainer.zdebugging.debug, currenttip);
-        }
-        /*
-        Block block = accessor.getBlock();
-        if (block instanceof WailaInfoProvider)
-        {
-            return ((WailaInfoProvider) block).getWailaBody(itemStack, currenttip, accessor, config);
-        }
-        */
+        ITooltipProvider[] providers = { IRot.getMyCap(te), IPreserving.getMyCap(te) };
+        TooltipUtils.doTooltip(providers, null, accessor.getPlayer(), ConfigContainer.zdebugging.debug, currenttip);
         return currenttip;
     }
 

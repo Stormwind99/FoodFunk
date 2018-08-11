@@ -42,7 +42,6 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
 
         CapabilityContainerListenerManager.registerListenerFactory(ContainerListenerRot::new);
     }
-    
 
     public Rot()
     {
@@ -90,12 +89,6 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
      */
     @Override
     public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
-    {
-        doTooltipAddon(stack, entity, advanced, tips);
-    }
-    
-    @Override
-    public void doTooltipAddon(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
     {
         boolean usableStack = (stack != null) && (!stack.isEmpty());
         

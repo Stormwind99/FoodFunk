@@ -10,6 +10,8 @@ import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.configuration.ConfigContainer;
+import com.wumple.util.tooltip.ITooltipProvider;
+import com.wumple.util.tooltip.TooltipUtils;
 
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
@@ -52,33 +54,23 @@ public class TOPCompatibility
                 {
                     return "foodfunk:default";
                 }
+                
+                protected void tipsToProbe(IProbeInfo probeInfo, List<String> tips)
+                {
+                    for (String tip : tips)
+                    {
+                        probeInfo.horizontal().text(tip);
+                    }
+                }
 
                 @Override
                 public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
                 {
                     TileEntity te = world.getTileEntity(data.getPos());
                     List<String> tips = new ArrayList<String>();
-                    IRot rot = IRot.getMyCap(te);
-                    if (rot != null)
-                    {
-                        rot.doTooltipAddon(null, player, ConfigContainer.zdebugging.debug, tips);
-                    }
-                    IPreserving preserving = IPreserving.getMyCap(te);
-                    if (preserving != null)
-                    {
-                        preserving.doTooltipAddon(null, player, ConfigContainer.zdebugging.debug, tips);
-                    }
-                    for (String tip : tips)
-                    {
-                        probeInfo.horizontal().text(tip);
-                    }
-                    /*
-                    if (blockState.getBlock() instanceof TOPInfoProvider)
-                    {
-                        TOPInfoProvider provider = (TOPInfoProvider) blockState.getBlock();
-                        provider.addProbeInfo(mode, probeInfo, player, world, blockState, data);
-                    }
-                    */
+                    ITooltipProvider[] providers = { IRot.getMyCap(te), IPreserving.getMyCap(te) };
+                    TooltipUtils.doTooltip(providers, null, player, ConfigContainer.zdebugging.debug, tips);
+                    tipsToProbe(probeInfo, tips);
                 }
             });
             return null;
