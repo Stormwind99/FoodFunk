@@ -29,7 +29,7 @@ public class TOPCompatibility
     {
         if (registered) { return; }
         registered = true;
-        FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe", "mcjty.modtut.compat.top.TOPCompatibility$GetTheOneProbe");
+        FMLInterModComms.sendFunctionMessage("theoneprobe", "getTheOneProbe", "com.wumple.foodfunk.integration.theoneprobe.TOPCompatibility$GetTheOneProbe");
     }
 
     public static class GetTheOneProbe implements Function<ITheOneProbe, Void>

@@ -55,7 +55,7 @@ public class WailaCompatibility implements IWailaDataProvider
     {
         if (registered) { return; }
         registered = true;
-        FMLInterModComms.sendMessage("Waila", "register", "mcjty.modtut.compat.waila.WailaCompatibility.load");
+        FMLInterModComms.sendMessage("waila", "register", "com.wumple.foodfunk.integration.waila.WailaCompatibility.load");
     }
 
     @Override

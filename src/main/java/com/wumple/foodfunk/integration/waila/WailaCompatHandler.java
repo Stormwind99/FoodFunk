@@ -6,7 +6,7 @@ public class WailaCompatHandler
 {
     public static void register()
     {
-        if (Loader.isModLoaded("Waila"))
+        if (Loader.isModLoaded("waila"))
         {
             WailaCompatibility.register();
         }
