@@ -15,7 +15,7 @@ public class RotTickingTileEntity extends TickingTileEntityPlaceholder
 {
     public void doIt(World world)
     {
-        IRot cap = IRot.getRot(this);
+        IRot cap = IRot.getMyCap(this);
         if (cap != null)
         {
             cap.evaluate(world, TUtil.to(this));

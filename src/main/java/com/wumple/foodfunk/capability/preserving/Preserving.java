@@ -1,5 +1,7 @@
 package com.wumple.foodfunk.capability.preserving;
 
+import java.util.List;
+
 import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.preserving.IPreserving.IPreservingOwner;
 import com.wumple.foodfunk.capability.rot.IRot;
@@ -11,9 +13,11 @@ import com.wumple.util.adapter.TUtil;
 import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
 import com.wumple.util.capability.timerrefreshing.TimerRefreshingCap;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -69,7 +73,66 @@ public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IT
     @Override
     protected IEventTimedThingCap<IThing, RotInfo> getCap(ICapabilityProvider provider)
     {
-        return IRot.getRot(provider);
+        return IRot.getMyCap(provider);
+    }
+    
+    @Override
+    public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
+    {
+        doTooltipAddon(stack, entity, advanced, tips);
+    }
+
+    @Override
+    public void doTooltipAddon(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
+    {
+        int ratio = getRatio();
+        String key = getTemperatureTooltipKey();
+        tips.add(new TextComponentTranslation(key, ratio).getUnformattedText());        
+    }
+    
+    public String getTemperatureTooltipKey()
+    {
+        return getTemperatureTooltipKey(getRatio());
+    }
+    
+    protected static String getTemperatureTooltipKey(final int ratio)
+    {
+        String key = null;
+
+        if (ratio == 0)
+        {
+            key = "misc.foodfunk.tooltip.state.cold0";
+        }
+        else if ((ratio > 0) && (ratio <= 50))
+        {
+            key = "misc.foodfunk.tooltip.state.cold1";
+        }
+        else if ((ratio > 50) && (ratio < 100))
+        {
+            key = "misc.foodfunk.tooltip.state.cold2";
+        }
+        else if (ratio == 100)
+        {
+            key = "misc.foodfunk.tooltip.state.cold3";
+        }
+        else if (ratio > 100)
+        {
+            key = "misc.foodfunk.tooltip.state.cold4";
+        }
+        else if ((ratio < 0) && (ratio >= -50))
+        {
+            key = "misc.foodfunk.tooltip.state.warm1";
+        }
+        else if ((ratio < -50) && (ratio > -100))
+        {
+            key = "misc.foodfunk.tooltip.state.warm2";
+        }
+        else if (ratio <= -100)
+        {
+            key = "misc.foodfunk.tooltip.state.warm3";
+        }
+
+        return key;
     }
     
     // ----------------------------------------------------------------------

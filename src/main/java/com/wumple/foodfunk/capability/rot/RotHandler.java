@@ -36,7 +36,7 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     @Override
     protected IRot getCap(ItemStack stack)
     {
-        return IRot.getRot(stack);
+        return IRot.getMyCap(stack);
     }
 
     @Override
@@ -114,7 +114,7 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     @Override
     public IRot getCap(ICapabilityProvider provider)
     {
-        return IRot.getRot(provider);
+        return IRot.getMyCap(provider);
     }
     
     @SubscribeEvent

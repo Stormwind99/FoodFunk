@@ -2,10 +2,12 @@ package com.wumple.foodfunk.integration.waila;
 
 import java.util.List;
 
+import com.wumple.foodfunk.FoodFunk;
+import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.rot.IRot;
+import com.wumple.foodfunk.coldchest.TileEntityColdChest;
 import com.wumple.foodfunk.configuration.ConfigContainer;
-import com.wumple.foodfunk.rottables.TileEntityMelonRottable;
-import com.wumple.foodfunk.rottables.TileEntityPumpkinRottable;
+import com.wumple.util.placeholder.TileEntityPlaceholder;
 
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
@@ -33,7 +35,7 @@ public class WailaCompatibility implements IWailaDataProvider
 
     public static void load(IWailaRegistrar registrar)
     {
-        //System.out.println("WailaCompatibility.load");
+        FoodFunk.logger.info("Enabled support for Waila / Hwyla");
         if (!registered)
         {
             throw new RuntimeException("Please register this handler using the provided method.");
@@ -45,8 +47,8 @@ public class WailaCompatibility implements IWailaDataProvider
              * registrar.registerBodyProvider(INSTANCE, DataBlock.class);
              * registrar.registerTailProvider(INSTANCE, DataBlock.class);
              */
-            registrar.registerBodyProvider(INSTANCE, TileEntityMelonRottable.class);
-            registrar.registerBodyProvider(INSTANCE, TileEntityPumpkinRottable.class);
+            registrar.registerBodyProvider(INSTANCE, TileEntityPlaceholder.class);
+            registrar.registerBodyProvider(INSTANCE, TileEntityColdChest.class);
             loaded = true;
         }
     }
@@ -80,10 +82,15 @@ public class WailaCompatibility implements IWailaDataProvider
     public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config)
     {
         TileEntity te = accessor.getWorld().getTileEntity(accessor.getPosition());
-        IRot rot = IRot.getRot(te);
+        IRot rot = IRot.getMyCap(te);
         if (rot != null)
         {
-            rot.doTooltip(null, accessor.getPlayer(), ConfigContainer.zdebugging.debug, currenttip);
+            rot.doTooltipAddon(null, accessor.getPlayer(), ConfigContainer.zdebugging.debug, currenttip);
+        }    
+        IPreserving preserving = IPreserving.getMyCap(te);
+        if (preserving != null)
+        {
+            preserving.doTooltipAddon(null, accessor.getPlayer(), ConfigContainer.zdebugging.debug, currenttip);
         }
         /*
         Block block = accessor.getBlock();

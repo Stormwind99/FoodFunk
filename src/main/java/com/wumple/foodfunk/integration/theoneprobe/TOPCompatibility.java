@@ -6,6 +6,8 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import com.wumple.foodfunk.FoodFunk;
+import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 
@@ -42,7 +44,7 @@ public class TOPCompatibility
         public Void apply(ITheOneProbe theOneProbe)
         {
             probe = theOneProbe;
-            //ModTut.logger.log(Level.INFO, "Enabled support for The One Probe");
+            FoodFunk.logger.info("Enabled support for The One Probe");
             probe.registerProvider(new IProbeInfoProvider()
             {
                 @Override
@@ -55,16 +57,20 @@ public class TOPCompatibility
                 public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, EntityPlayer player, World world, IBlockState blockState, IProbeHitData data)
                 {
                     TileEntity te = world.getTileEntity(data.getPos());
-                    IRot rot = IRot.getRot(te);
+                    List<String> tips = new ArrayList<String>();
+                    IRot rot = IRot.getMyCap(te);
                     if (rot != null)
                     {
-                        List<String> tips = new ArrayList<String>();
-                        rot.doTooltip(null, player, ConfigContainer.zdebugging.debug, tips);
-                        
-                        for (String tip : tips)
-                        {
-                            probeInfo.horizontal().text(tip);
-                        }
+                        rot.doTooltipAddon(null, player, ConfigContainer.zdebugging.debug, tips);
+                    }
+                    IPreserving preserving = IPreserving.getMyCap(te);
+                    if (preserving != null)
+                    {
+                        preserving.doTooltipAddon(null, player, ConfigContainer.zdebugging.debug, tips);
+                    }
+                    for (String tip : tips)
+                    {
+                        probeInfo.horizontal().text(tip);
                     }
                     /*
                     if (blockState.getBlock() instanceof TOPInfoProvider)

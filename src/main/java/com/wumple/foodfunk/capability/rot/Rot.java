@@ -91,6 +91,12 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
     @Override
     public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
     {
+        doTooltipAddon(stack, entity, advanced, tips);
+    }
+    
+    @Override
+    public void doTooltipAddon(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
+    {
         boolean usableStack = (stack != null) && (!stack.isEmpty());
         
         if (isEnabled() && (entity != null))
@@ -110,9 +116,7 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
                         IPreserving cap = getPreservingContainer(entity, stack);
                         if (cap != null)
                         {
-                            int ratio = cap.getRatio();
-                            String key = getTemperatureTooltipKey(ratio);
-                            tips.add(new TextComponentTranslation(key, ratio).getUnformattedText());
+                            cap.doTooltipAddon(stack, entity, advanced, tips);
                         }
                     }
                 }
@@ -149,53 +153,13 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
     @Override
     public IRot getCap(ICapabilityProvider thing)
     {
-        return IRot.getRot(thing);
+        return IRot.getMyCap(thing);
     }
     
     // only good on client side
     IPreserving getPreservingContainer(EntityPlayer entity, ItemStack stack)
     {
         return ContainerUseTracker.getContainerCapability(entity, stack, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
-    }
-
-    protected static String getTemperatureTooltipKey(final int ratio)
-    {
-        String key = null;
-
-        if (ratio == 0)
-        {
-            key = "misc.foodfunk.tooltip.state.cold0";
-        }
-        else if ((ratio > 0) && (ratio <= 50))
-        {
-            key = "misc.foodfunk.tooltip.state.cold1";
-        }
-        else if ((ratio > 50) && (ratio < 100))
-        {
-            key = "misc.foodfunk.tooltip.state.cold2";
-        }
-        else if (ratio == 100)
-        {
-            key = "misc.foodfunk.tooltip.state.cold3";
-        }
-        else if (ratio > 100)
-        {
-            key = "misc.foodfunk.tooltip.state.cold4";
-        }
-        else if ((ratio < 0) && (ratio >= -50))
-        {
-            key = "misc.foodfunk.tooltip.state.warm1";
-        }
-        else if ((ratio < -50) && (ratio > -100))
-        {
-            key = "misc.foodfunk.tooltip.state.warm2";
-        }
-        else if (ratio <= -100)
-        {
-            key = "misc.foodfunk.tooltip.state.warm3";
-        }
-
-        return key;
     }
 
     @Override

@@ -48,7 +48,7 @@ public class RotMergeRecipeFactory extends CapMergeRecipeFactory<IRot>
         @Override
         protected IRot getCap(ICapabilityProvider provider)
         {
-            return IRot.getRot(provider);
+            return IRot.getMyCap(provider);
         } 
      }
 }
