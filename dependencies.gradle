@@ -5,6 +5,14 @@ repositories {
     maven {
         url  "https://dl.bintray.com/stormwind/MinecraftModding" 
     }
+    maven { // The repo from which to get waila
+        name "Mobius Repo"
+        url "http://tehnut.info/maven"
+    }
+    maven { // TOP
+        name 'tterrag maven'
+        url "http://maven.tterrag.com/"
+    }
 }
 
 dependencies {
@@ -31,6 +39,9 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    deobfCompile "com.wumple.wumpleutil:wumpleutil:2.11.8"
+    deobfCompile "com.wumple.wumpleutil:wumpleutil:2.11.9"
+
+    deobfCompile "mcp.mobius.waila:Hwyla:1.8.26-B41_1.12.2:api"
+    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.23-16:api"
 }
 

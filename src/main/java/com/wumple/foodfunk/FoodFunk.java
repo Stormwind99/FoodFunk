@@ -7,6 +7,8 @@ import com.wumple.foodfunk.capability.Messages;
 import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.foodfunk.integration.waila.WailaCompatHandler;
+import com.wumple.foodfunk.integration.theoneprobe.TOPCompatHandler;
 import com.wumple.util.mod.ModBase;
 import com.wumple.util.proxy.ISidedProxy;
 
@@ -42,6 +44,9 @@ public class FoodFunk extends ModBase
         
         Rot.register();
         Preserving.register();
+
+        TOPCompatHandler.register();
+        WailaCompatHandler.register();
 
         network = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
         Messages.register();
