@@ -117,7 +117,8 @@ publishing {
             artifactId = config.mod_id
             version = config.version
 
-            //from components.java
+            from components.java
+            artifact sourceJar
         }
     }
 }
@@ -272,6 +273,11 @@ jar {
     	"Implementation-Version": project.version,
 	"Built-On": project.minecraft.version
 	)
+}
+
+artifacts {
+//    archives deobfJar
+    archives jar
 }
 
 // --------------------------------------------------------------------------
@@ -432,11 +438,9 @@ build {
 // make build tasks run before publish, otherwise could upload MCP mapped jar instead of SRG mapped jar!
 tasks.publish.dependsOn build
 tasks.publishMavenPublicationToMavenLocal.dependsOn build
+tasks.publishMavenPublicationToMavenLocal.dependsOn publish
 tasks.githubRelease.dependsOn build
 tasks.bintrayUpload.dependsOn build
 tasks.curseforge.dependsOn build
-
-/// Uploads
-
 
 defaultTasks 'build'
