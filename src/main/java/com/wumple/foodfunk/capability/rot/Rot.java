@@ -8,8 +8,11 @@ import com.wumple.foodfunk.capability.preserving.IPreserving;
 import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
+import com.wumple.util.ModConfig;
+import com.wumple.util.WumpleUtil;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.eventtimed.EventTimedThingCap;
+import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
 import com.wumple.util.container.capabilitylistener.CapabilityContainerListenerManager;
 import com.wumple.util.container.misc.ContainerUseTracker;
 import com.wumple.util.misc.CraftingUtil;
@@ -212,4 +215,80 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
      * 
      * return false; }
      */
+    
+    // debug
+    
+    @Override
+    public void copyFrom(IEventTimedThingCap<IThing, RotInfo> other)
+    {
+        // Avoid cheating from crafting or break rotting items
+        
+        // For example: 
+        // Melon 0/14 days -> Slices 0/7 days -> Melon 0/7 days or 7/14 days
+        // Melon 8/14 days -> Slices 6/7 days -> Melon 6/7 days or 13/14 days
+        // Crafting: Ingredients 1/7, 2/7, 3/7 days -> Results 3/7 days
+        // Crafting: Ingredients 1/7, 2/7, 3/7 days -> Results 10/14 days
+        // Crafting: Ingredients 5/14, 6/14 -> Results 0/7 days
+        // Crafting: Ingredients 6/14, 9/14 -> Results 2/7 days
+        
+        if (ModConfig.zdebugging.debug) { WumpleUtil.logger.info("copyFrom: other " + other + " this " + this); }
+        
+        if (!this.isExpirationTimestampSet())
+        {
+            if (other.isExpirationTimestampSet())
+            {
+                if (ModConfig.zdebugging.debug) { WumpleUtil.logger.info("copyFrom: uninit this, copying " + other.getDate() + " " + other.getTime()); }
+                setExpiration(other.getDate(), other.getTime());
+                forceUpdate();               
+            }
+            else
+            {
+                // handle uninitialized src or dest
+                // should never happen - but for now just skip this operation
+                if (ModConfig.zdebugging.debug) { WumpleUtil.logger.info("copyFrom: skipping uninit other " + other.isExpirationTimestampSet() + " this " + this.isExpirationTimestampSet()); }
+                return;  
+            }
+        }
+        
+        // handle dimension-related state:
+        // if other.nonExpiring && info.nonExpiring, do nothing
+        // if other.nonExpiring && !info.nonExpiring, do nothing
+        // if !other.nonExp && info.nonExpiring, do nothing
+        // if !other.nonExp && !info.nonExpiring, do below
+        
+        if (!this.isNonExpiring())
+        {
+            long d_o = other.getDate();
+            long t_o = other.getTime();
+            long e_o = d_o + t_o; // aka other.getExpirationTimestamp();
+            long d_i = this.getDate();
+            long t_i = this.getTime();
+            long e_i = d_i + t_i; // aka info.getExpirationTimestamp();
+
+            long new_d_i = d_i;
+            if (e_i > e_o)
+            {
+                // clamp dest expiration timestamp at src expiration timestamp by moving destination date backwards
+                new_d_i = e_o - t_i;
+            }
+            
+            if (ModConfig.zdebugging.debug) { WumpleUtil.logger.info("copyFrom: setting"
+                    + " new_d_i " + new_d_i
+                    + " d_o " + d_o
+                    + " t_o " + t_o
+                    + " e_o " + e_o
+                    + " d_i " + d_i
+                    + " t_i " + t_i
+                    + " e_i " + e_i
+                    ); }
+            
+            setExpiration(new_d_i, t_i);
+            forceUpdate();
+        }
+        else
+        {
+            if (ModConfig.zdebugging.debug) { WumpleUtil.logger.info("copyFrom: skipping this isNotExpiring"); }
+        }
+    }
+
 }
