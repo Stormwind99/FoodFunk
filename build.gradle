@@ -260,7 +260,7 @@ processResources {
 jar {
     classifier = ""
     //rename the default output, for some better sanity with scripts
-    archiveName = "${baseName}-${minecraft.version}-${version}.${extension}"
+    archiveName = getArchiveName(baseName, version, extension)
 
     exclude "**/*.bat"
     exclude "**/*.psd"
@@ -304,10 +304,18 @@ def getChangeInfo() {
     return info
 }
 
+def getArchiveName(baseName, version, extension) {
+    return new String("${baseName}-${minecraft.version}-${version}.${extension}")
+}
+
+def getArchiveName() {
+    return getArchiveName(config.mod_id, config.version, "jar")
+}
+
 // build our own archive path that is relative and unix-format
 // since jar.archivePath is Windows format absolute path and github plugin makes ugly Github release asset file name from it
 def getArchivePath() {
-    return new String("build/libs/${jar.archiveName}")
+    return new String("build/libs/"+getArchiveName())
 }
 
 // --------------------------------------------------------------------------
