@@ -91,7 +91,7 @@ public class ConfigHandler
         // dimensions.addDefaultProperty("7", 150); // Twilight Forest
         // dimensions.addDefaultProperty("20", 300); // Betweenlands
 
-        ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);
+        ConfigManager.sync(Reference.MOD_ID, Config.Type.INSTANCE);        
     }
 
     // ----------------------------------------------------------------------

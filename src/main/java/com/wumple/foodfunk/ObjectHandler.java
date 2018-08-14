@@ -316,3 +316,14 @@ public class ObjectHandler
         }
     }
 }
+
+// Maybe replace to make planted version rottable:
+/*
+WHEAT_SEEDS = getRegisteredItem("wheat_seeds");
+WHEAT = getRegisteredItem("wheat");
+WHEAT = getRegisteredBlock("wheat");
+
+BEETROOT_SEEDS = getRegisteredItem("beetroot_seeds");
+BEETROOT = getRegisteredItem("beetroot");
+BEETROOTS = getRegisteredBlock("beetroots");
+ */
