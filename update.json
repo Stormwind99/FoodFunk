@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "4.6.0",
-    "1.12.2-recommended": "4.6.0"
+    "1.12.2-latest": "4.6.1",
+    "1.12.2-recommended": "4.6.1"
   },
   "1.12.2": {
+    "4.6.1": "Defensive symbol separation for Hwyla/Waila and TheOneProbe support",
     "4.6.0": "Seed food crops remember rot at age=0.\nSupport for crop age in namekeys - like \"minecraft:carrot[age=7]\".\nRare insta-rot fix.\nRot item merge recipe works in other dimensions.\nOther fixes.",
     "4.5.1": "Fixes for near beginning of time and recrafting rottables.",
     "4.5.0": "Basic support for Waila, Hwyla, and TheOneProbe",
