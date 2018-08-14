@@ -5,7 +5,7 @@
     "1.12.2-recommended": "4.6.0"
   },
   "1.12.2": {
-    "4.6.0": "Support for crop age in namekeys - like minecraft:carrot[age=7].  Rare insta-rot fix, other fixes.",
+    "4.6.0": "Seed food crops remember rot at age=0.\nSupport for crop age in namekeys - like \"minecraft:carrot[age=7]\".\nRare insta-rot fix.\nRot item merge recipe works in other dimensions.\nOther fixes.",
     "4.5.1": "Fixes for near beginning of time and recrafting rottables.",
     "4.5.0": "Basic support for Waila, Hwyla, and TheOneProbe",
     "4.4.0": "Rotten food heal amount, saturation, mob effect, duration, and probability configurable.",
