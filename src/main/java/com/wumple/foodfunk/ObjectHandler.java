@@ -13,11 +13,15 @@ import com.wumple.foodfunk.coldchest.larder.BlockLarder;
 import com.wumple.foodfunk.coldchest.larder.TileEntityLarder;
 import com.wumple.foodfunk.coldchest.larder.TileEntityLarderRenderer;
 import com.wumple.foodfunk.configuration.ConfigContainer;
+import com.wumple.foodfunk.rottables.BlockCarrotRottable;
 import com.wumple.foodfunk.rottables.BlockMelonRottable;
+import com.wumple.foodfunk.rottables.BlockPotatoRottable;
 import com.wumple.foodfunk.rottables.BlockPumpkinRottable;
 import com.wumple.foodfunk.rottables.BlockStemCustom;
 import com.wumple.foodfunk.rottables.RotTickingTileEntity;
+import com.wumple.foodfunk.rottables.TileEntityCarrotRottable;
 import com.wumple.foodfunk.rottables.TileEntityMelonRottable;
+import com.wumple.foodfunk.rottables.TileEntityPotatoRottable;
 import com.wumple.foodfunk.rottables.TileEntityPumpkinRottable;
 import com.wumple.foodfunk.rotten.ItemBiodegradableItem;
 import com.wumple.foodfunk.rotten.ItemRottedItem;
@@ -30,6 +34,7 @@ import net.minecraft.block.SoundType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemSeedFood;
 import net.minecraft.item.ItemSeeds;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -95,6 +100,12 @@ public class ObjectHandler
     // @ObjectHolder("minecraft:pumpkin_seeds")
     public static Item pumpkin_seeds_item = null;
     
+    // @ObjectHolder("minecraft:carrot")
+    public static Item carrot_seed_food = null;
+
+    // @ObjectHolder("minecraft:potato")
+    public static Item potato_seed_food = null;
+    
     // ----------------------------------------------------------------------
     // SoundEvents
 
@@ -128,6 +139,8 @@ public class ObjectHandler
     public static Block pumpkin = null;
     public static Block melon_stem = null;
     public static Block pumpkin_stem = null;
+    public static Block carrot_block = null;
+    public static Block potato_block = null;
     
     // ----------------------------------------------------------------------
     // Ore Dictionary
@@ -153,7 +166,7 @@ public class ObjectHandler
             RegistrationHelpers.regHelper(registry, new BlockLarder());
             RegistrationHelpers.regHelper(registry, new BlockIcebox());
 
-            if (ConfigContainer.rotting.replaceMelons)
+            if (ConfigContainer.rotting.replaceSpecialThings)
             {
                 // to make melons have a TileEntity to attach cap to, must replace vanilla MC block :-(
                 melon_block = RegistrationHelpers.regHelper(registry, new BlockMelonRottable(), "minecraft:melon_block", false, true);
@@ -166,6 +179,10 @@ public class ObjectHandler
                 BlockStemCustom t2 = new BlockStemCustom(pumpkin);
                 t2.setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
                 pumpkin_stem = RegistrationHelpers.regHelper(registry, t2, "minecraft:pumpkin_stem", false, true);
+                
+                // same for seed foods
+                carrot_block = RegistrationHelpers.regHelper(registry, new BlockCarrotRottable(), "minecraft:carrots", false, true);
+                potato_block = RegistrationHelpers.regHelper(registry, new BlockPotatoRottable(), "minecraft:potatoes", false, true);
             }
         }
 
@@ -184,7 +201,7 @@ public class ObjectHandler
             larder_item = RegistrationHelpers.registerItemBlockOre(registry, larder, preservers);
             icebox_item = RegistrationHelpers.registerItemBlockOre(registry, icebox, preservers);
 
-            if (ConfigContainer.rotting.replaceMelons)
+            if (ConfigContainer.rotting.replaceSpecialThings)
             {
                 ItemSeeds s1 = new ItemSeeds(melon_stem, Blocks.FARMLAND);
                 s1.setTranslationKey("seeds_melon");
@@ -192,6 +209,14 @@ public class ObjectHandler
                 ItemSeeds s2 = new ItemSeeds(pumpkin_stem, Blocks.FARMLAND);
                 s2.setTranslationKey("seeds_pumpkin");
                 pumpkin_seeds_item = RegistrationHelpers.regHelper(registry, s2, "minecraft:pumpkin_seeds", false, true);
+                
+                ItemSeedFood s3 = new ItemSeedFood(3, 0.6F, carrot_block, Blocks.FARMLAND);
+                s3.setTranslationKey("carrots");
+                carrot_seed_food = RegistrationHelpers.regHelper(registry, s3, "minecraft:carrot", false, true);
+                
+                ItemSeedFood s4 = new ItemSeedFood(1, 0.3F, potato_block, Blocks.FARMLAND);
+                s4.setTranslationKey("potato");
+                potato_seed_food = RegistrationHelpers.regHelper(registry, s4, "minecraft:potato", false, true);
             }
             
             registerMoreOreNames();
@@ -222,13 +247,15 @@ public class ObjectHandler
             RegistrationHelpers.registerTileEntity(TileEntityIcebox.class, "foodfunk:icebox");
         	RegistrationHelpers.registerTileEntity(RotTickingTileEntity.class, "foodfunk:rottable");
         	
-            if (ConfigContainer.rotting.replaceMelons)
+            if (ConfigContainer.rotting.replaceSpecialThings)
             {
                 RegistrationHelpers.cheat( () ->
                     {
                 	// to make melons have a TileEntity to attach cap to, must create since none in vanilla MC :-(
                 	RegistrationHelpers.registerTileEntity(TileEntityMelonRottable.class, "minecraft:melon_block");
                 	RegistrationHelpers.registerTileEntity(TileEntityPumpkinRottable.class, "minecraft:pumpkin");
+                	RegistrationHelpers.registerTileEntity(TileEntityCarrotRottable.class, "minecraft:carrot");
+                	RegistrationHelpers.registerTileEntity(TileEntityPotatoRottable.class, "minecraft:potato");
                     } );
             }
         }
@@ -259,6 +286,9 @@ public class ObjectHandler
         {
             public static final String listAllMetalIngots = "listAllmetalingots";
             public static final String listAllMetalBlocks = "listAllmetalblocks";
+            public static final String listAllMelons = "listAllmelons";
+            public static final String listAllSeedFoods = "listAllseedfoods";
+            public static final String listAllSeed="listAllseed";
         }
         
         public static void registerMoreOreNames()
@@ -268,7 +298,21 @@ public class ObjectHandler
             // TODO: ingotCopper, other metal ingots
             OreDictionary.registerOre(Ids.listAllMetalBlocks, Blocks.IRON_BLOCK);
             OreDictionary.registerOre(Ids.listAllMetalBlocks, Blocks.GOLD_BLOCK);
-         // TODO: blockCopper, other metal ingots
+            // TODO: blockCopper, other metal ingots
+            
+            if (ConfigContainer.rotting.replaceSpecialThings)
+            {
+                OreDictionary.registerOre(Ids.listAllMelons, melon_block);
+                OreDictionary.registerOre(Ids.listAllMelons, pumpkin);
+                
+                OreDictionary.registerOre(Ids.listAllSeed, melon_seeds_item);
+                OreDictionary.registerOre(Ids.listAllSeed, pumpkin_seeds_item);
+                
+                OreDictionary.registerOre(Ids.listAllSeedFoods, carrot_block);
+                OreDictionary.registerOre(Ids.listAllSeedFoods, potato_block);
+                OreDictionary.registerOre(Ids.listAllSeedFoods, carrot_seed_food);
+                OreDictionary.registerOre(Ids.listAllSeedFoods, potato_seed_food);
+            }
         }
     }
 }

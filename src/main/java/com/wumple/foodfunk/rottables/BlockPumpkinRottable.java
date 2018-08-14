@@ -17,6 +17,6 @@ public class BlockPumpkinRottable extends BlockPumpkin implements IRotBlock
     
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileEntityPumpkinRottable();
+        return new TileEntityPumpkinRottable(worldIn);
     }
 }

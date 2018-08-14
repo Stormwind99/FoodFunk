@@ -17,6 +17,6 @@ public class BlockMelonRottable extends BlockMelon implements IRotBlock
     
     public TileEntity createNewTileEntity(World worldIn, int meta)
     {
-        return new TileEntityMelonRottable();
+        return new TileEntityMelonRottable(worldIn);
     }
 }

@@ -6,11 +6,12 @@ import com.wumple.util.capability.copier.CapCopier;
 import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 
 public interface RotCapCopier extends CapCopier<IEventTimedThingCap<IThing, RotInfo>>
 {
-    default TileEntity getNewTE()
+    default TileEntity getNewTE(World world)
     {
-        return new RotTickingTileEntity();
+        return new RotTickingTileEntity(world);
     }
 }

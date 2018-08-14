@@ -39,19 +39,24 @@ public class ConfigContainer
         @RangeInt(min = -1)
         public HashMap<String, Integer> rotDays = new HashMap<String, Integer>();
 
-        @Name("Replace melons")
-        @Config.Comment("Allows melons (and pumpkins) to rot by replacing them with custom versions.")
-        public boolean replaceMelons = true;
+        @Name("Replace special vanilla things")
+        @Config.Comment("Allows non-item melons, pumpkins, potatos, and carrots to rot by replacing them with custom versions.")
+        @RequiresMcRestart
+        public boolean replaceSpecialThings = true;
+              
+        @Name("Chunking percentage")
+        @Config.Comment("Allows stacking of items created around same time.  Higher values will increase stacking at cost of strange initial rot percentage.")
+        @RangeInt(min=0, max=100)
+        public int chunkingPercentage = 1;
+
+        @Name("Planted rottables refresh on growth")
+        @Config.Comment("When a planted rottable grows a stage, rot is reset")
+        public boolean refreshOnGrowth = true;
         
         // default ""
         @Name("Rotten ID")
         @Config.Comment("Rots into this item.  Set blank to rot into nothing")
         public HashMap<String, String> rotID = new HashMap<String, String>();
-        
-        @Name("Chunking percentage")
-        @Config.Comment("Allows stacking of items created around same time.  Higher values will increase stacking at cost of strange initial rot percentage.")
-        @RangeInt(min=0, max=100)
-        public int chunkingPercentage = 1;
     }
     
     @Name("Modifiers")

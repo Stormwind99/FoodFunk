@@ -3,16 +3,37 @@ package com.wumple.foodfunk.rottables;
 import javax.annotation.Nullable;
 
 import com.wumple.foodfunk.capability.rot.IRot;
+import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.util.adapter.TUtil;
 import com.wumple.util.placeholder.TickingTileEntityPlaceholder;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class RotTickingTileEntity extends TickingTileEntityPlaceholder
 {
+    public RotTickingTileEntity() { super(); }
+    public RotTickingTileEntity(World world) { super(world); }
+    
+    /**
+     * This controls whether the tile entity gets replaced whenever the block state is changed. Normally only want this when block actually is replaced.
+     */
+    @Override
+    public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newState)
+    {
+        if (ConfigContainer.rotting.refreshOnGrowth)
+        {
+            return true;
+        }
+        
+        return (oldState.getBlock() != newState.getBlock());
+    }
+    
+    @Override
     public void doIt(World world)
     {
         IRot cap = IRot.getMyCap(this);
@@ -27,7 +48,6 @@ public class RotTickingTileEntity extends TickingTileEntityPlaceholder
     {
         doIt(world);
     }
-
 
     @Override
     @Nullable
