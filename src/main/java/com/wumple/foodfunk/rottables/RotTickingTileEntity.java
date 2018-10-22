@@ -11,6 +11,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -46,7 +47,18 @@ public class RotTickingTileEntity extends TickingTileEntityPlaceholder
     @Override
     public void ensureInitialized(World world)
     {
-        doIt(world);
+        MinecraftServer server = world.getMinecraftServer();
+        
+        if (server != null)
+        {
+            server.addScheduledTask(new Runnable()
+            {
+              public void run() {
+                  //System.out.println("scheduled task ensureInitialized " + this); 
+                  doIt(world);
+              }
+            });
+        }
     }
 
     @Override

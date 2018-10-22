@@ -1,10 +1,11 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.12.2-latest": "4.8.0",
-    "1.12.2-recommended": "4.8.0"
+    "1.12.2-latest": "4.9.0",
+    "1.12.2-recommended": "4.9.0"
   },
   "1.12.2": {
+    "4.9.0": "Fix for ConcurrentModificationException exception",
     "4.8.0": "Forge update to 2772",
     "4.7.0": "Library update",
     "4.6.1": "Defensive symbol separation for Hwyla/Waila and TheOneProbe support",
