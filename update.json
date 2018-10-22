@@ -5,6 +5,7 @@
     "1.12.2-recommended": "4.9.0"
   },
   "1.12.2": {
+    "4.9.1": "Added rotMergeRecipe config option",
     "4.9.0": "Fix for ConcurrentModificationException exception",
     "4.8.0": "Forge update to 2772",
     "4.7.0": "Library update",

@@ -53,6 +53,10 @@ public class ConfigContainer
         @Config.Comment("When a planted rottable grows a stage, rot is reset")
         public boolean refreshOnGrowth = true;
         
+        @Name("Rottable merge recipe")
+        @Config.Comment("Allows merging rottable items with different rot times")
+        public boolean rotMergeRecipe = true;        
+        
         // default ""
         @Name("Rotten ID")
         @Config.Comment("Rots into this item.  Set blank to rot into nothing")

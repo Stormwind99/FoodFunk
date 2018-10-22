@@ -8,8 +8,10 @@ import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.util.capability.copier.CapMergeRecipeFactory;
 
+import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
@@ -43,6 +45,12 @@ public class RotMergeRecipeFactory extends CapMergeRecipeFactory<IRot>
         public RotMergeRecipe(ResourceLocation group, @Nonnull ItemStack result, Object... recipe)
         {
             super(group, result, recipe);
+        }
+        
+        @Override
+        public boolean matches(InventoryCrafting inv, World worldIn)
+        {
+            return ConfigContainer.rotting.rotMergeRecipe && super.matches(inv, worldIn);
         }
 
         @Override
