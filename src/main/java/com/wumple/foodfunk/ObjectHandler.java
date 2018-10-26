@@ -27,6 +27,7 @@ import com.wumple.foodfunk.rotten.ItemBiodegradableItem;
 import com.wumple.foodfunk.rotten.ItemRottedItem;
 import com.wumple.foodfunk.rotten.ItemRottenFood;
 import com.wumple.foodfunk.rotten.ItemSpoiledMilk;
+import com.wumple.util.base.function.Procedure;
 import com.wumple.util.misc.RegistrationHelpers;
 
 import net.minecraft.block.Block;
@@ -34,19 +35,26 @@ import net.minecraft.block.SoundType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemSeedFood;
 import net.minecraft.item.ItemSeeds;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 
 @ObjectHolder("foodfunk")
@@ -55,17 +63,17 @@ public class ObjectHandler
     // ----------------------------------------------------------------------
     // Blocks
 
-    @ObjectHolder("foodfunk:esky")
-    public static final Block esky = null;
+    //@ObjectHolder("foodfunk:esky")
+    public static Block esky = null;
 
-    @ObjectHolder("foodfunk:freezer")
-    public static final Block freezer = null;
+    //@ObjectHolder("foodfunk:freezer")
+    public static Block freezer = null;
 
-    @ObjectHolder("foodfunk:larder")
-    public static final Block larder = null;
+    //@ObjectHolder("foodfunk:larder")
+    public static Block larder = null;
     
-    @ObjectHolder("foodfunk:icebox")
-    public static final Block icebox = null;
+    //@ObjectHolder("foodfunk:icebox")
+    public static Block icebox = null;
     
     // ----------------------------------------------------------------------
     // Items
@@ -161,10 +169,10 @@ public class ObjectHandler
         {
             final IForgeRegistry<Block> registry = event.getRegistry();
 
-            RegistrationHelpers.regHelper(registry, new BlockEsky());
-            RegistrationHelpers.regHelper(registry, new BlockFreezer());
-            RegistrationHelpers.regHelper(registry, new BlockLarder());
-            RegistrationHelpers.regHelper(registry, new BlockIcebox());
+            esky = RegistrationHelpers.regHelper(registry, new BlockEsky());
+            freezer = RegistrationHelpers.regHelper(registry, new BlockFreezer());
+            icebox = RegistrationHelpers.regHelper(registry, new BlockLarder());
+            larder = RegistrationHelpers.regHelper(registry, new BlockIcebox());
 
             if (ConfigContainer.rotting.replaceSpecialThings)
             {
@@ -172,12 +180,10 @@ public class ObjectHandler
                 melon_block = RegistrationHelpers.regHelper(registry, new BlockMelonRottable(), "minecraft:melon_block", false, true);
                 pumpkin = RegistrationHelpers.regHelper(registry, new BlockPumpkinRottable(), "minecraft:pumpkin", false, true);
 
-                BlockStemCustom t1 = new BlockStemCustom(melon_block);
-                t1.setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
+                Block t1 = new BlockStemCustom(melon_block).setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
                 melon_stem = RegistrationHelpers.regHelper(registry, t1, "minecraft:melon_stem", false, true);
 
-                BlockStemCustom t2 = new BlockStemCustom(pumpkin);
-                t2.setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
+                Block t2 = new BlockStemCustom(pumpkin).setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
                 pumpkin_stem = RegistrationHelpers.regHelper(registry, t2, "minecraft:pumpkin_stem", false, true);
                 
                 // same for seed foods
@@ -185,6 +191,103 @@ public class ObjectHandler
                 potato_block = RegistrationHelpers.regHelper(registry, new BlockPotatoRottable(), "minecraft:potatoes", false, true);
             }
         }
+        
+        /*
+        public static ItemStack registerOreNames(ItemStack thing, String[] oreNames)
+        {
+            assert (thing != null);
+
+            for (String oreName : oreNames)
+            {
+                OreDictionary.registerOre(oreName, thing);
+            }
+
+            return thing;
+        }
+        
+        public static ItemBlock registerItemBlockOre(IForgeRegistry<Item> registry, Block block, String[] oreNames)
+        {    
+            assert (block != null);
+            ItemBlock item = new ItemBlock(block);
+            RegistrationHelpers.nameHelper(item, block.getRegistryName(), true);
+
+            for (String oreName : oreNames)
+            {
+                OreDictionary.registerOre(oreName, item);
+                OreDictionary.registerOre(oreName, block);
+            }
+
+            return item;
+        }
+        
+        public static <T extends IForgeRegistryEntry<T>> void nameHelper(T thing, ResourceLocation loc, boolean doTransKey)
+        {
+            assert (thing != null);
+            assert (loc != null);
+
+            thing.setRegistryName(loc);
+
+            if (doTransKey)
+            {
+                String dotname = loc.getNamespace() + "." + loc.getPath();
+                
+                if (thing instanceof Block)
+                {
+                    ((Block) thing).setTranslationKey(dotname);
+                }
+                else if (thing instanceof Item)
+                {
+                    ((Item) thing).setTranslationKey(dotname);
+                }
+            }
+        }
+        
+        public static <T extends IForgeRegistryEntry<T>> void nameHelper(T thing, ResourceLocation loc)
+        {
+            nameHelper(thing, loc, true);
+        }
+
+        public static <T extends IForgeRegistryEntry<T>> void nameHelper(T thing, String name, boolean doTransKey)
+        {
+            assert (thing != null);
+            assert (name != null);
+
+            ResourceLocation loc = GameData.checkPrefix(name);
+            nameHelper(thing, loc, doTransKey);
+        }
+
+        public static <T extends IForgeRegistryEntry<T>> void nameHelper(T thing, String name)
+        {
+            nameHelper(thing, name, true);
+        }
+        
+        public static void cheat(Procedure proc)
+        {
+            Loader l = Loader.instance();
+            ModContainer k = l.activeModContainer();
+            l.setActiveModContainer(l.getMinecraftModContainer());
+            proc.run();
+            l.setActiveModContainer(k);
+        }
+        
+        public static void run(Procedure proc)
+        {
+            proc.run();
+        }
+        
+        public static <T extends IForgeRegistryEntry<T>> T regHelper(IForgeRegistry<T> registry, T thing,
+                String name, boolean doTransKey, boolean shouldCheat)
+        {
+            assert (thing != null);
+            assert (name != null);
+           
+            Procedure nameIt = () -> { nameHelper(thing, name, doTransKey); };
+            if (shouldCheat) { cheat(nameIt); }
+            else { run(nameIt); }
+
+            return thing;
+        }
+        */
 
         @SubscribeEvent
         public static void registerItems(RegistryEvent.Register<Item> event)
@@ -203,25 +306,22 @@ public class ObjectHandler
 
             if (ConfigContainer.rotting.replaceSpecialThings)
             {
-                ItemSeeds s1 = new ItemSeeds(melon_stem, Blocks.FARMLAND);
-                s1.setTranslationKey("seeds_melon");
+                Item s1 = new ItemSeeds(melon_stem, Blocks.FARMLAND).setTranslationKey("seeds_melon");
                 melon_seeds_item = RegistrationHelpers.regHelper(registry, s1, "minecraft:melon_seeds", false, true);
-                ItemSeeds s2 = new ItemSeeds(pumpkin_stem, Blocks.FARMLAND);
-                s2.setTranslationKey("seeds_pumpkin");
+
+                Item s2 = new ItemSeeds(pumpkin_stem, Blocks.FARMLAND).setTranslationKey("seeds_pumpkin");
                 pumpkin_seeds_item = RegistrationHelpers.regHelper(registry, s2, "minecraft:pumpkin_seeds", false, true);
                 
-                ItemSeedFood s3 = new ItemSeedFood(3, 0.6F, carrot_block, Blocks.FARMLAND);
-                s3.setTranslationKey("carrots");
+                Item s3 = new ItemSeedFood(3, 0.6F, carrot_block, Blocks.FARMLAND).setTranslationKey("carrots");
                 carrot_seed_food = RegistrationHelpers.regHelper(registry, s3, "minecraft:carrot", false, true);
                 
-                ItemSeedFood s4 = new ItemSeedFood(1, 0.3F, potato_block, Blocks.FARMLAND);
-                s4.setTranslationKey("potato");
+                Item s4 = new ItemSeedFood(1, 0.3F, potato_block, Blocks.FARMLAND).setTranslationKey("potato");
                 potato_seed_food = RegistrationHelpers.regHelper(registry, s4, "minecraft:potato", false, true);
             }
+
+            registerTileEntities();
             
             registerMoreOreNames();
-            
-            registerTileEntities();
         }
 
         @SubscribeEvent
