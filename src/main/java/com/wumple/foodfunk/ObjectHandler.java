@@ -1,5 +1,6 @@
 package com.wumple.foodfunk;
 
+import com.google.common.collect.ImmutableList;
 import com.wumple.foodfunk.coldchest.esky.BlockEsky;
 import com.wumple.foodfunk.coldchest.esky.TileEntityEsky;
 import com.wumple.foodfunk.coldchest.esky.TileEntityEskyRenderer;
@@ -48,7 +49,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry.ObjectHolder;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
@@ -56,8 +56,14 @@ import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
+// Not using ObjectHolder in attempt to avoid strange crashes like:
+//   http://www.minecraftforge.net/forum/topic/61861-112-nullpointerexception-populating-the-searchtree/
+//   https://paste.dimdev.org/ujukusaneb.mccrash
+//   http://www.minecraftforge.net/forum/topic/58770-112-recipe-registry/
+//
+// was @ObjectHolder("foodfunk")
 
-@ObjectHolder("foodfunk")
+@Mod.EventBusSubscriber
 public class ObjectHandler
 {
     // ----------------------------------------------------------------------
@@ -164,35 +170,77 @@ public class ObjectHandler
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class RegistrationHandler
     {
+        
+        public static <T extends IForgeRegistryEntry<T>> T regHelper(IForgeRegistry<T> registry, T thing)
+        {
+            assert (thing != null);
+
+            return thing;
+        }
+        
         @SubscribeEvent
         public static void registerBlocks(RegistryEvent.Register<Block> event)
         {
             final IForgeRegistry<Block> registry = event.getRegistry();
 
-            esky = RegistrationHelpers.regHelper(registry, new BlockEsky());
-            freezer = RegistrationHelpers.regHelper(registry, new BlockFreezer());
-            icebox = RegistrationHelpers.regHelper(registry, new BlockLarder());
-            larder = RegistrationHelpers.regHelper(registry, new BlockIcebox());
+            esky = regHelper(registry, new BlockEsky());
+            freezer = regHelper(registry, new BlockFreezer());
+            icebox = regHelper(registry, new BlockLarder());
+            larder = regHelper(registry, new BlockIcebox());
+            
+            ImmutableList.of(
+                    esky,
+                    freezer,
+                    icebox,
+                    larder
+                    ).forEach(block -> registry.register(block));
 
             if (ConfigContainer.rotting.replaceSpecialThings)
             {
                 // to make melons have a TileEntity to attach cap to, must replace vanilla MC block :-(
-                melon_block = RegistrationHelpers.regHelper(registry, new BlockMelonRottable(), "minecraft:melon_block", false, true);
-                pumpkin = RegistrationHelpers.regHelper(registry, new BlockPumpkinRottable(), "minecraft:pumpkin", false, true);
+                melon_block = regHelper(registry, new BlockMelonRottable(), "minecraft:melon_block", false, true);
+                pumpkin = regHelper(registry, new BlockPumpkinRottable(), "minecraft:pumpkin", false, true);
 
                 Block t1 = new BlockStemCustom(melon_block).setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
-                melon_stem = RegistrationHelpers.regHelper(registry, t1, "minecraft:melon_stem", false, true);
+                melon_stem = regHelper(registry, t1, "minecraft:melon_stem", false, true);
 
                 Block t2 = new BlockStemCustom(pumpkin).setSoundType(SoundType.WOOD).setHardness(0.0F).setTranslationKey("pumpkinStem");
-                pumpkin_stem = RegistrationHelpers.regHelper(registry, t2, "minecraft:pumpkin_stem", false, true);
+                pumpkin_stem = regHelper(registry, t2, "minecraft:pumpkin_stem", false, true);
                 
                 // same for seed foods
-                carrot_block = RegistrationHelpers.regHelper(registry, new BlockCarrotRottable(), "minecraft:carrots", false, true);
-                potato_block = RegistrationHelpers.regHelper(registry, new BlockPotatoRottable(), "minecraft:potatoes", false, true);
+                carrot_block = regHelper(registry, new BlockCarrotRottable(), "minecraft:carrots", false, true);
+                potato_block = regHelper(registry, new BlockPotatoRottable(), "minecraft:potatoes", false, true);
+                
+                ImmutableList.of(
+                        melon_block,
+                        pumpkin,
+                        melon_stem,
+                        pumpkin_stem,
+                        carrot_block,
+                        potato_block
+                        ).forEach(block -> registry.register(block));
             }
         }
         
-        /*
+        public static Item registerOreNames(Item thing, String[] oreNames)
+        {
+            assert (thing != null);
+
+            for (String oreName : oreNames)
+            {
+                OreDictionary.registerOre(oreName, thing);
+            }
+
+            return thing;
+        }
+        
+        public static Item regHelperOre(IForgeRegistry<Item> registry, Item thing, String[] oreNames)
+        {
+            assert (thing != null);
+
+            return registerOreNames(thing, oreNames);
+        }
+        
         public static ItemStack registerOreNames(ItemStack thing, String[] oreNames)
         {
             assert (thing != null);
@@ -287,36 +335,54 @@ public class ObjectHandler
 
             return thing;
         }
-        */
+        
 
         @SubscribeEvent
         public static void registerItems(RegistryEvent.Register<Item> event)
         {
             final IForgeRegistry<Item> registry = event.getRegistry();
 
-            rotten_food = RegistrationHelpers.regHelperOre(registry, new ItemRottenFood(), rottenfoods);
-            spoiled_milk = RegistrationHelpers.regHelperOre(registry, new ItemSpoiledMilk(), rottenfoods);
-            rotted_item = RegistrationHelpers.regHelperOre(registry, new ItemRottedItem(), rotteditems);
-            biodegradable_item = RegistrationHelpers.regHelperOre(registry, new ItemBiodegradableItem(), rottedbiodegradables);
+            rotten_food = regHelperOre(registry, new ItemRottenFood(), rottenfoods);
+            spoiled_milk = regHelperOre(registry, new ItemSpoiledMilk(), rottenfoods);
+            rotted_item = regHelperOre(registry, new ItemRottedItem(), rotteditems);
+            biodegradable_item = regHelperOre(registry, new ItemBiodegradableItem(), rottedbiodegradables);
             
-            esky_item = RegistrationHelpers.registerItemBlockOre(registry, esky, preservers);
-            freezer_item = RegistrationHelpers.registerItemBlockOre(registry, freezer, preservers);
-            larder_item = RegistrationHelpers.registerItemBlockOre(registry, larder, preservers);
-            icebox_item = RegistrationHelpers.registerItemBlockOre(registry, icebox, preservers);
+            esky_item = registerItemBlockOre(registry, esky, preservers);
+            freezer_item = registerItemBlockOre(registry, freezer, preservers);
+            larder_item = registerItemBlockOre(registry, larder, preservers);
+            icebox_item = registerItemBlockOre(registry, icebox, preservers);
+            
+            ImmutableList.of(
+                    rotten_food,
+                    spoiled_milk,
+                    rotted_item,
+                    biodegradable_item,
+                    esky_item,
+                    freezer_item,
+                    larder_item,
+                    icebox_item
+                    ).forEach(item -> registry.register(item));
 
             if (ConfigContainer.rotting.replaceSpecialThings)
             {
                 Item s1 = new ItemSeeds(melon_stem, Blocks.FARMLAND).setTranslationKey("seeds_melon");
-                melon_seeds_item = RegistrationHelpers.regHelper(registry, s1, "minecraft:melon_seeds", false, true);
+                melon_seeds_item = regHelper(registry, s1, "minecraft:melon_seeds", false, true);
 
                 Item s2 = new ItemSeeds(pumpkin_stem, Blocks.FARMLAND).setTranslationKey("seeds_pumpkin");
-                pumpkin_seeds_item = RegistrationHelpers.regHelper(registry, s2, "minecraft:pumpkin_seeds", false, true);
+                pumpkin_seeds_item = regHelper(registry, s2, "minecraft:pumpkin_seeds", false, true);
                 
                 Item s3 = new ItemSeedFood(3, 0.6F, carrot_block, Blocks.FARMLAND).setTranslationKey("carrots");
-                carrot_seed_food = RegistrationHelpers.regHelper(registry, s3, "minecraft:carrot", false, true);
+                carrot_seed_food = regHelper(registry, s3, "minecraft:carrot", false, true);
                 
                 Item s4 = new ItemSeedFood(1, 0.3F, potato_block, Blocks.FARMLAND).setTranslationKey("potato");
-                potato_seed_food = RegistrationHelpers.regHelper(registry, s4, "minecraft:potato", false, true);
+                potato_seed_food = regHelper(registry, s4, "minecraft:potato", false, true);
+                
+                ImmutableList.of(
+                        melon_seeds_item,
+                        pumpkin_seeds_item,
+                        carrot_seed_food,
+                        potato_seed_food
+                        ).forEach(item -> registry.register(item));
             }
 
             registerTileEntities();
