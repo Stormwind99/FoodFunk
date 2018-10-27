@@ -56,13 +56,7 @@ import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-// Not using ObjectHolder in attempt to avoid strange crashes like:
-//   http://www.minecraftforge.net/forum/topic/61861-112-nullpointerexception-populating-the-searchtree/
-//   https://paste.dimdev.org/ujukusaneb.mccrash
-//   http://www.minecraftforge.net/forum/topic/58770-112-recipe-registry/
-//
-// was @ObjectHolder("foodfunk")
-
+// @ObjectHolder("foodfunk")
 @Mod.EventBusSubscriber
 public class ObjectHandler
 {
@@ -171,6 +165,23 @@ public class ObjectHandler
     public static class RegistrationHandler
     {
         
+        public static boolean shouldReplaceSpecialThings()
+        {
+            // betterwithmods + applecore + replaceSpecialThings causes strange crash
+            if (ConfigContainer.rotting.replaceSpecialThings && Loader.isModLoaded("betterwithmods") && Loader.isModLoaded("applecore"))
+            {
+                // Attempt to avoid strange crashes like:
+                //   http://www.minecraftforge.net/forum/topic/61861-112-nullpointerexception-populating-the-searchtree/
+                //   https://paste.dimdev.org/ujukusaneb.mccrash
+                //   http://www.minecraftforge.net/forum/topic/58770-112-recipe-registry/
+                
+                FoodFunk.logger.warn("Disabling replaceSpecialThings to avoid crash with betterwithmods and applecore");
+                return false;
+            }
+            
+            return ConfigContainer.rotting.replaceSpecialThings;
+        }
+        
         public static <T extends IForgeRegistryEntry<T>> T regHelper(IForgeRegistry<T> registry, T thing)
         {
             assert (thing != null);
@@ -195,7 +206,7 @@ public class ObjectHandler
                     larder
                     ).forEach(block -> registry.register(block));
 
-            if (ConfigContainer.rotting.replaceSpecialThings)
+            if (shouldReplaceSpecialThings())
             {
                 // to make melons have a TileEntity to attach cap to, must replace vanilla MC block :-(
                 melon_block = regHelper(registry, new BlockMelonRottable(), "minecraft:melon_block", false, true);
@@ -371,7 +382,7 @@ public class ObjectHandler
                     icebox_item
                     ).forEach(item -> registry.register(item));
 
-            if (ConfigContainer.rotting.replaceSpecialThings)
+            if (shouldReplaceSpecialThings())
             {
                 Item s1 = new ItemSeeds(melon_stem, Blocks.FARMLAND).setTranslationKey("seeds_melon");
                 melon_seeds_item = regHelper(registry, s1, "minecraft:melon_seeds", false, true);
@@ -421,7 +432,7 @@ public class ObjectHandler
             RegistrationHelpers.registerTileEntity(TileEntityIcebox.class, "foodfunk:icebox");
         	RegistrationHelpers.registerTileEntity(RotTickingTileEntity.class, "foodfunk:rottable");
         	
-            if (ConfigContainer.rotting.replaceSpecialThings)
+            if (shouldReplaceSpecialThings())
             {
                 RegistrationHelpers.cheat( () ->
                     {
@@ -485,7 +496,7 @@ public class ObjectHandler
             OreDictionary.registerOre(Ids.listAllMetalBlocks, Blocks.GOLD_BLOCK);
             // TODO: blockCopper, other metal ingots
             
-            if (ConfigContainer.rotting.replaceSpecialThings)
+            if (shouldReplaceSpecialThings())
             {
                 OreDictionary.registerOre(Ids.listAllMelons, melon_block);
                 OreDictionary.registerOre(Ids.listAllMelons, pumpkin);
