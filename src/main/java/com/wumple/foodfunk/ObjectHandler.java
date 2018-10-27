@@ -234,7 +234,7 @@ public class ObjectHandler
             return thing;
         }
         
-        public static Item regHelperOre(IForgeRegistry<Item> registry, Item thing, String[] oreNames)
+        public static Item registerOreNames(IForgeRegistry<Item> registry, Item thing, String[] oreNames)
         {
             assert (thing != null);
 
@@ -253,17 +253,25 @@ public class ObjectHandler
             return thing;
         }
         
-        public static ItemBlock registerItemBlockOre(IForgeRegistry<Item> registry, Block block, String[] oreNames)
-        {    
+        public static void registerOreNames(Block block, Item item, String[] oreNames)
+        {
             assert (block != null);
-            ItemBlock item = new ItemBlock(block);
-            RegistrationHelpers.nameHelper(item, block.getRegistryName(), true);
+            assert (item!= null);
 
             for (String oreName : oreNames)
             {
                 OreDictionary.registerOre(oreName, item);
                 OreDictionary.registerOre(oreName, block);
             }
+        }
+        
+        public static ItemBlock registerItemBlock(IForgeRegistry<Item> registry, Block block) //, String[] oreNames)
+        {    
+            assert (block != null);
+            ItemBlock item = new ItemBlock(block);
+            RegistrationHelpers.nameHelper(item, block.getRegistryName(), true);
+
+            //registerOreNames(block, item, oreNames);
 
             return item;
         }
@@ -342,15 +350,15 @@ public class ObjectHandler
         {
             final IForgeRegistry<Item> registry = event.getRegistry();
 
-            rotten_food = regHelperOre(registry, new ItemRottenFood(), rottenfoods);
-            spoiled_milk = regHelperOre(registry, new ItemSpoiledMilk(), rottenfoods);
-            rotted_item = regHelperOre(registry, new ItemRottedItem(), rotteditems);
-            biodegradable_item = regHelperOre(registry, new ItemBiodegradableItem(), rottedbiodegradables);
+            rotten_food = regHelper(registry, new ItemRottenFood()); //, rottenfoods);
+            spoiled_milk = regHelper(registry, new ItemSpoiledMilk()); //, rottenfoods);
+            rotted_item = regHelper(registry, new ItemRottedItem()); //, rotteditems);
+            biodegradable_item = regHelper(registry, new ItemBiodegradableItem()); //, rottedbiodegradables);
             
-            esky_item = registerItemBlockOre(registry, esky, preservers);
-            freezer_item = registerItemBlockOre(registry, freezer, preservers);
-            larder_item = registerItemBlockOre(registry, larder, preservers);
-            icebox_item = registerItemBlockOre(registry, icebox, preservers);
+            esky_item = registerItemBlock(registry, esky); //, preservers);
+            freezer_item = registerItemBlock(registry, freezer); //, preservers);
+            larder_item = registerItemBlock(registry, larder); //, preservers);
+            icebox_item = registerItemBlock(registry, icebox); //, preservers);
             
             ImmutableList.of(
                     rotten_food,
@@ -387,7 +395,7 @@ public class ObjectHandler
 
             registerTileEntities();
             
-            registerMoreOreNames();
+            // registerMoreOreNames();
         }
 
         @SubscribeEvent
@@ -459,6 +467,17 @@ public class ObjectHandler
         
         public static void registerMoreOreNames()
         {
+            registerOreNames(rotten_food, rottenfoods);
+            registerOreNames(spoiled_milk, rottenfoods);
+            registerOreNames(rotted_item, rotteditems);
+            registerOreNames(biodegradable_item, rottedbiodegradables);
+            
+            registerOreNames(esky, esky_item, preservers);
+            registerOreNames(freezer, freezer_item, preservers);
+            registerOreNames(larder, larder_item, preservers);
+            registerOreNames(icebox, icebox_item, preservers);
+            
+            // MORE
             OreDictionary.registerOre(Ids.listAllMetalIngots, Items.IRON_INGOT);
             OreDictionary.registerOre(Ids.listAllMetalIngots, Items.GOLD_INGOT);
             // TODO: ingotCopper, other metal ingots
@@ -474,8 +493,8 @@ public class ObjectHandler
                 OreDictionary.registerOre(Ids.listAllSeed, melon_seeds_item);
                 OreDictionary.registerOre(Ids.listAllSeed, pumpkin_seeds_item);
                 
-                OreDictionary.registerOre(Ids.listAllSeedFoods, carrot_block);
-                OreDictionary.registerOre(Ids.listAllSeedFoods, potato_block);
+                //OreDictionary.registerOre(Ids.listAllSeedFoods, new ItemStack(carrot_block, 1, OreDictionary.WILDCARD_VALUE));
+                //OreDictionary.registerOre(Ids.listAllSeedFoods, new ItemStack(potato_block, 1, OreDictionary.WILDCARD_VALUE));
                 OreDictionary.registerOre(Ids.listAllSeedFoods, carrot_seed_food);
                 OreDictionary.registerOre(Ids.listAllSeedFoods, potato_seed_food);
             }

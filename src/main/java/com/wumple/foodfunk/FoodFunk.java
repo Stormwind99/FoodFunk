@@ -7,8 +7,8 @@ import com.wumple.foodfunk.capability.Messages;
 import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.configuration.ConfigHandler;
-import com.wumple.foodfunk.integration.waila.WailaCompatHandler;
 import com.wumple.foodfunk.integration.theoneprobe.TOPCompatHandler;
+import com.wumple.foodfunk.integration.waila.WailaCompatHandler;
 import com.wumple.util.mod.ModBase;
 import com.wumple.util.proxy.ISidedProxy;
 
@@ -58,6 +58,7 @@ public class FoodFunk extends ModBase
     public void init(FMLInitializationEvent event)
     {
         super.init(event);
+        ObjectHandler.RegistrationHandler.registerMoreOreNames();
         proxy.init(event);
     }
 
