@@ -30,7 +30,7 @@ plugins {
   id "com.jfrog.bintray" version "1.8.4"
   id "maven"
   id "maven-publish"
-  id "com.dorongold.task-tree" version "1.3"
+  //id "com.dorongold.task-tree" version "1.3"
   id "com.github.ben-manes.versions" version "0.20.0"
 }
 
@@ -445,8 +445,8 @@ build {
 
 // make build tasks run before publish, otherwise could upload MCP mapped jar instead of SRG mapped jar!
 tasks.publish.dependsOn build
-tasks.publishMavenPublicationToMavenLocal.dependsOn build
-tasks.publishMavenPublicationToMavenLocal.dependsOn publish
+//tasks.publishMavenPublicationToMavenLocal.dependsOn build
+//tasks.publishMavenPublicationToMavenLocal.dependsOn publish
 tasks.githubRelease.dependsOn build
 tasks.bintrayUpload.dependsOn build
 tasks.curseforge.dependsOn build
