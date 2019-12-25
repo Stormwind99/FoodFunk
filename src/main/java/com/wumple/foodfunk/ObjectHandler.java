@@ -319,7 +319,7 @@ public class ObjectHandler
             assert (thing != null);
             assert (name != null);
 
-            ResourceLocation loc = GameData.checkPrefix(name);
+            ResourceLocation loc = GameData.checkPrefix(name, false);
             nameHelper(thing, loc, doTransKey);
         }
 
