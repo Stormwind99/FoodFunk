@@ -189,10 +189,18 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
         ItemStack stack = owner.as(ItemStack.class);
         if (stack != null)
         {
-            NBTTagCompound tag = stack.getOrCreateSubCompound("Rot");
-            RotStorage storage = new RotStorage();
-            NBTTagCompound nbt = (NBTTagCompound)storage.writeNBT(Rot.CAPABILITY, this, null);
-            tag.merge(nbt);
+        	// Attempted workaround for #56 even tho Rot.CAPABILITY should always be non-null 
+        	if (Rot.CAPABILITY != null)
+        	{
+        		NBTTagCompound tag = stack.getOrCreateSubCompound("Rot");
+        		RotStorage storage = new RotStorage();
+        		NBTTagCompound nbt = (NBTTagCompound)storage.writeNBT(Rot.CAPABILITY, this, null);
+        		// Attempted workaround for #56 even tho nbt should never be null or empty
+        		if ((nbt != null) && !nbt.isEmpty())
+        		{
+        			tag.merge(nbt);
+        		}
+        	}
         }
         
         //int count = stack.getCount();
