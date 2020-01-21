@@ -1,6 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "foodfunk:items/rotten_food"
-  }
-}

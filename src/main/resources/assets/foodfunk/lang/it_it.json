@@ -1,0 +1,16 @@
+{
+    "language": "Italian",
+
+    "item.foodfunk.rotten_food": "Cibo marcio",
+
+    "block.foodfunk.esky": "Esky",
+    "block.foodfunk.freezer": "Freezer",
+
+    "container.foodfunk.esky": "Esky",
+    "container.foodfunk.freezer": "Freezer",
+
+    "advancements.foodfunk.ten_second_rule.title": "Regola dei 10 secondi",
+    "advancements.foodfunk.ten_second_rule.description": "Mangia del cibo marcio",
+
+    "misc.foodfunk.tooltip.rot": "Marcio: %s (giorni%s/%s)"
+}

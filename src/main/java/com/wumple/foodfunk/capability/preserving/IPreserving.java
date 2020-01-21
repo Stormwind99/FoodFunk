@@ -10,16 +10,17 @@ import com.wumple.util.adapter.EntityThing;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.adapter.ItemStackThing;
 import com.wumple.util.adapter.TileEntityThing;
+import com.wumple.util.capability.CapabilityUtils;
 import com.wumple.util.capability.timerrefreshing.ITimerRefreshingCap;
-import com.wumple.util.container.capabilitylistener.CapabilityUtils;
-import com.wumple.util.container.misc.ContainerUtil;
+import com.wumple.util.container.ContainedByUtil;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
 public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotInfo>
 {
@@ -30,7 +31,7 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
      * @return The IRot, or null if there isn't one
      */
     @Nullable
-    static IPreserving getMyCap(@Nullable ICapabilityProvider provider)
+    static LazyOptional<IPreserving> getMyCap(@Nullable ICapabilityProvider provider)
     {
         return CapabilityUtils.fetchCapability(provider, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
     }
@@ -38,7 +39,7 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
     public static interface IPreservingOwner extends IThing
     {
         // Preserving specific
-        public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor);
+        public NonNullList<PlayerEntity> getPlayersWithContainerOpen(ItemStack itemToSearchFor);
         public Integer getPreservingProperty();
     }
     
@@ -54,9 +55,9 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
         	return ConfigHandler.preserving.getProperty(owner);
         }
         
-        public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
+        public NonNullList<PlayerEntity> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
-        	return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
+        	return null; // PORT ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
         }  
     }
     
@@ -72,9 +73,9 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
         	return ConfigHandler.preserving.getProperty(owner);
         }
         
-        public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
+        public NonNullList<PlayerEntity> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
-        	return ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
+        	return ContainedByUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
         }
     }
     
@@ -90,7 +91,7 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
             return ConfigHandler.preserving.getProperty(owner);
         }
         
-        public NonNullList<EntityPlayer> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
+        public NonNullList<PlayerEntity> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
             return null; 
         }

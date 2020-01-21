@@ -1,9 +1,9 @@
 package com.wumple.foodfunk.capability.rot;
 
 
-import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
+import com.wumple.util.misc.TimeUtil;
 import com.wumple.util.misc.TypeIdentifier;
 
 public class RotProperty extends TypeIdentifier
@@ -25,13 +25,13 @@ public class RotProperty extends TypeIdentifier
 
     public long getRotTime()
     {
-        if (ConfigContainer.zdebugging.debug)
+        if (ConfigHandler.isDebugging())
         {
-            double ticksPerDay = ConfigContainer.zdebugging.rotMultiplier * ConfigHandler.TICKS_PER_DAY;
+            double ticksPerDay = ConfigHandler.getRotMultiplier() * TimeUtil.TICKS_PER_DAY;
             return days * (long) ticksPerDay;
         }
 
-        return days * ConfigHandler.TICKS_PER_DAY;
+        return days * TimeUtil.TICKS_PER_DAY;
     }
 
     public boolean doesRot()

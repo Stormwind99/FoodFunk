@@ -1,25 +1,23 @@
-# Food Funk
+# FoodFunk
 
-Minecraft mod: What is that funky smell in my backpack? Food spoils over time unless preserved. Configure any item to rot, any container to preserve items.
+This is an automated Minecraft Forge mod template based on the Forge MDK.
 
-* Food [rots](https://github.com/Stormwind99/FoodFunk/wiki/Food-Spoiling-(Rot)) over time.  Make any item [rot](https://github.com/Stormwind99/FoodFunk/wiki/Food-Spoiling-(Rot)) into any other item (or none at all) over a specified time (via [configuration](https://github.com/Stormwind99/FoodFunk/wiki/Configuration)).
-* Preserving containers (the [Esky](https://github.com/Stormwind99/FoodFunk/wiki/Esky) and [Freezer](https://github.com/Stormwind99/FoodFunk/wiki/Freezer)) slow or stop rot a specified amount.  Add more via [configuration](https://github.com/Stormwind99/FoodFunk/wiki/Configuration).
-* Default [configuration](https://github.com/Stormwind99/FoodFunk/wiki/Configuration) entries support vanilla Minecraft and [other food mods](https://github.com/Stormwind99/FoodFunk/wiki/Compatibility). 
-* Any item from any mod can be [specified](https://github.com/Stormwind99/FoodFunk/wiki/Configuration), and specifiers include support for metadata and ore dictionary names.
+Expected directory structure before run:
+* newmod.sh (from Git repo other/util/newmod.sh)
+* newmod (optional)
+   * newmod.cfg (from Git repo other/util/newmod.cfg with options you've modified)
+   * private.properties (optional)
 
-Requires [Wumple Util Library](https://github.com/Stormwind99/WumpleUtil).
+Running ```newmod.sh NewMod``` will then create:
 
-## Screenshots
+* NewModWorkspace
+   * NewMod (local git repo for new mod with remote origin set)
+      * (expected base Mod files)
+      * Modify build.properties and private.properties
+   * NewMod.wiki (local git repo for new mod's wiki with remote origin set)
 
-![Rot tooltip](https://raw.githubusercontent.com/Stormwind99/FoodFunk/master/other/screenshots/tooltip.png)
-![Freezer and Esky](https://raw.githubusercontent.com/Stormwind99/FoodFunk/master/other/screenshots/coldchests.png)
+## Notes
 
-## Credits
-
-* [Stormwind99](https://github.com/Stormwind99) - author
-* [Choonster](https://github.com/Choonster) - for CapabilityContainerListener, etc
-* [DYColdWind](https://github.com/DYColdWind) and others for translations
-* [Funwayguy](https://github.com/Funwayguy), [GenDeathrow](https://github.com/GenDeathrow), [thislooksfun](https://github.com/thislooksfun), [TimbuckTato](https://github.com/TimbuckTato) - authors of discontinued [EnviroMine](https://minecraft.curseforge.com/projects/enviromine) mod
-   * Inspired by the food rot feature - thanks to the authors!
-   * Some item and block textures, text, and code snippets 
-   * If you want food rot for 1.7.10 or earlier, consider [EnviroMine](https://minecraft.curseforge.com/projects/enviromine) - it's lots of fun!
+* To debug:
+   * ```cp build/resources/main/META-INF/mods.toml src/main/resources/META-INF/mods.toml``` beforehand since debugger does not run build with gradle string replacement.  Then ```git checkout src/main/resources/META-INF/mods.toml``` afterward to revert back to generated mcmod.info template.
+   * Also comment out Gradle string replacements in Reference.java and uncomment the explicit string constants below it (since debug won't do the Gradle string replacement)

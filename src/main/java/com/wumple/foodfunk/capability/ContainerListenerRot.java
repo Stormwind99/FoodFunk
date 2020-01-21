@@ -3,92 +3,46 @@ package com.wumple.foodfunk.capability;
 import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
-import com.wumple.foodfunk.configuration.ConfigContainer;
-import com.wumple.util.container.capabilitylistener.CapabilityContainerListener;
-import com.wumple.util.container.capabilitylistener.MessageBulkUpdateContainerCapability;
-import com.wumple.util.container.capabilitylistener.MessageUpdateContainerCapability;
+import com.wumple.util.capability.listener.CapabilityContainerListener;
+import com.wumple.util.capability.listener.network.BulkUpdateContainerCapabilityMessage;
+import com.wumple.util.capability.listener.network.UpdateContainerCapabilityMessage;
 
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.network.PacketDistributor.PacketTarget;
 
 /**
- * Syncs the {@link IHiddenBlockRevealer} capability for items in {@link Container}s.
- *
- * @author Choonster
+ * Syncs the capability for items in {@link Container}s.
  */
 public class ContainerListenerRot extends CapabilityContainerListener<IRot>
 {
 
-    public ContainerListenerRot(final EntityPlayerMP player)
-    {
-        super(player, Rot.CAPABILITY, Rot.DEFAULT_FACING);
-    }
-    
-    @Override
-    protected void sendTo(IMessage message, EntityPlayerMP player)
-    {
-    	FoodFunk.network.sendTo(message, player);
-    }
-    
-    // /*
-    // for debugging
-    @Override
-    public void sendAllContents(final Container containerToSend, final NonNullList<ItemStack> itemsList)
-    {
-        if (ConfigContainer.zdebugging.debug)
-        {
-            FoodFunk.logger.info("CLR sending " + containerToSend + " items " + itemsList);
-        }
-    	super.sendAllContents(containerToSend, itemsList);
-    }
-    
-    // for debugging
-    @Override
-    public void sendSlotContents(final Container containerToSend, final int slotInd,
-            final ItemStack stack)
-    {
-        if (ConfigContainer.zdebugging.debug)
-        {
-            FoodFunk.logger.info("CLR sending " + containerToSend + " slot " + slotInd + " stack " + stack);
-        }
-    	super.sendSlotContents(containerToSend, slotInd, stack);
-    }
-    // */
+	public ContainerListenerRot(final ServerPlayerEntity player)
+	{
+		super(player, Rot.CAPABILITY, Rot.DEFAULT_FACING);
+	}
 
-    /**
-     * Create an instance of the bulk update message.
-     *
-     * @param windowID
-     *            The window ID of the Container
-     * @param items
-     *            The items list
-     * @return The bulk update message
-     */
-    @Override
-    protected MessageBulkUpdateContainerCapability<IRot, ?> createBulkUpdateMessage(final int windowID,
-            final NonNullList<ItemStack> items)
-    {
-        return new MessageBulkUpdateContainerRots(windowID, items);
-    }
+	@Override
+	public <MSG> void send(PacketTarget target, MSG message)
+	{
+		FoodFunk.network.send(target, message);
+	}
 
-    /**
-     * Create an instance of the single update message.
-     *
-     * @param windowID
-     *            The window ID of the Container
-     * @param slotNumber
-     *            The slot's index in the Container
-     * @param lastUseTime
-     *            The capability handler instance
-     * @return The single update message
-     */
-    @Override
-    protected MessageUpdateContainerCapability<IRot, ?> createSingleUpdateMessage(final int windowID, final int slotNumber,
-            final IRot icap)
-    {
-        return new MessageUpdateContainerRot(windowID, slotNumber, icap);
-    }
+	// ------------------------------------------------------
+
+	@Override
+	protected BulkUpdateContainerCapabilityMessage<IRot, ?> createBulkUpdateMessage(final int windowID,
+			final NonNullList<ItemStack> items)
+	{
+		return new MessageBulkUpdateContainerRots(Rot.DEFAULT_FACING, windowID, items);
+	}
+
+	@Override
+	protected UpdateContainerCapabilityMessage<IRot, ?> createSingleUpdateMessage(final int windowID,
+			final int slotNumber, final IRot cap)
+	{
+		return new MessageUpdateContainerRot(Rot.DEFAULT_FACING, windowID, slotNumber, cap);
+	}
 }

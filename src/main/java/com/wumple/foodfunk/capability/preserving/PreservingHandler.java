@@ -3,7 +3,6 @@ package com.wumple.foodfunk.capability.preserving;
 import com.wumple.foodfunk.capability.preserving.IPreserving.EntityPreservingOwner;
 import com.wumple.foodfunk.capability.preserving.IPreserving.ItemStackPreservingOwner;
 import com.wumple.foodfunk.capability.preserving.IPreserving.TileEntityPreservingOwner;
-import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.capability.timerrefreshing.TimerRefreshingEventHandler;
 
@@ -12,9 +11,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber
 public class PreservingHandler extends TimerRefreshingEventHandler<IPreserving>
@@ -32,19 +32,19 @@ public class PreservingHandler extends TimerRefreshingEventHandler<IPreserving>
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    protected IPreserving getCap(ICapabilityProvider stack)
+    protected LazyOptional<IPreserving> getCap(ICapabilityProvider stack)
     {
         return IPreserving.getMyCap(stack);
     }
 
     public boolean isEnabled()
     {
-        return ConfigContainer.enabled;
+        return ConfigHandler.isEnabled();
     }
 
     public boolean isDebugging()
     {
-        return ConfigContainer.zdebugging.debug;
+        return ConfigHandler.isDebugging();
     }
     
     /**
@@ -58,7 +58,7 @@ public class PreservingHandler extends TimerRefreshingEventHandler<IPreserving>
     {
         TileEntity entity = event.getObject();
 
-        if (ConfigHandler.preserving.doesIt(entity))
+        if (false) // TEMP if (ConfigHandler.preserving.doesIt(entity))
         {
             PreservingProvider provider = PreservingProvider.createProvider(new TileEntityPreservingOwner(entity));
             event.addCapability(Preserving.ID, provider);
@@ -70,7 +70,7 @@ public class PreservingHandler extends TimerRefreshingEventHandler<IPreserving>
     {
         Entity entity = event.getObject();
 
-        if (ConfigHandler.preserving.doesIt(entity))
+        if (false) // TEMP if (ConfigHandler.preserving.doesIt(entity))
         {
             PreservingProvider provider = PreservingProvider.createProvider(new EntityPreservingOwner(entity));
             event.addCapability(Preserving.ID, provider);
@@ -82,7 +82,7 @@ public class PreservingHandler extends TimerRefreshingEventHandler<IPreserving>
     {
         ItemStack it = event.getObject();
 
-        if (ConfigHandler.preserving.doesIt(it))
+        if (false) // TEMP if (ConfigHandler.preserving.doesIt(it))
         {
             PreservingProvider provider = PreservingProvider.createProvider(new ItemStackPreservingOwner(it));
             event.addCapability(Preserving.ID, provider);

@@ -1,0 +1,13 @@
+{
+    "language": "Russian",
+
+    "item.foodfunk.rotten_food": "Испорченная еда",
+
+    "block.foodfunk.esky": "Портативный холодильник",
+    "block.foodfunk.freezer": "Морозилка",
+
+    "advancements.foodfunk.ten_second_rule.title": "Правило 10 секунд",
+    "advancements.foodfunk.ten_second_rule.description": "Съешьте испорченную еду",
+
+    "misc.foodfunk.tooltip.rot": "Испорчено: %s (Day %s/%s)"
+}

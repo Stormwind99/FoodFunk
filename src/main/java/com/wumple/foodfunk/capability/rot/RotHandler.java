@@ -1,6 +1,5 @@
 package com.wumple.foodfunk.capability.rot;
 
-import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.adapter.TUtil;
@@ -12,10 +11,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Mod.EventBusSubscriber
 public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements RotCapCopier
@@ -34,7 +34,7 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     }
     
     @Override
-    protected IRot getCap(ItemStack stack)
+    protected LazyOptional<IRot> getCap(ItemStack stack)
     {
         return IRot.getMyCap(stack);
     }
@@ -42,7 +42,7 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     @Override
     public boolean isEnabled()
     {
-        return ConfigContainer.enabled;
+        return ConfigHandler.isEnabled();
     }
     
     @Override
@@ -54,13 +54,13 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     @Override
     public boolean isDebugging()
     {
-        return ConfigContainer.zdebugging.debug;
+        return ConfigHandler.isDebugging();
     }
     
     @Override
     protected long getEvaluationInterval()
     {
-        return ConfigContainer.evaluationInterval;
+        return ConfigHandler.getEvaluationInterval();
     }
     
     /**
@@ -91,7 +91,7 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     {
         if (ConfigHandler.rotting.doesRot(thing))
         {
-            event.addCapability(Rot.ID, RotProvider.createProvider(thing));
+            event.addCapability(Rot.ID, RotProvider2.createProvider(thing));
         }
     }
 
@@ -111,12 +111,6 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
         return evaluateTimer(world, stack);
     }
     
-    @Override
-    public IRot getCap(ICapabilityProvider provider)
-    {
-        return IRot.getMyCap(provider);
-    }
-    
     @SubscribeEvent
     public void onHarvest(BlockEvent.HarvestDropsEvent event)
     { RotCapCopier.super.onHarvest(event); }
@@ -126,9 +120,15 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     { RotCapCopier.super.onBreak(event); }
     
     @SubscribeEvent
-    public void onPlaceBlock(BlockEvent.PlaceEvent event)
+    public void onPlaceBlock(BlockEvent.EntityPlaceEvent event)
     {
         super.onPlaceBlock(event);
         RotCapCopier.super.onPlaceBlock(event);
     }
+
+	@Override
+	public LazyOptional<? extends IRot> getCap(ICapabilityProvider provider)
+	{
+		return IRot.getMyCap(provider);
+	}
 }

@@ -1,8 +1,13 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
+    "1.14.4-latest": "5.0.0",
+    "1.14.4-recommended": "5.0.0",
     "1.12.2-latest": "4.9.6",
     "1.12.2-recommended": "4.9.6"
+  },
+  "1.14.4": {
+    "5.0.0": "Basic port to 1.14.4"
   },
   "1.12.2": {
     "4.9.6": "More attempted compat workarounds such as trying to avoid writing null NBT",

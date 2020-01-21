@@ -6,22 +6,23 @@ import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.preserving.IPreserving.IPreservingOwner;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.RotInfo;
-import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.adapter.TUtil;
 import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
 import com.wumple.util.capability.timerrefreshing.TimerRefreshingCap;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 
 public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IThing> implements IPreserving
@@ -29,7 +30,7 @@ public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IT
     // The {@link Capability} instance
     @CapabilityInject(IPreserving.class)
     public static final Capability<IPreserving> CAPABILITY = null;
-    public static final EnumFacing DEFAULT_FACING = null;
+    public static final Direction DEFAULT_FACING = null;
 
     // IDs of the capability
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "preserving");
@@ -67,21 +68,21 @@ public class Preserving extends TimerRefreshingCap<IPreservingOwner, RotInfo, IT
     @Override
     protected long getEvaluationInterval()
     {
-        return ConfigContainer.evaluationInterval;
+        return ConfigHandler.getEvaluationInterval();
     }
 
-    @Override
-    protected IEventTimedThingCap<IThing, RotInfo> getTimedCap(ICapabilityProvider provider)
-    {
-        return IRot.getMyCap(provider);
-    }
+	@Override
+	protected LazyOptional<? extends IEventTimedThingCap<IThing, RotInfo>> getTimedCap(ICapabilityProvider provider)
+	{
+		return IRot.getMyCap(provider);
+	}
     
     @Override
-    public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
+    public void doTooltip(ItemStack stack, PlayerEntity entity, boolean advanced, List<ITextComponent> tips)
     {
         int ratio = getRatio();
         String key = getTemperatureTooltipKey();
-        tips.add(new TextComponentTranslation(key, ratio).getUnformattedText());
+        tips.add(new TranslationTextComponent(key, ratio));
         super.doTooltip(stack, entity, advanced, tips);
     }
     

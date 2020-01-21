@@ -3,10 +3,11 @@ package com.wumple.foodfunk.capability.rot;
 import javax.annotation.Nullable;
 
 import com.wumple.util.adapter.IThing;
+import com.wumple.util.capability.CapabilityUtils;
 import com.wumple.util.capability.eventtimed.IEventTimedThingCap;
-import com.wumple.util.container.capabilitylistener.CapabilityUtils;
 
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
 /**
  * Rot capability 
@@ -20,7 +21,7 @@ public interface IRot extends IEventTimedThingCap<IThing, RotInfo>
      * @return The IRot, or null if there isn't one
      */
     @Nullable
-    static IRot getMyCap(@Nullable ICapabilityProvider provider)
+    static LazyOptional<IRot> getMyCap(@Nullable ICapabilityProvider provider)
     {
         return CapabilityUtils.fetchCapability(provider, Rot.CAPABILITY, Rot.DEFAULT_FACING);
     }

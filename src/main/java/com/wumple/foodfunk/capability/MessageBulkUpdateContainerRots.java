@@ -1,115 +1,52 @@
 package com.wumple.foodfunk.capability;
 
+import java.util.function.Supplier;
+
 import javax.annotation.Nullable;
 
-import com.wumple.foodfunk.FoodFunk;
 import com.wumple.foodfunk.capability.rot.IRot;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.capability.rot.RotInfo;
-import com.wumple.util.container.capabilitylistener.MessageBulkUpdateContainerCapability;
+import com.wumple.util.capability.listener.network.BulkUpdateContainerCapabilityMessage;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IThreadListener;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
 
 /**
- * Updates the {@link Rot} for each slot of a {@link Container}.
+ * Updates the capability for each slot of a {@link Container}.
  */
-public class MessageBulkUpdateContainerRots extends MessageBulkUpdateContainerCapability<IRot, RotInfo>
+public class MessageBulkUpdateContainerRots extends BulkUpdateContainerCapabilityMessage<IRot, RotInfo>
 {
+	public MessageBulkUpdateContainerRots(@Nullable final Direction facing, final int windowID,
+			final NonNullList<ItemStack> items)
+	{
+		super(Rot.CAPABILITY, facing, windowID, items, RotFunctions::convert);
+	}
 
-    @SuppressWarnings("unused")
-    public MessageBulkUpdateContainerRots()
-    {
-        super(Rot.CAPABILITY);
-    }
+	private MessageBulkUpdateContainerRots(@Nullable final Direction facing, final int windowID,
+			final Int2ObjectMap<RotInfo> capabilityData)
+	{
+		super(Rot.CAPABILITY, facing, windowID, capabilityData);
+	}
 
-    public MessageBulkUpdateContainerRots(final int windowID, final NonNullList<ItemStack> items)
-    {
-        super(Rot.CAPABILITY, null, windowID, items);
-    }
+	public static MessageBulkUpdateContainerRots decode(final PacketBuffer buffer)
+	{
+		return BulkUpdateContainerCapabilityMessage.<IRot, RotInfo, MessageBulkUpdateContainerRots>decode(buffer,
+				RotFunctions::decode, MessageBulkUpdateContainerRots::new);
+	}
 
-    /**
-     * Convert a capability handler instance to a data instance.
-     *
-     * @param cap
-     *            The handler
-     * @return The data instance
-     */
-    @Nullable
-    @Override
-    protected RotInfo convertCapabilityToData(final IRot cap)
-    {
-        if (cap instanceof Rot)
-        {
-            return ((Rot) cap).getInfo();
-        }
-        else
-        {
-            return null;
-        }
-    }
+	public static void encode(final MessageBulkUpdateContainerRots message, final PacketBuffer buffer)
+	{
+		BulkUpdateContainerCapabilityMessage.encode(message, buffer, RotFunctions::encode);
+	}
 
-    /**
-     * Read a data instance from the buffer.
-     *
-     * @param buf
-     *            The buffer
-     */
-    @Override
-    protected RotInfo readCapabilityData(final ByteBuf buf)
-    {
-        return MessageUpdateContainerRot.readRotInfo(buf);
-    }
-
-    /**
-     * Write a data instance to the buffer.
-     *
-     * @param buf
-     *            The buffer
-     * @param info
-     *            The data instance
-     */
-    @Override
-    protected void writeCapabilityData(final ByteBuf buf, final RotInfo info)
-    {
-        MessageUpdateContainerRot.writeRotInfo(buf, info);
-    }
-
-    public static class Handler
-            extends MessageBulkUpdateContainerCapability.Handler<IRot, RotInfo, MessageBulkUpdateContainerRots>
-    {
-    	
-       	protected IThreadListener getThreadListener(final MessageContext ctx)
-    	{
-    		return FoodFunk.proxy.getThreadListener(ctx);
-    	}
-    	
-       	protected EntityPlayer getPlayer(final MessageContext ctx)
-    	{
-    		return FoodFunk.proxy.getPlayer(ctx);
-    	}
-
-        /**
-         * Apply the capability data from the data instance to the capability handler instance.
-         *
-         * @param cap
-         *            The capability handler instance
-         * @param info
-         *            The data instance
-         */
-        @Override
-        protected void applyCapabilityData(final IRot cap, final RotInfo info)
-        {
-            if (cap instanceof Rot)
-            {
-                Rot rcap = (Rot) cap;
-                rcap.setInfo(info);
-            }
-        }
-    }
+	public static void handle(final MessageBulkUpdateContainerRots message, final Supplier<NetworkEvent.Context> ctx)
+	{
+		BulkUpdateContainerCapabilityMessage.handle(message, ctx, RotFunctions::apply);
+	}
 }

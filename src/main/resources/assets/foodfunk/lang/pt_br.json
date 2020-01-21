@@ -1,0 +1,11 @@
+{
+    "language": "Português Brasileiro",
+
+    "item.foodfunk.rotten_food": "Comida Estragada",
+
+    "block.foodfunk.esky": "Resfriador",
+    "block.foodfunk.freezer": "Congelador",
+
+    "advancements.foodfunk.ten_second_rule.title": "Regra dos 10 Segundos",
+    "advancements.foodfunk.ten_second_rule.description": "Coma comiga estragada"
+}

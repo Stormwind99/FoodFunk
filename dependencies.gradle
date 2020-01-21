@@ -1,47 +1,52 @@
-
 repositories {
     mavenLocal()
     //mavenCentral()
     maven {
         url  "https://dl.bintray.com/stormwind/MinecraftModding" 
     }
-    maven { // The repo from which to get waila
-        name "Mobius Repo"
-        url "http://tehnut.info/maven"
-    }
-    maven { // TOP
-        name 'tterrag maven'
-        url "http://maven.tterrag.com/"
+}
+
+repositories {
+    flatDir {
+        dirs "libs"
     }
 }
 
 dependencies {
-    // From https://github.com/MinecraftForge/MinecraftForge/blob/1.12.x/mdk/build.gradle#L36-L58 
-    //
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    //minecraft "net.minecraftforge:forge:1.14.4-28.1.109"
+    minecraft "net.minecraftforge:forge:${config.mc_version}-${config.forge_version}"
 
-    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+    // You may put jars on which you depend on in ./libs or you may define them like so..
+    // compile "some.group:artifact:version:classifier"
+    // compile "some.group:artifact:version"
 
-    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
-    // except that these dependencies get remapped to your current MCP mappings
-    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+    // Real examples
+    // compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
+    // compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
+    compile fg.deobf('com.wumple.util:wumpleutil:3.3.0') {
+        transitive = false;
+    }
 
-    // for more info...
+    // The 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
+    // provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+
+    // These dependencies get remapped to your current MCP mappings
+    // deobf 'com.mod-buildcraft:buildcraft:6.0.8:dev'
+    // deobf 'com.wumple.util:wumpleutil:2.13.0'
+
+    // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    deobfCompile "com.wumple.wumpleutil:wumpleutil:2.12.6"
+    // for local testing
+    // runtimeOnly fg.deobf("com.wumple:megamap:1.14.4-1.2.2")
+    // runtimeOnly fg.deobf("com.wumple.util:wumpleutil:2.13.0")
 
-    deobfCompile "mcp.mobius.waila:Hwyla:1.8.26-B41_1.12.2:api"
-    deobfCompile "mcjty.theoneprobe:TheOneProbe-1.12:1.12-1.4.23-16:api"
+    // deobfCompile "com.wumple.wumpleutil:wumpleutil:2.12.6"
+    // deobfProvided "com.wumple.megamap:megamap:1.0.7"
+
 }
 

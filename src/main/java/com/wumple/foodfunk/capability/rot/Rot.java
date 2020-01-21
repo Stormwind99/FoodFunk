@@ -5,33 +5,34 @@ import java.util.List;
 import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.ContainerListenerRot;
 import com.wumple.foodfunk.capability.preserving.IPreserving;
-import com.wumple.foodfunk.capability.preserving.Preserving;
-import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.eventtimed.EventTimedThingCap;
-import com.wumple.util.container.capabilitylistener.CapabilityContainerListenerManager;
-import com.wumple.util.container.misc.ContainerUseTracker;
-import com.wumple.util.misc.CraftingUtil;
+import com.wumple.util.capability.listener.CapabilityContainerListenerManager;
+import com.wumple.util.crafting.CraftingUtil;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+
+// PORT import com.wumple.util.container.misc.ContainerUseTracker;
 
 public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
 {
     // The {@link Capability} instance
     @CapabilityInject(IRot.class)
     public static final Capability<IRot> CAPABILITY = null;
-    public static final EnumFacing DEFAULT_FACING = null;
+    public static final Direction DEFAULT_FACING = null;
 
     // IDs of the capability
     public static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "rot");
@@ -75,20 +76,20 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
     @Override
     public boolean isEnabled()
     {
-        return ConfigContainer.enabled;
+        return ConfigHandler.isEnabled();
     }
     
     @Override
     public boolean isDebugging()
     {
-        return ConfigContainer.zdebugging.debug;
+        return ConfigHandler.isDebugging();
     }
 
     /*
      * Build tooltip info based on this rot
      */
     @Override
-    public void doTooltip(ItemStack stack, EntityPlayer entity, boolean advanced, List<String> tips)
+    public void doTooltip(ItemStack stack, PlayerEntity entity, boolean advanced, List<ITextComponent> tips)
     {
         boolean usableStack = (stack != null) && (!stack.isEmpty());
         
@@ -106,11 +107,11 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
                 {
                     if (usableStack && (entity.openContainer != null))
                     {
-                        IPreserving cap = getPreservingContainer(entity, stack);
-                        if (cap != null)
+                        LazyOptional<IPreserving> lcap = getPreservingContainer(entity, stack);
+                        lcap.ifPresent(cap->
                         {
                             cap.doTooltipAddon(stack, entity, advanced, tips);
-                        }
+                        });
                     }
                 }
 
@@ -120,21 +121,21 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
 
                 if (key != null)
                 {
-                    tips.add(new TextComponentTranslation(key, info.getPercent() + "%", info.getDaysLeft(),
-                            info.getDaysTotal()).getUnformattedText());
+                    tips.add(new TranslationTextComponent(key, info.getPercent() + "%", info.getDaysLeft(),
+                            info.getDaysTotal()));
                 }
 
                 // advanced tooltip debug info
                 if (advanced && isDebugging())
                 {
-                    tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.datetime", info.getDate(),
-                            info.getTime()).getUnformattedText());
-                    tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.expire", info.getCurTime(),
-                            info.getExpirationTimestamp()).getUnformattedText());
+                    tips.add(new TranslationTextComponent("misc.foodfunk.tooltip.advanced.datetime", info.getDate(),
+                            info.getTime()));
+                    tips.add(new TranslationTextComponent("misc.foodfunk.tooltip.advanced.expire", info.getCurTime(),
+                            info.getExpirationTimestamp()));
 
-                    int dimension = world.provider.getDimension();
+                    int dimension = world.getDimension().getType().getId();
                     int dimensionRatio = info.getDimensionRatio(world);
-                    tips.add(new TextComponentTranslation("misc.foodfunk.tooltip.advanced.dimratio", dimensionRatio, dimension).getUnformattedText());
+                    tips.add(new TranslationTextComponent("misc.foodfunk.tooltip.advanced.dimratio", dimensionRatio, dimension));
                 }
             }
         }
@@ -144,15 +145,15 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
     // Internal
 
     @Override
-    public IRot getCap(ICapabilityProvider thing)
+    public LazyOptional<? extends IRot> getCap(ICapabilityProvider thing)
     {
         return IRot.getMyCap(thing);
     }
     
     // only good on client side
-    IPreserving getPreservingContainer(EntityPlayer entity, ItemStack stack)
+    LazyOptional<IPreserving> getPreservingContainer(PlayerEntity entity, ItemStack stack)
     {
-        return ContainerUseTracker.getContainerCapability(entity, stack, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
+        return LazyOptional.empty(); // PORT ContainerUseTracker.getContainerCapability(entity, stack, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
     }
 
     @Override
@@ -186,15 +187,15 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
     @Override
     public void forceUpdate()
     {
-        ItemStack stack = owner.as(ItemStack.class);
+        ItemStack stack = (owner != null) ? owner.as(ItemStack.class) : null;
         if (stack != null)
         {
         	// Attempted workaround for #56 even tho Rot.CAPABILITY should always be non-null 
         	if (Rot.CAPABILITY != null)
         	{
-        		NBTTagCompound tag = stack.getOrCreateSubCompound("Rot");
+        		CompoundNBT tag = stack.getOrCreateChildTag("Rot");
         		RotStorage storage = new RotStorage();
-        		NBTTagCompound nbt = (NBTTagCompound)storage.writeNBT(Rot.CAPABILITY, this, null);
+        		CompoundNBT nbt = (CompoundNBT)storage.writeNBT(Rot.CAPABILITY, this, null);
         		// Attempted workaround for #56 even tho nbt should never be null or empty
         		if ((nbt != null) && !nbt.isEmpty())
         		{

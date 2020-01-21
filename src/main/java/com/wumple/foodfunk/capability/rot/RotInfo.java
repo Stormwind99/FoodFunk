@@ -1,11 +1,10 @@
 package com.wumple.foodfunk.capability.rot;
 
-import com.wumple.foodfunk.configuration.ConfigContainer;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.eventtimed.Expiration;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 /**
  * Wrapper class used to encapsulate information about an IRot.
@@ -33,14 +32,14 @@ public final class RotInfo extends Expiration
         super(other);
     }
 
-    public RotInfo(NBTTagCompound tags)
+    public RotInfo(CompoundNBT tags)
     {
         this.readFromNBT(tags);
     }
 
     public int getChunkingPercent()
     {
-        return ConfigContainer.rotting.chunkingPercentage;
+        return ConfigHandler.getChunkingPercentage();
     }
 
     protected long getTimerLength(IThing owner)
@@ -63,7 +62,7 @@ public final class RotInfo extends Expiration
     
     public static int getADimensionRatio(String dimensionKey)
     {
-        return ConfigContainer.modifiers.dimensionRatios.getOrDefault(dimensionKey, ConfigHandler.DIMENSIONRATIO_DEFAULT);
+        return ConfigHandler.dimensions.getProperty(dimensionKey);
     }
     
     public static int getADimensionRatio(int dimensionId)

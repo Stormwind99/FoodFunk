@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.thing.ThingCapProvider;
 
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
@@ -13,12 +13,12 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 public class RotProvider extends ThingCapProvider<IThing, IRot>
 {
-    public RotProvider(Capability<IRot> capability, @Nullable EnumFacing facing, IThing thing)
+    public RotProvider(Capability<IRot> capability, @Nullable Direction facing, IThing thing)
     {
         super(capability, facing, thing);
     }
 
-    public RotProvider(Capability<IRot> capability, @Nullable EnumFacing facing, IRot instance, IThing thing)
+    public RotProvider(Capability<IRot> capability, @Nullable Direction facing, IRot instance, IThing thing)
     {
         super(capability, facing, instance, thing);
     }
