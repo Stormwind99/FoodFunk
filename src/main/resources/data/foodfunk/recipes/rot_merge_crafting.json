@@ -1,0 +1,15 @@
+{
+  "_comment": [
+      "Merge multiple food items of the same type but with different rot amounts"
+   ],
+  "type": "foodfunk:rot_merge_crafting",
+  "group": "foodfunk",
+  "ingredients": [
+      { "tag": "forge:food" },
+      { "tag": "forge:food" }
+  ],
+  "result": {
+    "item": "minecraft:apple"
+  }
+}
+}

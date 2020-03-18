@@ -1,7 +1,5 @@
 package com.wumple.foodfunk.capability.preserving;
 
-import com.wumple.foodfunk.capability.preserving.IPreserving.EntityPreservingOwner;
-import com.wumple.foodfunk.capability.preserving.IPreserving.ItemStackPreservingOwner;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.capability.timerrefreshing.TimerRefreshingEventHandler;
 
