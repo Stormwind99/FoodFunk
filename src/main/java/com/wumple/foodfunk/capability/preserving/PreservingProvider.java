@@ -6,6 +6,7 @@ import com.wumple.util.capability.thing.ThingCapProvider;
 
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 // TODO filter out if item doesn't preserve anymore?
 
@@ -26,4 +27,12 @@ public class PreservingProvider extends ThingCapProvider<IPreserving.IPreserving
     {
         return new PreservingProvider(Preserving.CAPABILITY, Preserving.DEFAULT_FACING, ownerIn);
     }
+    
+    @Override
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side)
+	{
+        if (capability == Preserving.CAPABILITY)
+            return lazyOptional.cast();
+        return LazyOptional.empty();
+	}
 }

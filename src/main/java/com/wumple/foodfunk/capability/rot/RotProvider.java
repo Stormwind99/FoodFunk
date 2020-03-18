@@ -8,6 +8,7 @@ import com.wumple.util.capability.thing.ThingCapProvider;
 import net.minecraft.util.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
 
 // TODO filter out IRot if item doesn't rot anymore?
 
@@ -32,4 +33,12 @@ public class RotProvider extends ThingCapProvider<IThing, IRot>
     {
         return new RotProvider(Rot.CAPABILITY, Rot.DEFAULT_FACING, thing);
     }
+    
+    @Override
+	public <T> LazyOptional<T> getCapability(Capability<T> capability, Direction side)
+	{
+        if (capability == Rot.CAPABILITY)
+            return lazyOptional.cast();
+        return LazyOptional.empty();
+	}
 }

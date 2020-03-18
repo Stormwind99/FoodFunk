@@ -2,7 +2,6 @@ package com.wumple.foodfunk.capability.preserving;
 
 import com.wumple.foodfunk.capability.preserving.IPreserving.EntityPreservingOwner;
 import com.wumple.foodfunk.capability.preserving.IPreserving.ItemStackPreservingOwner;
-import com.wumple.foodfunk.capability.preserving.IPreserving.TileEntityPreservingOwner;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.capability.timerrefreshing.TimerRefreshingEventHandler;
 
@@ -56,36 +55,27 @@ public class PreservingHandler extends TimerRefreshingEventHandler<IPreserving>
     @SubscribeEvent
     public static void attachCapabilitiesTileEntity(AttachCapabilitiesEvent<TileEntity> event)
     {
-        TileEntity entity = event.getObject();
-
-        if (false) // TEMP if (ConfigHandler.preserving.doesIt(entity))
-        {
-            PreservingProvider provider = PreservingProvider.createProvider(new TileEntityPreservingOwner(entity));
-            event.addCapability(Preserving.ID, provider);
-        }
+        checkAttachCapability(event, PUtil.to(event.getObject() ));
     }
     
     @SubscribeEvent
     public static void attachCapabilitiesEntity(AttachCapabilitiesEvent<Entity> event)
     {
-        Entity entity = event.getObject();
-
-        if (false) // TEMP if (ConfigHandler.preserving.doesIt(entity))
-        {
-            PreservingProvider provider = PreservingProvider.createProvider(new EntityPreservingOwner(entity));
-            event.addCapability(Preserving.ID, provider);
-        }
+    	checkAttachCapability(event, PUtil.to(event.getObject() ));
     }
     
     @SubscribeEvent
     public static void attachCapabilitiesItemStack(AttachCapabilitiesEvent<ItemStack> event)
     {
-        ItemStack it = event.getObject();
-
-        if (false) // TEMP if (ConfigHandler.preserving.doesIt(it))
+    	checkAttachCapability(event, PUtil.to(event.getObject() ));
+    }
+    
+    static public void checkAttachCapability(AttachCapabilitiesEvent<?> event, IPreserving.IPreservingOwner thing)
+    {
+        if (ConfigHandler.preserving.doesIt(thing))
         {
-            PreservingProvider provider = PreservingProvider.createProvider(new ItemStackPreservingOwner(it));
-            event.addCapability(Preserving.ID, provider);
+        	event.addCapability(Preserving.ID, PreservingProvider.createProvider(thing));
         }
     }
+
 }

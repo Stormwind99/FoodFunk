@@ -1,5 +1,8 @@
 package com.wumple.foodfunk.capability.rot;
 
+import org.apache.logging.log4j.LogManager;
+
+import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.adapter.TUtil;
@@ -91,7 +94,7 @@ public class RotHandler extends ThingTimerEventHandler<IThing, IRot> implements 
     {
         if (ConfigHandler.rotting.doesRot(thing))
         {
-            event.addCapability(Rot.ID, RotProvider2.createProvider(thing));
+        	event.addCapability(Rot.ID, RotProvider.createProvider(thing));
         }
     }
 
