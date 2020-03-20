@@ -1,0 +1,25 @@
+{
+   "_comment": [
+      "Larder box that extends shelf life of food"
+   ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "xyx",
+    "yzy",
+    "xyx" 
+  ],
+  "key": {
+    "x": {
+      "tag": "forge:ingots"
+    },
+    "y": {
+      "tag": "minecraft:slabs"
+    },
+    "z": {
+      "tag": "forge:chests/wooden"
+    }
+  },
+  "result": {
+    "item": "foodfunk:larder"
+  }
+}

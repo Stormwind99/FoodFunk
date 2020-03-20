@@ -1,0 +1,31 @@
+{
+  "_comment": [
+      "Ice box that extends shelf life of food"
+   ],
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "xbx",
+    "yiy",
+    "xlx"
+  ],
+  "key": {
+    "x": {
+      "tag": "forge:ingots"
+    },
+    "y": {
+      "tag": "minecraft:slabs"
+    },
+    "b": {
+      "tag": "forge:storage_blocks/iron"
+    },
+    "i": {
+      "tag": "forge:ice"
+    },
+    "l": {
+      "item": "foodfunk:larder"
+    }
+  },
+  "result": {
+    "item": "foodfunk:icebox"
+  }
+}
