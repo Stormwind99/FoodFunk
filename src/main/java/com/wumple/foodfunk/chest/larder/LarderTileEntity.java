@@ -1,10 +1,9 @@
 package com.wumple.foodfunk.chest.larder;
 
 import com.wumple.foodfunk.ModObjectHolder;
+import com.wumple.util.xchest.XChestTileEntity;
 
-import net.minecraft.tileentity.ChestTileEntity;
-
-public class LarderTileEntity extends ChestTileEntity
+public class LarderTileEntity extends XChestTileEntity
 {
 	public LarderTileEntity()
 	{

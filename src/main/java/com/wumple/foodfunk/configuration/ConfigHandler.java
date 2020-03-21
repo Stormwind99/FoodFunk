@@ -10,6 +10,7 @@ import com.wumple.foodfunk.ModObjectHolder;
 import com.wumple.foodfunk.capability.rot.RotProperty;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.config.MatchingConfig;
+import com.wumple.util.config.NameKeys;
 import com.wumple.util.config.SimpleMatchingConfig;
 import com.wumple.util.config.StringMatchingDualConfig;
 
@@ -74,7 +75,7 @@ public class ConfigHandler
     public static void addDefaults()
     {
         // handle all food with a "default" entry
-        // PORT rotting.addDefaultProperty(MatchingConfig.FOOD_TAG, ModObjectHolder.rotten_food, 7);
+        rotting.addDefaultProperty(NameKeys.foodSpecial, ModObjectHolder.rotten_food, 7);
  
         rotting.addDefaultProperty(ModObjectHolder.rotten_food, "foodfunk:rotten_food", ID_NO_ROT, DAYS_NO_ROT);
         rotting.addDefaultProperty(ModObjectHolder.rotted_item, "foodfunk:rotted_item", ID_NO_ROT, DAYS_NO_ROT);
@@ -102,11 +103,10 @@ public class ConfigHandler
         rotting.addDefaultProperty(Items.BEEF, "minecraft:beef", Items.ROTTEN_FLESH, 7);
         rotting.addDefaultProperty(Items.CHICKEN, "minecraft:chicken", Items.ROTTEN_FLESH, 7);
         rotting.addDefaultProperty(Items.PORKCHOP, "minecraft:porkchop", Items.ROTTEN_FLESH, 7);
-        // PORT rotting.addDefaultProperty(Items.FISH, "minecraft:fish", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty("#minecraft:fishes", Items.ROTTEN_FLESH, 7);
         rotting.addDefaultProperty(Items.COOKED_BEEF, "minecraft:cooked_beef", Items.ROTTEN_FLESH, 7);
         rotting.addDefaultProperty(Items.COOKED_CHICKEN, "minecraft:cooked_chicken", Items.ROTTEN_FLESH, 7);
         rotting.addDefaultProperty(Items.COOKED_PORKCHOP, "minecraft:cooked_porkchop", Items.ROTTEN_FLESH, 7);
-        // PORT rotting.addDefaultProperty(Items.COOKED_FISH, "minecraft:cooked_fish", Items.ROTTEN_FLESH, 7);
 
         preserving.addDefaultProperty("foodfunk:esky", 50);
         preserving.addDefaultProperty("foodfunk:freezer", 100);

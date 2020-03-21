@@ -1,10 +1,9 @@
 package com.wumple.foodfunk.chest.icebox;
 
 import com.wumple.foodfunk.ModObjectHolder;
+import com.wumple.util.xchest.XChestTileEntity;
 
-import net.minecraft.tileentity.ChestTileEntity;
-
-public class IceboxTileEntity extends ChestTileEntity
+public class IceboxTileEntity extends XChestTileEntity
 {
 	public IceboxTileEntity()
 	{
