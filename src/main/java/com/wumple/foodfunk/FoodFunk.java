@@ -6,7 +6,9 @@ import org.apache.logging.log4j.Logger;
 import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.capability.rot.Rot;
 import com.wumple.foodfunk.chest.icebox.IceboxBlock;
+import com.wumple.foodfunk.chest.icebox.IceboxItemStackTileEntityRenderer;
 import com.wumple.foodfunk.chest.larder.LarderBlock;
+import com.wumple.foodfunk.chest.larder.LarderItemStackTileEntityRenderer;
 import com.wumple.foodfunk.chest.larder.LarderTileEntity;
 import com.wumple.foodfunk.configuration.ModConfiguration;
 import com.wumple.foodfunk.crafting.recipe.RotMergeRecipe;
@@ -88,14 +90,18 @@ public class FoodFunk
 		public static void onItemsRegistry(final RegistryEvent.Register<Item> event)
 		{
 			Item.Properties properties = new Item.Properties().group(setup.itemGroup);
+			
 			event.getRegistry().register(new RottenFoodItem().setRegistryName("rotten_food"));
 			event.getRegistry().register(new SpoiledMilkItem().setRegistryName("spoiled_milk"));
 			event.getRegistry().register(new RottedItem().setRegistryName("rotted_item"));
 			event.getRegistry().register(new BiodegradableItem().setRegistryName("biodegradable_item"));
-			event.getRegistry().register(new BlockItem(ModObjectHolder.LarderBlock, properties).setRegistryName("larder"));
-			event.getRegistry().register(new BlockItem(ModObjectHolder.IceboxBlock, properties).setRegistryName("icebox"));
+
+			event.getRegistry().register(new BlockItem(ModObjectHolder.LarderBlock, new Item.Properties().group(setup.itemGroup).setTEISR(() -> LarderItemStackTileEntityRenderer::new)).setRegistryName("larder"));
+			event.getRegistry().register(new BlockItem(ModObjectHolder.IceboxBlock, new Item.Properties().group(setup.itemGroup).setTEISR(() -> IceboxItemStackTileEntityRenderer::new)).setRegistryName("icebox"));
 		}
 
+		
+		
 		@SubscribeEvent
 		public static void onTileEntityRegistry(final RegistryEvent.Register<TileEntityType<?>> event)
 		{
