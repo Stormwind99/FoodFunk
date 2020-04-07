@@ -11,10 +11,12 @@ import net.minecraft.util.ResourceLocation;
 
 public class LarderTileEntityRenderer extends XChestTileEntityRenderer<LarderTileEntity>
 {
+	private static ResourceLocation TEXTURE_NORMAL = new ResourceLocation(Reference.MOD_ID, "textures/entity/larder.png");
+	
 	@Override
-	protected void setTextures()
+	protected ResourceLocation getTexture()
 	{
-	  TEXTURE_NORMAL = new ResourceLocation(Reference.MOD_ID, "textures/entity/larder.png");
+	  return TEXTURE_NORMAL;
 	}
 	
 	@Override
