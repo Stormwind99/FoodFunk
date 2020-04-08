@@ -1,5 +1,9 @@
 package com.wumple.foodfunk;
 
+import com.wumple.foodfunk.chest.esky.EskyTileEntity;
+import com.wumple.foodfunk.chest.esky.EskyTileEntityRenderer;
+import com.wumple.foodfunk.chest.freezer.FreezerTileEntity;
+import com.wumple.foodfunk.chest.freezer.FreezerTileEntityRenderer;
 import com.wumple.foodfunk.chest.icebox.IceboxTileEntity;
 import com.wumple.foodfunk.chest.icebox.IceboxTileEntityRenderer;
 import com.wumple.foodfunk.chest.larder.LarderTileEntity;
@@ -17,6 +21,9 @@ public class ClientProxy implements IProxy
 	{
 		ClientRegistry.bindTileEntitySpecialRenderer(LarderTileEntity.class, new LarderTileEntityRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(IceboxTileEntity.class, new IceboxTileEntityRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(EskyTileEntity.class, new EskyTileEntityRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(FreezerTileEntity.class, new FreezerTileEntityRenderer());
+
 		//ScreenManager.registerFactory(ModObjectHolder.LarderBlock_Container, LarderScreen::new);
 		//ScreenManager.registerFactory(ModObjectHolder.IceboxBlock_Container, IceboxScreen::new);
 	}

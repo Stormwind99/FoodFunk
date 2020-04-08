@@ -5,6 +5,12 @@ import org.apache.logging.log4j.Logger;
 
 import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.capability.rot.Rot;
+import com.wumple.foodfunk.chest.esky.EskyBlock;
+import com.wumple.foodfunk.chest.esky.EskyItemStackTileEntityRenderer;
+import com.wumple.foodfunk.chest.esky.EskyTileEntity;
+import com.wumple.foodfunk.chest.freezer.FreezerBlock;
+import com.wumple.foodfunk.chest.freezer.FreezerItemStackTileEntityRenderer;
+import com.wumple.foodfunk.chest.freezer.FreezerTileEntity;
 import com.wumple.foodfunk.chest.icebox.IceboxBlock;
 import com.wumple.foodfunk.chest.icebox.IceboxItemStackTileEntityRenderer;
 import com.wumple.foodfunk.chest.larder.LarderBlock;
@@ -22,6 +28,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -35,6 +43,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.registries.IForgeRegistry;
 
 @Mod(Reference.MOD_ID)
 public class FoodFunk
@@ -84,6 +93,8 @@ public class FoodFunk
 		{
 			event.getRegistry().register(new LarderBlock());
 			event.getRegistry().register(new IceboxBlock());
+			event.getRegistry().register(new EskyBlock());
+			event.getRegistry().register(new FreezerBlock());
 		}
 
 		@SubscribeEvent
@@ -98,6 +109,8 @@ public class FoodFunk
 
 			event.getRegistry().register(new BlockItem(ModObjectHolder.LarderBlock, new Item.Properties().group(setup.itemGroup).setTEISR(() -> LarderItemStackTileEntityRenderer::new)).setRegistryName("larder"));
 			event.getRegistry().register(new BlockItem(ModObjectHolder.IceboxBlock, new Item.Properties().group(setup.itemGroup).setTEISR(() -> IceboxItemStackTileEntityRenderer::new)).setRegistryName("icebox"));
+			event.getRegistry().register(new BlockItem(ModObjectHolder.EskyBlock, new Item.Properties().group(setup.itemGroup).setTEISR(() -> EskyItemStackTileEntityRenderer::new)).setRegistryName("esky"));
+			event.getRegistry().register(new BlockItem(ModObjectHolder.FreezerBlock, new Item.Properties().group(setup.itemGroup).setTEISR(() -> FreezerItemStackTileEntityRenderer::new)).setRegistryName("freezer"));
 		}
 
 		
@@ -109,7 +122,32 @@ public class FoodFunk
 					.build(null).setRegistryName("larder"));
 			event.getRegistry().register(TileEntityType.Builder.create(LarderTileEntity::new, ModObjectHolder.IceboxBlock)
 					.build(null).setRegistryName("icebox"));
+			event.getRegistry().register(TileEntityType.Builder.create(EskyTileEntity::new, ModObjectHolder.EskyBlock)
+					.build(null).setRegistryName("esky"));
+			event.getRegistry().register(TileEntityType.Builder.create(FreezerTileEntity::new, ModObjectHolder.FreezerBlock)
+					.build(null).setRegistryName("freezer"));
+
 		}
+		
+		protected static SoundEvent registrationHelper(IForgeRegistry<SoundEvent> registry, String id)
+		{
+        	SoundEvent soundEvent = new SoundEvent(new ResourceLocation(id)).setRegistryName(id);
+        	registry.register(soundEvent);
+        	return soundEvent;
+		}
+		
+        @SubscribeEvent
+        public static void onSoundEventRegistry(final RegistryEvent.Register<SoundEvent> event)
+        {
+        	ModObjectHolder.larder_open = registrationHelper(event.getRegistry(), "foodfunk:larder_open");
+        	ModObjectHolder.larder_close = registrationHelper(event.getRegistry(), "foodfunk:larder_close");
+        	ModObjectHolder.icebox_open = registrationHelper(event.getRegistry(), "foodfunk:icebox_open");
+        	ModObjectHolder.icebox_close = registrationHelper(event.getRegistry(), "foodfunk:icebox_close");
+        	ModObjectHolder.esky_open = registrationHelper(event.getRegistry(), "foodfunk:esky_open");
+        	ModObjectHolder.esky_close = registrationHelper(event.getRegistry(), "foodfunk:esky_close");
+        	ModObjectHolder.freezer_open = registrationHelper(event.getRegistry(), "foodfunk:freezer_open");
+        	ModObjectHolder.freezer_close = registrationHelper(event.getRegistry(), "foodfunk:freezer_close");
+        }
 		
 		// --------------------------------------------------------------------
 		// recipes

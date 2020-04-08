@@ -24,12 +24,4 @@ public class IceboxTileEntityRenderer extends XChestTileEntityRenderer<IceboxTil
 	{
 		return ModObjectHolder.IceboxBlock;
 	}
-	
-	/*
-	@Override
-	protected ChestType getChestType(BlockState blockstate)
-	{
-		return ChestType.SINGLE;
-	}
-	*/
 }

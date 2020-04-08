@@ -1,0 +1,67 @@
+{
+  "esky_open": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.esky_open",
+    "sounds": [
+	    { "name": "foodfunk:esky_open", "stream": false}
+    ]
+  },
+  
+  "esky_close": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.esky_close",
+    "sounds": [
+	    { "name": "foodfunk:esky_close", "stream": false}
+    ]
+  },
+  
+  "freezer_open": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.freezer_open",
+    "sounds": [
+	    { "name": "foodfunk:freezer_open", "stream": false}
+    ]
+  },
+  
+  "freezer_close": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.freezer_close",
+    "sounds": [
+	    { "name": "foodfunk:freezer_close", "stream": false}
+    ]
+  },
+
+  "larder_open": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.larder_open",
+    "sounds": [
+	    { "name": "foodfunk:larder_open", "stream": false}
+    ]
+  },
+  
+  "larder_close": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.larder_close",
+    "sounds": [
+	    { "name": "foodfunk:larder_close", "stream": false}
+    ]
+  },
+
+  "icebox_open": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.icebox_open",
+    "sounds": [
+	    { "name": "foodfunk:icebox_open", "stream": false}
+    ]
+  },
+  
+  "icebox_close": {
+    "category": "block",
+    "subtitle": "foodfunk.subtitle.icebox_close",
+    "sounds": [
+	    { "name": "foodfunk:icebox_close", "stream": false}
+    ]
+  }
+  
+}
+

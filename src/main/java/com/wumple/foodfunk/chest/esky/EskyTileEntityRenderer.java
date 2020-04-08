@@ -1,4 +1,4 @@
-package com.wumple.foodfunk.chest.larder;
+package com.wumple.foodfunk.chest.esky;
 
 import com.wumple.foodfunk.ModObjectHolder;
 import com.wumple.foodfunk.Reference;
@@ -9,9 +9,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.state.properties.ChestType;
 import net.minecraft.util.ResourceLocation;
 
-public class LarderTileEntityRenderer extends XChestTileEntityRenderer<LarderTileEntity>
+public class EskyTileEntityRenderer extends XChestTileEntityRenderer<EskyTileEntity>
 {
-	private static ResourceLocation TEXTURE_NORMAL = new ResourceLocation(Reference.MOD_ID, "textures/entity/larder.png");
+	private static ResourceLocation TEXTURE_NORMAL = new ResourceLocation(Reference.MOD_ID, "textures/entity/esky.png");
 	
 	@Override
 	protected ResourceLocation getTexture()
@@ -22,6 +22,6 @@ public class LarderTileEntityRenderer extends XChestTileEntityRenderer<LarderTil
 	@Override
 	protected Block getBlock()
 	{
-		return ModObjectHolder.LarderBlock;
+		return ModObjectHolder.EskyBlock;
 	}
 }
