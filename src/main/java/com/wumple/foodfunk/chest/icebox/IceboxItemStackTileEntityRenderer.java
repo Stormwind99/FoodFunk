@@ -1,28 +1,16 @@
 package com.wumple.foodfunk.chest.icebox;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import com.wumple.util.xchest2.XChestItemStackTileEntityRenderer;
 
-public class IceboxItemStackTileEntityRenderer extends ItemStackTileEntityRenderer
+public class IceboxItemStackTileEntityRenderer extends XChestItemStackTileEntityRenderer<IceboxBlock>
 {
-	private static final IceboxTileEntity TE = new IceboxTileEntity();
-	public static IceboxItemStackTileEntityRenderer instance = new IceboxItemStackTileEntityRenderer();
-	
-	@Override
-    public void renderByItem(ItemStack itemStackIn)
-    {
-        Item item = itemStackIn.getItem();
+	protected static final IceboxTileEntity TE = new IceboxTileEntity();
 
-        if (Block.getBlockFromItem(item) instanceof IceboxBlock)
-        {
-        	TileEntityRendererDispatcher.instance.renderAsItem(TE);
-        }
-        else
-        {
-            super.renderByItem(itemStackIn);
-        }
-    }
+	protected TileEntity getTileEntity() { return TE; }
+	protected boolean shouldRender(Block block) 
+	{ 
+		return (block instanceof IceboxBlock);
+	}
 }

@@ -2,7 +2,7 @@ package com.wumple.foodfunk.chest.larder;
 
 import com.wumple.foodfunk.ModObjectHolder;
 import com.wumple.foodfunk.Reference;
-import com.wumple.util.xchest.XChestTileEntityRenderer;
+import com.wumple.util.xchest2.XChestTileEntityRenderer;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,9 +25,11 @@ public class LarderTileEntityRenderer extends XChestTileEntityRenderer<LarderTil
 		return ModObjectHolder.LarderBlock;
 	}
 	
+	/*
 	@Override
 	protected ChestType getChestType(BlockState blockstate)
 	{
 		return ChestType.SINGLE;
 	}
+	*/
 }

@@ -1,28 +1,17 @@
 package com.wumple.foodfunk.chest.larder;
 
+import com.wumple.util.xchest2.XChestItemStackTileEntityRenderer;
+
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 
-public class LarderItemStackTileEntityRenderer extends ItemStackTileEntityRenderer
+public class LarderItemStackTileEntityRenderer extends XChestItemStackTileEntityRenderer<LarderBlock>
 {
-	private static final LarderTileEntity TE = new LarderTileEntity();
-	public static LarderItemStackTileEntityRenderer instance = new LarderItemStackTileEntityRenderer();
-	
-	@Override
-    public void renderByItem(ItemStack itemStackIn)
-    {
-        Item item = itemStackIn.getItem();
+	protected static final LarderTileEntity TE = new LarderTileEntity();
 
-        if (Block.getBlockFromItem(item) instanceof LarderBlock)
-        {
-        	TileEntityRendererDispatcher.instance.renderAsItem(TE);
-        }
-        else
-        {
-            super.renderByItem(itemStackIn);
-        }
-    }
+	protected TileEntity getTileEntity() { return TE; }
+	protected boolean shouldRender(Block block) 
+	{ 
+		return (block instanceof LarderBlock);
+	}
 }

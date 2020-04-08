@@ -1,6 +1,6 @@
 package com.wumple.foodfunk.chest.icebox;
 
-import com.wumple.util.xchest.XChestBlock;
+import com.wumple.util.xchest2.XChestBlock;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
