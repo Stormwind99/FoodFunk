@@ -13,6 +13,7 @@ import com.wumple.foodfunk.chest.freezer.FreezerItemStackTileEntityRenderer;
 import com.wumple.foodfunk.chest.freezer.FreezerTileEntity;
 import com.wumple.foodfunk.chest.icebox.IceboxBlock;
 import com.wumple.foodfunk.chest.icebox.IceboxItemStackTileEntityRenderer;
+import com.wumple.foodfunk.chest.icebox.IceboxTileEntity;
 import com.wumple.foodfunk.chest.larder.LarderBlock;
 import com.wumple.foodfunk.chest.larder.LarderItemStackTileEntityRenderer;
 import com.wumple.foodfunk.chest.larder.LarderTileEntity;
@@ -120,7 +121,7 @@ public class FoodFunk
 		{
 			event.getRegistry().register(TileEntityType.Builder.create(LarderTileEntity::new, ModObjectHolder.LarderBlock)
 					.build(null).setRegistryName("larder"));
-			event.getRegistry().register(TileEntityType.Builder.create(LarderTileEntity::new, ModObjectHolder.IceboxBlock)
+			event.getRegistry().register(TileEntityType.Builder.create(IceboxTileEntity::new, ModObjectHolder.IceboxBlock)
 					.build(null).setRegistryName("icebox"));
 			event.getRegistry().register(TileEntityType.Builder.create(EskyTileEntity::new, ModObjectHolder.EskyBlock)
 					.build(null).setRegistryName("esky"));
