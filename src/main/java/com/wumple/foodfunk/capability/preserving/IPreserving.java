@@ -52,12 +52,12 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
     	
         public Integer getPreservingProperty()
         {
-        	return ConfigHandler.preserving.getProperty(owner);
+        	return ConfigHandler.preserving.getProperty(get());
         }
         
         public NonNullList<PlayerEntity> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
-        	return null; // PORT ContainerUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
+        	return null; // PORT ContainerUtil.getPlayersWithContainerOpen(get(), itemToSearchFor);
         }  
     }
     
@@ -70,12 +70,12 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
     	
         public Integer getPreservingProperty()
         {
-        	return ConfigHandler.preserving.getProperty(owner);
+        	return ConfigHandler.preserving.getProperty(get());
         }
         
         public NonNullList<PlayerEntity> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
-        	return ContainedByUtil.getPlayersWithContainerOpen(owner, itemToSearchFor);
+        	return ContainedByUtil.getPlayersWithContainerOpen(get(), itemToSearchFor);
         }
     }
     
@@ -88,7 +88,7 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
         
         public Integer getPreservingProperty()
         {
-            return ConfigHandler.preserving.getProperty(owner);
+            return ConfigHandler.preserving.getProperty(get());
         }
         
         public NonNullList<PlayerEntity> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
