@@ -72,7 +72,13 @@ public class PreservingHandler extends TimerRefreshingEventHandler<IPreserving>
     {
         if (ConfigHandler.preserving.doesIt(thing))
         {
-        	event.addCapability(Preserving.ID, PreservingProvider.createProvider(thing));
+        	ICapabilityProvider capabilityProvider = PreservingProvider.createProvider(thing);
+        	LazyOptional<IPreserving> lo = capabilityProvider.getCapability(Preserving.CAPABILITY);
+        	IPreserving ip = lo.orElse(null);
+        	event.addCapability(Preserving.ID, capabilityProvider);
+        	event.addListener(
+        			() -> { ip.invalidateCap(); }
+        			);
         }
     }
 
