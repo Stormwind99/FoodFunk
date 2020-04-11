@@ -101,7 +101,9 @@ public class ConfigHandler
         rotting.addDefaultProperty(Items.SPIDER_EYE, "minecraft:spider_eye", Items.FERMENTED_SPIDER_EYE, 5);
         rotting.addDefaultProperty(Items.FERMENTED_SPIDER_EYE, "minecraft:fermented_spider_eye", Items.ROTTEN_FLESH, 10);
         rotting.addDefaultProperty(Items.BEEF, "minecraft:beef", Items.ROTTEN_FLESH, 7);
-        rotting.addDefaultProperty(Items.CHICKEN, "minecraft:chicken", Items.ROTTEN_FLESH, 7);
+        // minecraft:chicken also matches entity chicken, causing hang on many world startups
+        // PORT rotting.addDefaultProperty(Items.CHICKEN, "minecraft:chicken", Items.ROTTEN_FLESH, 7);
+        rotting.addDefaultProperty("#forge:chicken_meat", ModObjectHolder.rotten_food, 14);
         rotting.addDefaultProperty(Items.PORKCHOP, "minecraft:porkchop", Items.ROTTEN_FLESH, 7);
         rotting.addDefaultProperty("#minecraft:fishes", Items.ROTTEN_FLESH, 7);
         rotting.addDefaultProperty(Items.COOKED_BEEF, "minecraft:cooked_beef", Items.ROTTEN_FLESH, 7);
