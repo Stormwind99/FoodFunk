@@ -5,10 +5,12 @@ import java.util.List;
 import com.wumple.foodfunk.Reference;
 import com.wumple.foodfunk.capability.ContainerListenerRot;
 import com.wumple.foodfunk.capability.preserving.IPreserving;
+import com.wumple.foodfunk.capability.preserving.Preserving;
 import com.wumple.foodfunk.configuration.ConfigHandler;
 import com.wumple.util.adapter.IThing;
 import com.wumple.util.capability.eventtimed.EventTimedThingCap;
 import com.wumple.util.capability.listener.CapabilityContainerListenerManager;
+import com.wumple.util.container.ContainerUseTracker;
 import com.wumple.util.crafting.CraftingUtil;
 
 import net.minecraft.entity.player.PlayerEntity;
@@ -153,7 +155,7 @@ public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
     // only good on client side
     LazyOptional<IPreserving> getPreservingContainer(PlayerEntity entity, ItemStack stack)
     {
-        return LazyOptional.empty(); // PORT ContainerUseTracker.getContainerCapability(entity, stack, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
+        return ContainerUseTracker.getContainerCapability(entity, stack, Preserving.CAPABILITY, Preserving.DEFAULT_FACING);
     }
 
     @Override
