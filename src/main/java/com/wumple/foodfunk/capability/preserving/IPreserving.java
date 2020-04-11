@@ -57,7 +57,7 @@ public interface IPreserving extends ITimerRefreshingCap<IPreservingOwner, RotIn
         
         public NonNullList<PlayerEntity> getPlayersWithContainerOpen(ItemStack itemToSearchFor)
         {
-        	return null; // PORT ContainerUtil.getPlayersWithContainerOpen(get(), itemToSearchFor);
+        	return ContainedByUtil.getPlayersWithContainerOpen(get(), itemToSearchFor);
         }  
     }
     

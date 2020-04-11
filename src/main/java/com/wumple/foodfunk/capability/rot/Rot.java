@@ -27,8 +27,6 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 
-// PORT import com.wumple.util.container.misc.ContainerUseTracker;
-
 public class Rot extends EventTimedThingCap<IThing, RotInfo> implements IRot
 {
     // The {@link Capability} instance
