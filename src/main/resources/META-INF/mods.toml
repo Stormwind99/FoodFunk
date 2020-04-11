@@ -53,6 +53,6 @@ description="What is that funky smell in my backpack? Food spoils over time. Any
 [[dependencies.foodfunk]]
     modId="wumpleutil"
     mandatory=true
-    versionRange="[3.3,)"
+    versionRange="[3.4,)"
     ordering="NONE"
     side="BOTH"
