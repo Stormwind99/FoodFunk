@@ -3,6 +3,7 @@
       "Ice box that extends shelf life of food"
    ],
   "type": "minecraft:crafting_shaped",
+  "group": "foodfunk",
   "pattern": [
     "xbx",
     "yiy",
