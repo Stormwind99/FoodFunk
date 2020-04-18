@@ -1,12 +1,13 @@
 {
   "homepage": "https://github.com/Stormwind99/FoodFunk",
   "promos": {
-    "1.14.4-latest": "5.0.2",
-    "1.14.4-recommended": "5.0.2",
+    "1.14.4-latest": "5.1.0",
+    "1.14.4-recommended": "5.1.0",
     "1.12.2-latest": "4.9.6",
     "1.12.2-recommended": "4.9.6"
   },
   "1.14.4": {
+    "5.1.0": "Library update for server crash",
     "5.0.2": "Library update for CraftingUtil and Rot tooltip crash",
     "5.0.1": "Fix minecraft:chicken also referring to entity and causing Rot setup on ChickenEntity to hang world startup",
     "5.0.0": "Basic port to 1.14.4"
